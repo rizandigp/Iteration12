@@ -1,0 +1,648 @@
+Object "Spot001"
+MAXclass = targetSpot
+NGclass = SpotLight
+position = [-14.7691,14.3474,3.69959]
+target = [-11.331,9.76883,0.876284]
+intensity = 50.0
+color = (color 236 255 134)
+radius = 200.0
+hotspot = 7.6
+falloff = 67.6
+aspect = 1.0
+cookie = Media/light_lampa1b.bmp
+
+Object "Spot002"
+MAXclass = targetSpot
+NGclass = SpotLight
+position = [-3.06319,3.18234,3.20619]
+target = [3.85858,0.89881,1.35468]
+intensity = 2.5
+color = (color 62 84 157)
+radius = 200.0
+hotspot = 40.7
+falloff = 73.8
+aspect = 1.0
+cookie = Media/light_resotka3b.bmp
+
+Object "Spot003"
+MAXclass = targetSpot
+NGclass = SpotLight
+position = [4.93904,-4.94478,4.32771]
+target = [1.76904,-2.80246,2.01004]
+intensity = 40.0
+color = (color 139 133 255)
+radius = 200.0
+hotspot = 7.6
+falloff = 67.6
+aspect = 1.0
+cookie = Media/light_lampa1b.bmp
+
+Object "Plane005"
+MAXclass = Editable_mesh
+NGclass = ent_Langitlangit
+position = [0,0,3]
+rotation = (quat -1 0 0 0)
+scale = [1,1,1]
+
+Object "wood_box_b"
+MAXclass = Editable_mesh
+NGclass = wood_box_b
+position = [-1.81766,34.8142,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_a"
+MAXclass = Dummy
+NGclass = wood_box_a
+position = [-0.926738,34.8142,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_c"
+MAXclass = Dummy
+NGclass = wood_box_c
+position = [0.301743,34.8142,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_d"
+MAXclass = Dummy
+NGclass = wood_box_d
+position = [0.892622,34.8142,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_e"
+MAXclass = Dummy
+NGclass = wood_box_e
+position = [-0.29598,34.8142,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_chair_school_a"
+MAXclass = Editable_mesh
+NGclass = props_chair_school_a
+position = [0.950204,33.969,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_chair_school_b"
+MAXclass = Editable_mesh
+NGclass = props_chair_school_b
+position = [1.82544,33.969,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_bibl_stul001"
+MAXclass = Editable_mesh
+NGclass = props_bibl_stul
+position = [-1.07167,33.969,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "metro_locker_a"
+MAXclass = Editable_mesh
+NGclass = metro_locker_a
+position = [-0.0386618,36.0553,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "metro_locker_f"
+MAXclass = Editable_mesh
+NGclass = metro_locker_f
+position = [-0.899931,36.0713,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "metro_locker_e"
+MAXclass = Editable_mesh
+NGclass = metro_locker_e
+position = [-1.89455,36.0713,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "metro_locker_d"
+MAXclass = Editable_mesh
+NGclass = metro_locker_d
+position = [1.82815,36.0553,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "metro_locker_b"
+MAXclass = Editable_mesh
+NGclass = metro_locker_b
+position = [0.630348,36.0553,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "metro_locker_c"
+MAXclass = Editable_mesh
+NGclass = metro_locker_c
+position = [1.2372,36.0553,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "props_m_scaf_a"
+MAXclass = Dummy
+NGclass = props_m_scaf_a
+position = [1.67087,37.5614,0.773404]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_m_scaf_b"
+MAXclass = Dummy
+NGclass = props_m_scaf_b
+position = [0,37.5431,0.317872]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "Plane001"
+MAXclass = Editable_mesh
+NGclass = ent_Lantai
+position = [0,0,-0.5]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "Plane002"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [0,5,1.5]
+rotation = (quat 0.707107 0 0 0.707107)
+scale = [1,1,1]
+
+Object "Plane003"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [5,0,1.5]
+rotation = (quat 0.5 -0.5 -0.5 0.5)
+scale = [1,1,1]
+
+Object "Plane004"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [-15,0,1.5]
+rotation = (quat 0.5 0.5 0.5 0.5)
+scale = [1,1,1]
+
+Object "kursiroda"
+MAXclass = Dummy
+NGclass = ent_KursiRoda
+position = [-3.1732,33.7958,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+Object "kasur"
+MAXclass = Dummy
+NGclass = ent_Kasur
+position = [-3.20227,36.6036,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+Object "Plane006"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [0,-5,1.5]
+rotation = (quat 0 -0.707107 -0.707107 0)
+scale = [1,1,1]
+
+Object "Tumba01"
+MAXclass = Dummy
+NGclass = ent_Tumba01
+position = [-1.72206,37.3012,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "c"
+MAXclass = Editable_mesh
+NGclass = Clutter_paper_cardboard_c
+position = [-10.1925,34.2063,0.424904]
+rotation = (quat 0 0 0 1)
+scale = [0.3,0.3,0.3]
+
+Object "d"
+MAXclass = Editable_mesh
+NGclass = Clutter_paper_cardboard_d
+position = [-9.46657,34.2063,0.424904]
+rotation = (quat 0 0 0 1)
+scale = [0.3,0.3,0.3]
+
+Object "a"
+MAXclass = Editable_mesh
+NGclass = Clutter_paper_cardboard_a
+position = [-10.1925,34.2063,0.424904]
+rotation = (quat 0 0 0 1)
+scale = [0.3,0.3,0.3]
+
+Object "e"
+MAXclass = Editable_mesh
+NGclass = Clutter_paper_cardboard_e
+position = [-10.1925,34.2063,0.424904]
+rotation = (quat 0 0 0 1)
+scale = [0.3,0.3,0.3]
+
+Object "b"
+MAXclass = Editable_mesh
+NGclass = Clutter_paper_cardboard_b
+position = [-10.1925,34.2063,0.424904]
+rotation = (quat 0 0 0 1)
+scale = [0.3,0.3,0.3]
+
+Object "props_chair_01"
+MAXclass = Dummy
+NGclass = props_chair_01
+position = [3.8296e-006,33.9682,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "Mesh_133"
+MAXclass = Editable_mesh
+NGclass = Pallet_Single
+position = [-7.85532,32.0993,0.424904]
+rotation = (quat 0 0 0 1)
+scale = [0.3,0.3,0.3]
+
+Object "kasur002"
+MAXclass = Dummy
+NGclass = prop_metro_kasur
+position = [2.71065,3.2144,0]
+rotation = (quat 0 0 -0.92388 -0.382683)
+scale = [1,1,1]
+
+Object "props_m_scaf_a002"
+MAXclass = Dummy
+NGclass = props_m_scaf_a
+position = [-0.784473,4.22,0.773404]
+rotation = (quat 0 0 -0.991445 -0.130526)
+scale = [1,1,1]
+
+Object "Mesh_136"
+MAXclass = Editable_mesh
+NGclass = Pallet_Single
+position = [4.16008,4.69553,0.533837]
+rotation = (quat 0.536788 -0.0234367 -0.0367882 0.842589)
+scale = [0.3,0.3,0.3]
+
+Object "metro_locker_d001"
+MAXclass = Editable_mesh
+NGclass = metro_locker_d
+position = [4.67621,-0.295304,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+Object "metro_locker_b002"
+MAXclass = Editable_mesh
+NGclass = metro_locker_b
+position = [4.67621,0.9025,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+Object "metro_locker_c001"
+MAXclass = Editable_mesh
+NGclass = metro_locker_c
+position = [4.67621,0.295647,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+Object "metro_locker_a001"
+MAXclass = Editable_mesh
+NGclass = metro_locker_a
+position = [4.67621,1.57151,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+Object "wood_box_a001"
+MAXclass = Dummy
+NGclass = wood_box_a
+position = [-0.926738,6.71947,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_c001"
+MAXclass = Dummy
+NGclass = wood_box_c
+position = [0.301743,6.71947,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_d001"
+MAXclass = Dummy
+NGclass = wood_box_d
+position = [0.892622,6.71947,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_e001"
+MAXclass = Dummy
+NGclass = wood_box_e
+position = [-0.29598,6.71947,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "wood_box_d002"
+MAXclass = Dummy
+NGclass = wood_box_d
+position = [4.56343,3.90872,0.151453]
+rotation = (quat 0 0 0.5373 0.843391)
+scale = [1,1,1]
+
+Object "wood_box_d003"
+MAXclass = Dummy
+NGclass = wood_box_d
+position = [2.96876,2.08527,0.151453]
+rotation = (quat 0 0 -0.953717 0.300706)
+scale = [1,1,1]
+
+Object "props_met_skaff"
+MAXclass = Editable_mesh
+NGclass = props_met_skaff_a
+position = [-1,32.2468,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_met_skaff"
+MAXclass = Editable_mesh
+NGclass = props_met_skaff_c
+position = [1,32.2468,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_met_skaff"
+MAXclass = Editable_mesh
+NGclass = props_met_skaff_d
+position = [2,32.2468,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_met_skaff"
+MAXclass = Editable_mesh
+NGclass = props_met_skaff_b
+position = [0,32.2468,0]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "props_met_skaff001"
+MAXclass = Editable_mesh
+NGclass = props_met_skaff_a
+position = [-2.03636,4.22218,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "props_met_skaff003"
+MAXclass = Editable_mesh
+NGclass = props_met_skaff_a
+position = [4.68273,-1.02924,0]
+rotation = (quat 0 0 0.707107 0.707107)
+scale = [1,1,1]
+
+
+Object "kasur003"
+MAXclass = Dummy
+NGclass = prop_metro_kasur
+position = [2.52142,-3.50612,0]
+rotation = (quat 0 0 -0.991445 0.130526)
+scale = [1,1,1]
+
+Object "Plane007"
+MAXclass = Editable_mesh
+NGclass = ent_Lantai
+position = [-10,0,-0.5]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "Plane008"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [-10,15,1.5]
+rotation = (quat 0.707107 0 0 0.707107)
+scale = [1,1,1]
+
+Object "Plane009"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [-10,-5,1.5]
+rotation = (quat 0 -0.707107 -0.707107 0)
+scale = [1,1,1]
+
+Object "Plane010"
+MAXclass = Editable_mesh
+NGclass = ent_Langitlangit
+position = [-10,0,3]
+rotation = (quat -1 0 0 0)
+scale = [1,1,1]
+
+Object "kursiroda005"
+MAXclass = Dummy
+NGclass = prop_metro_kursiroda
+position = [-9.59124,-2.26446,0.00654748]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "kasur004"
+MAXclass = Dummy
+NGclass = prop_metro_kasur
+position = [-1.87812,-3.50028,0]
+rotation = (quat 0 0 -1 0)
+scale = [1,1,1]
+
+Object "Plane011"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [-15,10,1.5]
+rotation = (quat 0.5 0.5 0.5 0.5)
+scale = [1,1,1]
+
+Object "Plane012"
+MAXclass = Editable_mesh
+NGclass = ent_Lantai
+position = [-10,10,-0.5]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "Plane013"
+MAXclass = Editable_mesh
+NGclass = ent_Tembok
+position = [-5,10,1.5]
+rotation = (quat 0.5 -0.5 -0.5 0.5)
+scale = [1,1,1]
+
+Object "kardus_h"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_h
+position = [-9.18467,10.5439,6.12677]
+rotation = (quat 0 0 0.220067 0.975485)
+scale = [1,1,1]
+
+Object "kardus_i"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_i
+position = [-9.18467,10.5439,6.55194]
+rotation = (quat 0 0 -0.00340355 0.999994)
+scale = [1,1,1]
+
+Object "kardus_j"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_j
+position = [-9.18467,10.5439,6.99131]
+rotation = (quat 0 0 0.0444592 0.999011)
+scale = [1,1,1]
+
+Object "kardus_a"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_a
+position = [-9.18467,10.5439,1.90025]
+rotation = (quat 0 0 -0.0559521 0.998433)
+scale = [1,1,1]
+
+Object "kardus_b"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_b
+position = [-9.18467,10.5439,2.66396]
+rotation = (quat 0 0 0.0982701 0.99516)
+scale = [1,1,1]
+
+Object "kardus_f"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_f
+position = [-9.18467,10.5439,5.15072]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "kardus_e"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_e
+position = [-9.18467,10.5439,4.55059]
+rotation = (quat 0 0 0.043866 0.999037)
+scale = [1,1,1]
+
+Object "kardus_g"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_g
+position = [-9.18467,10.5439,5.70912]
+rotation = (quat 0 0 0.245489 0.969399)
+scale = [1,1,1]
+
+Object "kardus_c"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_c
+position = [-9.18467,10.5439,3.33077]
+rotation = (quat 0 0 0.0741085 0.99725)
+scale = [1,1,1]
+
+Object "kardus_d"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_d
+position = [-9.18467,10.5439,3.96514]
+rotation = (quat 0 0 0.0780085 0.996953)
+scale = [1,1,1]
+
+Object "kardus_h001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_h
+position = [-10.4289,10.5439,6.12677]
+rotation = (quat 0 0 0.220067 0.975485)
+scale = [1,1,1]
+
+Object "kardus_i001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_i
+position = [-10.4289,10.5439,6.55194]
+rotation = (quat 0 0 -0.00340355 0.999994)
+scale = [1,1,1]
+
+Object "kardus_j001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_j
+position = [-10.4289,10.5439,6.99131]
+rotation = (quat 0 0 0.0444592 0.999011)
+scale = [1,1,1]
+
+Object "kardus_a001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_a
+position = [-10.4289,10.5439,1.90025]
+rotation = (quat 0 0 -0.0559521 0.998433)
+scale = [1,1,1]
+
+Object "kardus_b001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_b
+position = [-10.4289,10.5439,2.66396]
+rotation = (quat 0 0 0.0982701 0.99516)
+scale = [1,1,1]
+
+Object "kardus_f001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_f
+position = [-10.4289,10.5439,5.15072]
+rotation = (quat 0 0 0 1)
+scale = [1,1,1]
+
+Object "kardus_e001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_e
+position = [-10.4289,10.5439,4.55059]
+rotation = (quat 0 0 0.043866 0.999037)
+scale = [1,1,1]
+
+Object "kardus_g001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_g
+position = [-10.4289,10.5439,5.70912]
+rotation = (quat 0 0 0.245489 0.969399)
+scale = [1,1,1]
+
+Object "kardus_c001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_c
+position = [-10.4289,10.5439,3.33077]
+rotation = (quat 0 0 0.0741085 0.99725)
+scale = [1,1,1]
+
+Object "kardus_d001"
+MAXclass = PolyMeshObject
+NGclass = prop_kardus_d
+position = [-10.4289,10.5439,3.96514]
+rotation = (quat 0 0 0.0780085 0.996953)
+scale = [1,1,1]
+
+Object "Spot004"
+MAXclass = targetSpot
+NGclass = SpotLight
+position = [-5.60606,4.78086,3.20619]
+target = [-8.72746,2.32789,0.115674]
+intensity = 1.5
+color = (color 211 216 233)
+radius = 200.0
+hotspot = 40.7
+falloff = 73.8
+aspect = 1.0
+cookie = Media/light_resotka3b.bmp
+
+Object "Plane014"
+MAXclass = Editable_mesh
+NGclass = ent_Langitlangit
+position = [-10,10,3]
+rotation = (quat -1 0 0 0)
+scale = [1,1,1]
+
+Object "kursiroda006"
+MAXclass = Dummy
+NGclass = prop_metro_kursiroda
+position = [-5.28342,4.29377,0.00654748]
+rotation = (quat 0 0 -0.866025 -0.5)
+scale = [1,1,1]
+
+Object "kursiroda007"
+MAXclass = Dummy
+NGclass = prop_metro_kursiroda
+position = [-6.82028,4.29431,0.00654748]
+rotation = (quat 0 0 0.793353 0.608761)
+scale = [1,1,1]
+
+Object "kasur005"
+MAXclass = Dummy
+NGclass = prop_metro_kasur
+position = [-6.35244,9.56246,0]
+rotation = (quat 0 0 0.737277 0.67559)
+scale = [1,1,1]
+

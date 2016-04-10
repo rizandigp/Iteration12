@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2E500E32-DB9B-4960-A8C0-EB2B0E303103}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Iteration12</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;HK_CONFIG_SIMD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(HAVOK_DIR)Source;$(TBB30_INSTALL_DIR)\include;$(BOOST_ROOT);E:\Dev\Assimp\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;$(INTELTBB_DIR)lib\ia32\vc10;$(BOOST_ROOT)stage\lib;E:\Dev\Assimp\lib\x86;$(HAVOK_DIR)Lib\win32_vs2010\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;hkpConstraint.lib;hkpConstraintSolver.lib;hkpUtilities.lib;hkpVehicle.lib;hkpDynamics.lib;hkpCollide.lib;hkpInternal.lib;hkaInternal.lib;hkaAnimation.lib;hkaPhysics2012Bridge.lib;hkInternal.lib;hkGeometryUtilities.lib;hkImageUtilities.lib;hkVisualize.lib;hkSerialize.lib;hkCompat.lib;hkSceneData.lib;hkBase.lib;hkcdCollide.lib;hkcdInternal.lib;dxerr.lib;dxguid.lib;winmm.lib;comctl32.lib;assimp.lib;tbb.lib;dxgi.lib;d3dx11.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;HK_CONFIG_SIMD=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(HAVOK_DIR)Source;$(TBB30_INSTALL_DIR)\include;$(BOOST_ROOT);E:\Dev\Assimp\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;$(INTELTBB_DIR)lib\ia32\vc10;$(BOOST_ROOT)stage\lib;E:\Dev\Assimp\lib\x86;$(HAVOK_DIR)Lib\win32_vs2010\release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;hkpConstraint.lib;hkpConstraintSolver.lib;hkpUtilities.lib;hkpVehicle.lib;hkpDynamics.lib;hkpCollide.lib;hkpInternal.lib;hkaInternal.lib;hkaAnimation.lib;hkaPhysics2012Bridge.lib;hkInternal.lib;hkGeometryUtilities.lib;hkImageUtilities.lib;hkVisualize.lib;hkSerialize.lib;hkCompat.lib;hkSceneData.lib;hkBase.lib;hkcdCollide.lib;hkcdInternal.lib;dxerr.lib;dxguid.lib;winmm.lib;comctl32.lib;assimp.lib;tbb.lib;dxgi.lib;d3dx11.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="Iteration12.ico" />
+    <None Include="ReadMe.txt" />
+    <None Include="Shaders\Black.hlsl" />
+    <None Include="Shaders\BlinnPhong.hlsl" />
+    <None Include="Shaders\Deferred.hlsl" />
+    <None Include="Shaders\DeferredGBuffer.hlsl" />
+    <None Include="Shaders\DeferredGBufferIBL.hlsl" />
+    <None Include="Shaders\DeferredPointlight.hlsl" />
+    <None Include="Shaders\DeferredSpotlight - Legacy.hlsl" />
+    <None Include="Shaders\DeferredSpotlight.hlsl" />
+    <None Include="Shaders\DeferredSunlight.hlsl" />
+    <None Include="Shaders\Diff.hlsl" />
+    <None Include="Shaders\DiffBump.hlsl" />
+    <None Include="Shaders\DiffBumpSpec.hlsl" />
+    <None Include="Shaders\DiffBumpSpec_omni.hlsl" />
+    <None Include="Shaders\DiffBumpSpec_spot.hlsl" />
+    <None Include="Shaders\DiffBump_omni.hlsl" />
+    <None Include="Shaders\DiffBump_spot.hlsl" />
+    <None Include="Shaders\DiffDetailbump.hlsl" />
+    <None Include="Shaders\DiffDetailbump_omni.hlsl" />
+    <None Include="Shaders\DiffDetailbump_spot.hlsl" />
+    <None Include="Shaders\DiffFlat.hlsl" />
+    <None Include="Shaders\Downsample.hlsl" />
+    <None Include="Shaders\EngineGlobal.hlsl" />
+    <None Include="Shaders\GI.hlsl" />
+    <None Include="Shaders\LightingCommon.hlsl" />
+    <None Include="Shaders\OneColor.hlsl" />
+    <None Include="Shaders\PrefilterCubemap.hlsl" />
+    <None Include="Shaders\RSM.hlsl" />
+    <None Include="Shaders\Shadowmap.hlsl" />
+    <None Include="Shaders\Skybox.hlsl" />
+    <None Include="Shaders\SSAO.hlsl" />
+    <None Include="Shaders\SSAOCombine.hlsl" />
+    <None Include="Shaders\Tonemapping.hlsl" />
+    <None Include="Shaders\Water.hlsl" />
+    <None Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\Array2D.h" />
+    <ClInclude Include="Engine\Array3D.h" />
+    <ClInclude Include="Engine\Buffer.h" />
+    <ClInclude Include="Engine\Camera3D.h" />
+    <ClInclude Include="Engine\Color.h" />
+    <ClInclude Include="Engine\Complex.h" />
+    <ClInclude Include="Engine\ConstantBufferData.h" />
+    <ClInclude Include="Engine\Debug.h" />
+    <ClInclude Include="Engine\DepthStencil.h" />
+    <ClInclude Include="Engine\DX11Material.h" />
+    <ClInclude Include="Engine\DX11RenderCommand.h" />
+    <ClInclude Include="Engine\DX11Renderer.h" />
+    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Entity.h" />
+    <ClInclude Include="Engine\Entity_Prop.h" />
+    <ClInclude Include="Engine\Entity_Water.h" />
+    <ClInclude Include="Engine\FFT.h" />
+    <ClInclude Include="Engine\FFTWater.h" />
+    <ClInclude Include="Engine\FPPlayerEntity.h" />
+    <ClInclude Include="Engine\FullscreenQuad.h" />
+    <ClInclude Include="Engine\GeometryChunk.h" />
+    <ClInclude Include="Engine\GPUResource.h" />
+    <ClInclude Include="Engine\Image.h" />
+    <ClInclude Include="Engine\Light.h" />
+    <ClInclude Include="Engine\LightVolume.h" />
+    <ClInclude Include="Engine\Material.h" />
+    <ClInclude Include="Engine\Math.h" />
+    <ClInclude Include="Engine\Matrix3x3.h" />
+    <ClInclude Include="Engine\Matrix4x4.h" />
+    <ClInclude Include="Engine\Mesh.h" />
+    <ClInclude Include="Engine\MeshLoader.h" />
+    <ClInclude Include="Engine\PhysicsSystem.h" />
+    <ClInclude Include="Engine\Plane.h" />
+    <ClInclude Include="Engine\Prerequisites.h" />
+    <ClInclude Include="Engine\Quaternion.h" />
+    <ClInclude Include="Engine\Ray.h" />
+    <ClInclude Include="Engine\RenderCommand.h" />
+    <ClInclude Include="Engine\RenderDispatcher.h" />
+    <ClInclude Include="Engine\Renderer.h" />
+    <ClInclude Include="Engine\RenderOutput.h" />
+    <ClInclude Include="Engine\RenderSystem.h" />
+    <ClInclude Include="Engine\Scene.h" />
+    <ClInclude Include="Engine\ShaderParamBlock.h" />
+    <ClInclude Include="Engine\ShaderParams.h" />
+    <ClInclude Include="Engine\Shaderset.h" />
+    <ClInclude Include="Engine\Texture2D.h" />
+    <ClInclude Include="Engine\Texture3D.h" />
+    <ClInclude Include="Engine\TextureCube.h" />
+    <ClInclude Include="Engine\ThreadedAllocator.h" />
+    <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="Engine\Utilities.h" />
+    <ClInclude Include="Engine\Vector2.h" />
+    <ClInclude Include="Engine\Vector3.h" />
+    <ClInclude Include="Engine\Vector4.h" />
+    <ClInclude Include="Engine\xnaCollision.h" />
+    <ClInclude Include="Iteration12.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\Camera3D.cpp" />
+    <ClCompile Include="Engine\ConstantBufferData.cpp" />
+    <ClCompile Include="Engine\Debug.cpp" />
+    <ClCompile Include="Engine\DX11Material.cpp" />
+    <ClCompile Include="Engine\DX11RenderCommand.cpp" />
+    <ClCompile Include="Engine\DX11Renderer.cpp" />
+    <ClCompile Include="Engine\Entity.cpp" />
+    <ClCompile Include="Engine\Entity_Prop.cpp" />
+    <ClCompile Include="Engine\Entity_Water.cpp" />
+    <ClCompile Include="Engine\FFT.cpp" />
+    <ClCompile Include="Engine\FFTWater.cpp" />
+    <ClCompile Include="Engine\FPPlayerEntity.cpp" />
+    <ClCompile Include="Engine\FullscreenQuad.cpp" />
+    <ClCompile Include="Engine\GeometryChunk.cpp" />
+    <ClCompile Include="Engine\Light.cpp" />
+    <ClCompile Include="Engine\LightVolume.cpp" />
+    <ClCompile Include="Engine\Material.cpp" />
+    <ClCompile Include="Engine\Math.cpp" />
+    <ClCompile Include="Engine\Matrix3x3.cpp" />
+    <ClCompile Include="Engine\Matrix4x4.cpp" />
+    <ClCompile Include="Engine\Mesh.cpp" />
+    <ClCompile Include="Engine\MeshLoader.cpp" />
+    <ClCompile Include="Engine\PhysicsSystem.cpp" />
+    <ClCompile Include="Engine\Plane.cpp" />
+    <ClCompile Include="Engine\Quaternion.cpp" />
+    <ClCompile Include="Engine\Ray.cpp" />
+    <ClCompile Include="Engine\RenderCommand.cpp" />
+    <ClCompile Include="Engine\RenderDispatcher.cpp" />
+    <ClCompile Include="Engine\Renderer.cpp" />
+    <ClCompile Include="Engine\RenderSystem.cpp" />
+    <ClCompile Include="Engine\Scene.cpp" />
+    <ClCompile Include="Engine\ShaderParamBlock.cpp" />
+    <ClCompile Include="Engine\ShaderParams.cpp" />
+    <ClCompile Include="Engine\Shaderset.cpp" />
+    <ClCompile Include="Engine\Texture2D.cpp" />
+    <ClCompile Include="Engine\Texture3D.cpp" />
+    <ClCompile Include="Engine\TextureCube.cpp" />
+    <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="Engine\Utilities.cpp" />
+    <ClCompile Include="Engine\Vector2.cpp" />
+    <ClCompile Include="Engine\Vector3.cpp" />
+    <ClCompile Include="Engine\Vector4.cpp" />
+    <ClCompile Include="Engine\xnaCollision.cpp" />
+    <ClCompile Include="Iteration12.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Iteration12.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

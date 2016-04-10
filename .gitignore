@@ -45,3 +45,69 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+x64/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+#NUNIT
+*.VisualState.xml
+TestResult.xml
+
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+# Textures, meshes, level data etc. Way too big
+Iteration12/Media
+
+# Compiled objects
+*.obj
+*.exe
+*.ipch
+*.tlog
+*.log
+*.pdb
+*.idb
+*.sdf
+*.opensdf
+*.pch
+*.res
+*.lastbuildstate
+*.manifest
+*.cache
+*.ilk
+*.suo
+*.meta
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+*_i.c
+*_p.c
+*_i.h
+
+*.PIXRun
