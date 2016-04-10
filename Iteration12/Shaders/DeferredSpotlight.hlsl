@@ -67,18 +67,6 @@ PS_INPUT VS( VS_INPUT input )
 float4 PS( PS_INPUT input) : SV_Target
 {
 	float2 ScreenCoord = input.Pos.xy/ScreenDimensions.xy;
-	/*
-	// Get clip space position
-	float z = txGBuffer1.Sample( samLinear, ScreenCoord ).w;
-	float x = ScreenCoord.x * 2 - 1;
-    float y = (1 - ScreenCoord.y) * 2 - 1;
-
-	// Un-project from clip space back into world space
-	float4 ProjectedPos = float4(x, y, z, 1.0f );
-	float4 WSPos = mul(ProjectedPos, InvViewProjection );
-	WSPos.xyz = WSPos.xyz/WSPos.w;
-	WSPos.w = 1.0f;
-	*/
 
 	// Calculate the frustum ray using the view-space position.
     // Negating the Z component only necessary for right-handed coordinates
@@ -122,26 +110,26 @@ float4 PS( PS_INPUT input) : SV_Target
 		// Variables for lighting
 		float4 Cookie = pow(txCookie.Sample( samLinear, SpotlightUV ),GAMMATOLINEAR);
 		float4 Specmap = txGBuffer2.Sample( samLinear, ScreenCoord );
-		float3 normal = txGBuffer1.Sample( samLinear, ScreenCoord ).xyz;
-		float3 lightPos = float3( World._41, World._42, World._43 );
-		float3 lightVec = lightPos.xyz - WSPos.xyz;
-		float3 viewVec = normalize(vEyePos.xyz - WSPos.xyz);
-		float dist_attenuation = (1-length(lightVec)/SpotLightRadius)/(length(lightVec)*length(lightVec)+1); // Inverse squared with a linear limiting factor
+		float3 Normal = txGBuffer1.Sample( samLinear, ScreenCoord ).xyz;
+		float3 LightPos = float3( World._41, World._42, World._43 );
+		float3 LightVec = LightPos.xyz - WSPos.xyz;
+		float3 ViewVec = normalize(vEyePos.xyz - WSPos.xyz);
+		float DistanceAttenuation = (1.0-length(LightVec)/SpotLightRadius)/(length(LightVec)*length(LightVec)+1); // Inverse squared with a linear limiting factor
 
-		float NdotL = saturate( dot( normalize( lightVec ), normal ));
-		float NdotH = saturate(dot(normal, normalize(normalize( lightVec )+viewVec)));
-		float VdotH = saturate(dot(viewVec, normalize(normalize( lightVec )+viewVec)));
-		float NdotV = saturate(dot(viewVec, normal));
+		float NdotL = saturate( dot( normalize( LightVec ), Normal ));
+		float NdotH = saturate(dot(Normal, normalize(normalize( LightVec )+ViewVec)));
+		float VdotH = saturate(dot(ViewVec, normalize(normalize( LightVec )+ViewVec)));
+		float NdotV = saturate(dot(ViewVec, Normal));
 
 		float3 specular = D_GGX( 1.0f-Specmap.w, NdotH ) * F_Schlick(vSpotLightColor.xyzw*Specmap.xyz, NdotV ) * Vis_Implicit();//Vis_Smith( 1.0f-Specmap.w, NdotV, NdotL );
-		//float3 diffuse = Diffuse_Lambert((pow(txGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vColor.xyz);
 		
+		//float3 diffuse = Diffuse_Lambert((pow(txGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vSpotLightColor.xyz);
 		//float3 diffuse = Diffuse_Burley( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ).xyz,GAMMATOLINEAR))*vSpotLightColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
-		//float3 diffuse = Diffuse_OrenNayar( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
+		//float3 diffuse = Diffuse_OrenNayar( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vSpotLightColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
 		float3 diffuse = Diffuse_Lambert( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ).xyz,GAMMATOLINEAR))*vSpotLightColor.xyz );
 		
-		diffuse = max(diffuse*NdotL*dist_attenuation,0.0f) * Cookie * shadowing;
-		specular = max(specular*NdotL*dist_attenuation,0.0f) * Cookie * shadowing;
+		diffuse = max(diffuse*NdotL*DistanceAttenuation,0.0f) * Cookie * shadowing;
+		specular = max(specular*NdotL*DistanceAttenuation,0.0f) * Cookie * shadowing;
 		
 		return float4(diffuse,0.0f) + float4(specular,0.0f);
 	}

@@ -45,19 +45,10 @@ void Renderer::setMesh( Mesh* pMesh )
 			for (int multipass = 0; multipass < 4; multipass++)
 			{
 				D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
-				//submesh->getMaterial()->bind( this, RC );
 				RC->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
 				m_pSubmeshRenderCommands.push_back(std::vector<D3D11RenderCommand_Draw*>());
 				m_pSubmeshRenderCommands[i].push_back( RC );
 			}
-			/*
-			for (int ii=0; ii<10; ii++)
-			{
-				D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
-				//submesh->getMaterial()->bind( this, RC );
-				RC->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
-				m_pSubmeshRenderCommands[i].push_back( RC );
-			}*/
 
 			// Shadowmap rendering
 			D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
@@ -150,8 +141,8 @@ void Renderer::renderShadowmap( Transform* pTransform, Camera3D* pShadowCamera )
 			{
 				D3D11RenderCommand_Draw* rc = m_pShadowmapRenderCommands[i];
 
-				rc->shaderParams()->assign( "World", 0, &XMMatrixTranspose(pTransform->getXMMatrix()) );
-				rc->shaderParams()->assign( "SpotLightViewProjection", 0, &pShadowCamera->getViewProjectionMatrix().transpose().intoXMFLOAT4X4() );
+				rc->shaderParams()->assign( "World", 0, &pTransform->getMatrix().transpose() );
+				rc->shaderParams()->assign( "SpotLightViewProjection", 0, &pShadowCamera->getViewProjectionMatrix().transpose() );
 			
 				m_pRenderSystem->submitThreaded( rc ); 
 				m_pRenderSystem->drawcalls++;
@@ -184,7 +175,6 @@ void Renderer::renderOBB( Transform* pTransform )
 			rc->shaderParams()->assign( "World", 0, &XMMatrixTranspose(transform) );
 			rc->shaderParams()->assign( "vMeshColor", 0, &XMFLOAT4( 0.1f, 0.1f, 0.2f, 0.0f ) );
 
-			//D3D11RenderCommand_Draw* rcsubmitted = new D3D11RenderCommand_Draw( **it );*/
 			m_pRenderSystem->submitThreaded( rc ); 
 		}
 	}

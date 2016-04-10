@@ -3,7 +3,7 @@
 #include <vector>
 #include "Prerequisites.h"
 
-// Data for a constant buffer
+// Containter storing aligned data for a constant buffer
 class ConstantBufferData
 {
 public:

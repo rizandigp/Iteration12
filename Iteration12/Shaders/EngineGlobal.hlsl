@@ -10,7 +10,7 @@ SamplerState samLinearClamp : register( s3 );
 
 #define PI 3.1415926
 #define ONEDIVPI 1.0/3.1415926
-#define SHADOWMAP_BIAS 0.05f // In world units
+#define SHADOWMAP_BIAS 0.07f // In world units
 #define GAMMATOLINEAR 2.2f
 #define LINEARTOGAMMA 1/2.2f
 #define DEGAMMA GAMMATOLINEAR
@@ -70,7 +70,8 @@ float3 ReinhardTonemap( float3 color )
 }
 
 // Filmic curve. Optimized formula by Jim Hejl and Richard Burgess-Dawson.
-// Looks really good, with nice contrast and crisp colors
+// Looks really good in well-lit scenes, with nice contrast and crisp colors.
+// We don't need to apply a gamma curve here
 float3 FilmicTonemap( float3 color )
 {
 	//color *= 16.0f;	// Hardcoded Exposure Adjustment

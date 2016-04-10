@@ -62,7 +62,7 @@ PS_INPUT VS( VS_INPUT input )
     PS_INPUT output = (PS_INPUT)0;
     output.Pos = input.Pos;
 	
-	float farplane = tan( FovAndAspect.x * 0.5f ) ;
+	float farplane = tan( FovAndAspect.x * 0.5f );
 	output.VSPos = float4(input.Pos.x * farplane * FovAndAspect.y, input.Pos.y * farplane, 1.0f, 1.0f);
  
     return output;
@@ -77,14 +77,14 @@ float4 PS( PS_INPUT input) : SV_Target
 	float2 TexCoord = input.Pos.xy/ScreenDimensions.xy;
 	
 	// Get this pixel's depth
-	float depth = gbuffer1.Sample( samLinear, TexCoord*2.0f ).w;
+	float depth = gbuffer1.Sample( samLinear, TexCoord*4.0f ).w;
 
 	// Calculate the frustum ray using the view-space position.
     // Negating the Z component only necessary for right-handed coordinates
     float4 vFrustumRayVS = input.VSPos * (fFarPlane/input.VSPos.z);
 
 	// Calculate view space position from linear depth
-	float4 gbuff1 = gbuffer1.Sample( samLinear, TexCoord*2.0f);
+	float4 gbuff1 = gbuffer1.Sample( samLinear, TexCoord*4.0f);
     float4 VSPos = gbuff1.w * vFrustumRayVS;
 	VSPos.w = 1.0f;
 
@@ -99,13 +99,14 @@ float4 PS( PS_INPUT input) : SV_Target
 	float3 bitangent = cross(normal, tangent);
 	float3x3 tbn = float3x3(tangent, bitangent, normal);
 	
+	// Rotation matrix to rotate the sample kernel in along z
 	float3 _1 = float3(rvec.x, -rvec.y, 0.0);
 	float3 _2 = float3(rvec.y, rvec.x, 0.0);
 	float3 _3 = float3(0.0, 0.0, 1.0);
 	float3x3 rotation = float3x3(_1, _2, _3);
 
 	// Next we loop through the sample kernel, sample the depth buffer and accumulate the occlusion factor
-	float Radius = 2.0f;
+	float Radius = 3.0f;
 	float occlusion = 0.0f;
 
 	for (int i = 0; i < KERNELSIZE; ++i) 

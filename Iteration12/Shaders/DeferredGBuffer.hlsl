@@ -77,26 +77,26 @@ PS_INPUT VS( VS_INPUT input )
 //--------------------------------------------------------------------------------------
 PSOut PS( PS_INPUT input) : SV_Target
 {
-	matrix < float,3,3 > matTBN = {	input.Tangent.x,	input.Tangent.y,	input.Tangent.z,		
-					input.Bitangent.x,	input.Bitangent.y,	input.Bitangent.z,		
-					input.Normal.x,		input.Normal.y,		input.Normal.z,			
-					}; 
-	float3 normalmap = ( txNormal.Sample( samLinear, input.Tex )*2.0f - float3( 1.0f, 1.0f, 1.0f ) );
-	normalmap = normalize( normalmap );		// somewhat helps with compression artefacts
+	matrix < float,3,3 > TBN = {	
+								input.Tangent.x,	input.Tangent.y,	input.Tangent.z,		
+								input.Bitangent.x,	input.Bitangent.y,	input.Bitangent.z,		
+								input.Normal.x,		input.Normal.y,		input.Normal.z,			
+								};
+								
+	float3 Normalmap = ( txNormal.Sample( samLinear, input.Tex )*2.0f - float3( 1.0f, 1.0f, 1.0f ) );
+	Normalmap = normalize( Normalmap );		// somewhat helps with compression artefacts
 
-	float3 normals = mul( normalmap , matTBN );
+	float3 Normal = mul( Normalmap , TBN );
 	
-	float3 viewvector = normalize(vEyePos.xyz - input.WSPos.xyz);
-	//return input.Normal.xyzz;
-	//return ( txDiffuse.Sample( samLinear, input.Tex ) *l_diffuse.xyzz + l_specular.xyzz );
+	float3 ViewVector = normalize(vEyePos.xyz - input.WSPos.xyz);
 
 	PSOut output;
-	output.backbuffer = 0.0f;//0.65f*txDiffuse.Sample( samLinear, input.Tex )*pow( 1.0f - saturate( dot(viewvector, normals ) ), 5.0f );
+	output.backbuffer = 0.0f;//0.65f*txDiffuse.Sample( samLinear, input.Tex )*pow( 1.0f - saturate( dot(ViewVector, Normal ) ), 5.0f );
 	output.gbuffer0.xyz = txDiffuse.Sample( samLinear, input.Tex ).xyz;
-	output.gbuffer1.xyz = input.Normal.xyz;
+	output.gbuffer1.xyz = Normal;//input.Normal.xyz;
 	output.gbuffer1.w = -input.VSPos.z/fFarPlane; // View space linear depth
 	output.gbuffer2.xyz = txSpecular.Sample( samLinear, input.Tex ).g*SpecularParams.x;
-	output.gbuffer2.w = txSpecular.Sample( samLinear, input.Tex ).r*0.95f;
+	output.gbuffer2.w = pow(txSpecular.Sample( samLinear, input.Tex ).r,0.7f)*0.95f;
 
 	return output;
 }

@@ -11,7 +11,8 @@ class ShaderParams
 public:
 	void initialize( Shaderset* shader );
 
-	// TODO : different matrix types
+	// TODO :	-different matrix types
+	//			-proper function names
 	void setParam( const std::string& paramName, const Matrix4x4* matrix );
 	void setParam( const std::string& paramName, const Vector4* vector );
 	void setParam( const std::string& paramName, const XMMATRIX* pMatrixParam );		

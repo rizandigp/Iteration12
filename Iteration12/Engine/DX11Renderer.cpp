@@ -26,7 +26,6 @@ void DX11Renderer::setMesh( Mesh* pMesh )
 		// Reset render data
 		m_SubmeshRenderData.clear();
 
-		// Main render commands
 		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
 		{
 			SubmeshRenderData renderData;
@@ -37,6 +36,7 @@ void DX11Renderer::setMesh( Mesh* pMesh )
 
 			for (int multipass = 0; multipass < 4; multipass++)
 			{
+				// Main render commands
 				DX11RenderCommand_Draw* command = new DX11RenderCommand_Draw();
 				command->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
 				m_pSubmeshRenderCommands.push_back(std::vector<DX11RenderCommand_Draw*>());
@@ -183,7 +183,7 @@ void DX11Renderer::renderOBB( Transform* pTransform )
 
 				params.setParam( "ViewProjection", 0, &m_pRenderSystem->getCamera()->getViewMatrix().transpose() );
 				params.setParam( "World", 0, &XMMatrixTranspose(transform) );
-				params.setParam( "vMeshColor", 0, &XMFLOAT4( 0.1f, 0.1f, 0.2f, 0.0f ) );
+				params.setParam( "vMeshColor", 0, &Vector4( 0.1f, 0.1f, 0.2f, 0.0f ) );
 
 				command->setShaderParams( &params );
 

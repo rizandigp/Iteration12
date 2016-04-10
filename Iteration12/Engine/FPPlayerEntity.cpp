@@ -32,7 +32,7 @@ FPPlayerEntity::FPPlayerEntity(RenderSystem* pRenderSystem)
 	m_pCamera->setPosition( transform()->getPosition() );
 	m_pCamera->setLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
 	m_pCamera->setUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
-	m_pCamera->setProjection( XM_PI*0.35f, width / (float)height, 0.1f, 5000.0f );
+	m_pCamera->setProjection( XM_PI*0.35f, width / (float)height, 0.1f, 2000.0f );
 	m_pCamera->update( 0.0f );
 }
 

@@ -13,7 +13,7 @@ void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	// G-buffers
 	RenderSystemConfig config = m_pRenderSystem->getConfig();
 	m_pGBuffer[0] = m_pRenderSystem->createTexture( config.Height, config.Width, R8G8B8A8_UNORM );
-	m_pGBuffer[1] = m_pRenderSystem->createTexture( config.Height, config.Width, R32G32B32A32_FLOAT );
+	m_pGBuffer[1] = m_pRenderSystem->createTexture( config.Height, config.Width, R16G16B16A16_FLOAT );
 	m_pGBuffer[2] = m_pRenderSystem->createTexture( config.Height, config.Width, R8G8B8A8_UNORM );
 
 	// HDR render target
@@ -44,10 +44,10 @@ void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	Texture2D *noiseTexture = m_pRenderSystem->createTexture( &noise, R32G32_FLOAT );
 
 	// Half-res gbuffer[1] (normals and depth)
-	m_pHalfRes = m_pRenderSystem->createTexture( config.Height/2, config.Width/2, R32G32B32A32_FLOAT );
+	m_pHalfRes = m_pRenderSystem->createTexture( config.Height/4, config.Width/4, R16G16B16A16_FLOAT );
 
 	// Half-res SSAO buffer
-	m_pSSAOBuffer = m_pRenderSystem->createTexture( config.Height/2, config.Width/2, R16_UNORM );
+	m_pSSAOBuffer = m_pRenderSystem->createTexture( config.Height/4, config.Width/4, R16_UNORM );
 
 	m_pSSAOPass = new FullscreenQuad( pRendering );
 	m_pSSAOPass->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/SSAO.hlsl", "VS", "PS", SM_5_0 ) );
@@ -97,7 +97,7 @@ void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	//m_pGI->setTexture( "txGBuffer2", m_pGBuffer[2] );
 
 	// Shadowmaps
-	m_pShadowmap[0] = m_pRenderSystem->createTexture( 256*8, 256*8, R32_FLOAT );/*
+	m_pShadowmap[0] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT );/*
 	m_pShadowmap[1] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT ); 
 	m_pShadowmap[2] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT );
 	m_pShadowmap[3] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT );
@@ -134,16 +134,6 @@ void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	skybox->transform()->setScale( 2000.0f, 2000.0f, 2000.0f );
 	skybox->transform()->setPosition( 0.0f, 0.0f, 0.0f );
 	addEntity( skybox );
-
-	// Projector
-	Camera3D* projector = new Camera3D();
-	projector->setPosition( Vector3(10.0f, 10.0f, 5.0f) );
-	projector->setLookAt( Vector3( 10.0f, 15.0f, 0.0f ) );
-	projector->setUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
-	projector->setProjection( XM_PI*0.35f, 1 / (float)1, 0.1f, 1000.0f );
-	projector->update( 0.0f );
-
-	//m_pWater->setGridProjectorCamera( projector );
 
 	loadMeshes();
 	loadPrefabs();

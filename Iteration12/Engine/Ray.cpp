@@ -12,3 +12,8 @@ Ray Ray::transformedCopy( const Matrix4x4& mat ) const
 	return Ray( Vector3(transformedOrigin.x, transformedOrigin.y, transformedOrigin.z), 
 				Vector3(transformedDirection.x, transformedDirection.y, transformedDirection.z).normalisedCopy() );
 }
+
+void Ray::transform( const Matrix4x4& mat )
+{
+	(*this) = transformedCopy( mat );
+}
