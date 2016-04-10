@@ -92,6 +92,10 @@ public:
 	virtual void bindConstantBufferPS( UINT i, ConstantBufferData* pData )=0;
 	// Set output HWND. This will reinitialize parts of the renderer.
 	virtual void setOutputWindow( HWND hWnd, UINT width, UINT height )=0;
+	// Resize swapchain target
+	virtual void resizeTarget( UINT height, UINT width )=0;
+	// Resize backbuffer
+	virtual void resizeBackbuffer( UINT height, UINT width )=0;
 	// Set a single render target.
 	virtual void setRenderTarget( Texture2D* pRenderTarget )=0;
 	// Set multiple render targets (MRTs).
@@ -163,6 +167,8 @@ public:
 	void bindConstantBufferVS( UINT i, ConstantBufferData* pData );
 	void bindConstantBufferPS( UINT i, ConstantBufferData* pData );
 	void setOutputWindow( HWND hWnd, UINT width, UINT height );
+	void resizeTarget( UINT height, UINT width );
+	void resizeBackbuffer( UINT height, UINT width );
 	void setRenderTarget( Texture2D* pRenderTarget );
 	void setMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray );
 	void setBackbufferAsRenderTarget();
@@ -253,6 +259,9 @@ protected:
 
 
 // Helpers
+DXGI_FORMAT toDXGIFormat( TEXTURE_FORMAT format );
+TEXTURE_FORMAT toNGTextureFormat( DXGI_FORMAT format );
+
 HRESULT CompileShaderFromFile( WCHAR* szFileName, DWORD flags, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut );
 
 //--------------------------------------------------------------------------------------

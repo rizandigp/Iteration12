@@ -453,6 +453,7 @@ Shaderset* RenderSystem::loadShaderset( std::wstring filename, std::string verte
 		desc.pixelShader = pixelShader;
 		desc.sm = sm;
 		desc.debug = debug;
+		if (macros!=NULL) desc.macros = *macros;
 
 		// Find matching shaderset in the cache
 		std::vector< std::pair<ShadersetDescription, Shaderset*> >::iterator it = std::find_if( m_pShadersets.begin(), m_pShadersets.end(), FindFirst<ShadersetDescription, Shaderset*>(desc) );

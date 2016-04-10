@@ -105,7 +105,7 @@ HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig 
 	if ( creationConfig.DebugDevice )
 		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 
-	// Create DX10 device
+	// Create DX11 device
     for( UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++ )
     {
         m_driverType = driverTypes[driverTypeIndex];
@@ -1204,6 +1204,7 @@ Texture2D*	DX11RenderDispatcher::createTextureFromFile( std::wstring filename )
 {
 	ID3D11Device *pDevice = getDevice();
 	ID3D11ShaderResourceView *pSRV = NULL;
+
 	// Load the Texture
 	HRESULT hr = D3DX11CreateShaderResourceViewFromFile( pDevice, filename.c_str(), NULL, NULL, &pSRV, NULL );
     if( FAILED( hr ) )
@@ -1226,7 +1227,10 @@ Texture2D*	DX11RenderDispatcher::createTextureFromFile( std::wstring filename )
 	// Create the texture
 	DX11Texture2D* ptex = new DX11Texture2D();
 	ptex->setShaderResourceView( pSRV );
+	ptex->setResource( (ID3D11Texture2D*)pResource );
 	ptex->setDimensions( desc.Height, desc.Width );
+	ptex->setMipLevels( desc.MipLevels );
+	ptex->setFormat( toNGTextureFormat(desc.Format) );	
 	return ptex;
 }
 
@@ -1307,6 +1311,133 @@ void DX11RenderDispatcher::setMultipleRenderTargets( UINT numRenderTargets, Text
 void DX11RenderDispatcher::resolveMSAA( Texture2D* pDestination, Texture2D* pSource )
 {
 	m_pImmediateContext->ResolveSubresource( ((DX11Texture2D*)pDestination)->getResource(), D3D11CalcSubresource(0,0,1), ((DX11Texture2D*)pDestination)->getResource(), 0, (DXGI_FORMAT)((DX11Texture2D*)pDestination)->getFormat() );
+}
+
+void DX11RenderDispatcher::resizeTarget( UINT height, UINT width )
+{
+	DXGI_MODE_DESC desc;
+	desc.Format = DXGI_FORMAT_UNKNOWN;
+	desc.Height = height;
+	desc.Width = width;
+	desc.RefreshRate.Numerator = 1;
+	desc.RefreshRate.Denominator = m_Config.RefreshRate;
+	desc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	desc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+
+	HRESULT hr = m_pSwapChain->ResizeTarget( &desc );
+}
+
+void DX11RenderDispatcher::resizeBackbuffer( UINT height, UINT width )
+{
+	// TODO : size check
+
+	// Must release all references to the swap chain's buffers
+	//m_pd3dBackbuffer->Release();
+	m_pRenderTargetView->Release();
+	m_pDepthStencil->Release();
+	m_pDepthStencilView->Release();
+
+	HRESULT hr = m_pSwapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, NULL);
+	// Auto resize to the new client area
+	//HRESULT hr = m_pSwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, NULL);
+
+	// Recreate the render target view
+    ID3D11Texture2D* pBackBuffer = NULL;
+    hr = m_pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
+    hr = m_pDevice->CreateRenderTargetView( pBackBuffer, NULL, &m_pRenderTargetView );
+
+	// Get actual size of backbuffer
+	D3D11_TEXTURE2D_DESC desc;
+	pBackBuffer->GetDesc( &desc );
+	m_Width = desc.Width;
+	m_Height = desc.Height;
+
+   	// Determine antialiasing sample count & sample quality
+	UINT AACount, AAQuality;
+	switch( m_Config.BackbufferMultisampling )
+	{
+	case MSAA_NONE :
+		AACount = 1;
+		AAQuality = 0; break;
+	case MSAA_2X :
+		AACount = 2;
+		AAQuality = 0; break;
+	case MSAA_4X :
+		AACount = 4;
+		AAQuality = 0; break;
+	case MSAA_8X :
+		AACount = 8;
+		AAQuality = 0; break;
+	case MSAA_16X :
+		AACount = 16;
+		AAQuality = 0; break;
+	case CSAA_8X :
+		AACount = 8;
+		AAQuality = 4; break;
+	case CSAA_8XQ :
+		AACount = 8;
+		AAQuality = 8; break;
+	case CSAA_16X :
+		AACount = 16;
+		AAQuality = 4; break;
+	case CSAA_16XQ :
+		AACount = 16;
+		AAQuality = 8; break;
+	default :
+		AACount = 1;
+		AAQuality = 0;
+	}
+	
+	// Recreate depth stencil texture
+    D3D11_TEXTURE2D_DESC descDepth;
+    ZeroMemory( &descDepth, sizeof(descDepth) );
+    descDepth.Width = m_Width;
+    descDepth.Height = m_Height;
+    descDepth.MipLevels = 1;
+    descDepth.ArraySize = 1;
+    descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    descDepth.SampleDesc.Count = AACount;
+    descDepth.SampleDesc.Quality = AAQuality;
+    descDepth.Usage = D3D11_USAGE_DEFAULT;
+    descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    descDepth.CPUAccessFlags = 0;
+    descDepth.MiscFlags = 0;
+    hr = m_pDevice->CreateTexture2D( &descDepth, NULL, &m_pDepthStencil );
+    if( FAILED( hr ) )
+	{
+		DEBUG_OUTPUT(__FUNCTION__);
+		DEBUG_OUTPUT(" : failed creating depth stencil.\n");
+        return;
+	}
+
+    // Recreate the depth stencil view
+    D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+    ZeroMemory( &descDSV, sizeof(descDSV) );
+    descDSV.Format = descDepth.Format;
+    descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	if( m_Config.BackbufferMultisampling!= MSAA_NONE )
+		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+    descDSV.Texture2D.MipSlice = 0;
+    hr = m_pDevice->CreateDepthStencilView( m_pDepthStencil, &descDSV, &m_pDepthStencilView );
+	if( FAILED( hr ) )
+	{
+		DEBUG_OUTPUT(__FUNCTION__);
+		DEBUG_OUTPUT(" : failed creating depth stencil view.\n");
+        return;
+	}
+
+	DX11Texture2D *pBackbufferTexture = new DX11Texture2D();
+	pBackbufferTexture->setDimensions( m_Height, m_Width );
+	pBackbufferTexture->setFormat( R8G8B8A8_UNORM );
+	pBackbufferTexture->setMipLevels( 1 );
+	pBackbufferTexture->setRenderTargetView( m_pRenderTargetView );
+	pBackbufferTexture->setDepthStencilView( m_pDepthStencilView );
+	setBackbufferTexture( pBackbufferTexture );
+	
+	pBackBuffer->Release();
+
+	// Update render target
+	setBackbufferAsRenderTarget();
 }
 
 Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data, size_t pitch, size_t dataSize )
@@ -1561,10 +1692,21 @@ TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
 }
 
 
-/*
+
 //
 // Helper functions
 //
+DXGI_FORMAT toDXGIFormat( TEXTURE_FORMAT format )
+{
+	return (DXGI_FORMAT)format; // It's exactly the same lol
+}
+
+TEXTURE_FORMAT toNGTextureFormat( DXGI_FORMAT format )
+{
+	return (TEXTURE_FORMAT)format;
+}
+
+/*
 HRESULT CompileShaderFromFile( WCHAR* szFileName, DWORD flags, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut )
 {
     HRESULT hr = S_OK;

@@ -75,6 +75,7 @@ protected:
 	FullscreenQuad* m_pTonemappingPass;
 	FullscreenQuad* m_pSunlight;
 	FullscreenQuad* m_pGI;
+	Shaderset*	m_pTonemappingShaderset[4];	
 
 	float m_DeltaTime, m_Time;
 	hkLoader m_HavokLoader;

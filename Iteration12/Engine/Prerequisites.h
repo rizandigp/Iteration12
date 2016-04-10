@@ -98,3 +98,7 @@ class Entity_Water;
 #ifndef SAFE_DELETE
 #define SAFE_DELETE( obj )	 { if(obj); delete obj; };
 #endif
+
+#ifndef PUREVIRTUAL
+#define PUREVIRTUAL = 0
+#endif

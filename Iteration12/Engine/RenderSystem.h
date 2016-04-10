@@ -53,26 +53,6 @@ protected:
 	std::vector<RenderCommandBlock> m_Blocks;
 };
 
-struct ShadersetDescription
-{
-	std::wstring filename;
-	std::string vertexShader;
-	std::string pixelShader;
-	SHADERMODEL sm;
-	bool debug;
-
-	inline bool ShadersetDescription::operator== (const ShadersetDescription& other) const
-	{
-		if (filename==other.filename)
-			if (vertexShader==other.vertexShader)
-				if (pixelShader==other.pixelShader)
-					if (sm==other.sm)
-						if (debug==other.debug)
-							return true;
-		return false;
-	}
-};
-
 struct RenderSystemConfig
 {
 	GraphicsAPI	api;

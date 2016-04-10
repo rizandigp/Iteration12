@@ -61,14 +61,27 @@ void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	m_pSSAOCombinePass->setTexture( "gbuffer1", m_pGBuffer[1] );
 	m_pSSAOCombinePass->setTexture( "texSSAO", m_pSSAOBuffer );
 
-	m_pTonemappingPass = new FullscreenQuad( pRendering );
-	m_pTonemappingPass->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0 ) );
+		// Compile tonemapping shader with diferrent settings
+	m_pTonemappingShaderset[0] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0  );
+
+	std::vector<ShaderMacro> macros;
+	macros.push_back( ShaderMacro("TONEMAPPING_OPERATOR", "1") );
+	m_pTonemappingShaderset[1] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
+
+	macros[0].Name = "TONEMAPPING_OPERATOR";
+	macros[0].Definition = "2";
+	m_pTonemappingShaderset[2] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
+
+	macros[0].Name = "TONEMAPPING_OPERATOR";
+	macros[0].Definition = "3";
+	m_pTonemappingShaderset[3] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
+
+	m_pTonemappingPass = new FullscreenQuad( m_pRenderSystem );
+	m_pTonemappingPass->setShaderset( m_pTonemappingShaderset[0] );
 	m_pTonemappingPass->setTexture( "texSource", m_pHDRRenderTarget );
-	{
-		ShaderParamBlock shaderParams;
-		shaderParams.assign( "fExposure", 0, 1.0f );
-		m_pTonemappingPass->setShaderParams(shaderParams);
-	}
+	ShaderParamBlock shaderParams;
+	shaderParams.assign( "fExposure", 0, 1.0f );
+	m_pTonemappingPass->setShaderParams(shaderParams);
 
 	m_pSunlight = new FullscreenQuad( pRendering );
 	m_pSunlight->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/DeferredSunlight.hlsl", "VS", "PS", SM_5_0 ) );

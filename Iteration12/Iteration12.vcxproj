@@ -102,6 +102,7 @@
     <None Include="Shaders\DiffFlat.hlsl" />
     <None Include="Shaders\Downsample.hlsl" />
     <None Include="Shaders\EngineGlobal.hlsl" />
+    <None Include="Shaders\FXAA3_11.hlsl" />
     <None Include="Shaders\GI.hlsl" />
     <None Include="Shaders\LightingCommon.hlsl" />
     <None Include="Shaders\OneColor.hlsl" />
