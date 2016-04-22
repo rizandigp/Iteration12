@@ -13,20 +13,20 @@ class Entity_StaticProp : public Entity
 {
 public:
 	Entity_StaticProp(RenderSystem* ptr, Mesh* pmesh);
-	void setRenderSystem( RenderSystem* ptr );
+	void SetRenderSystem( RenderSystem* ptr );
 
-	void setMesh( Mesh* ptr );
-	Mesh* getMesh()				{ return m_pMesh; };
+	void SetMesh( Mesh* ptr );
+	Mesh* GetMesh()				{ return m_pMesh; };
 
-	void update( float deltaTime );
-	void clearLights();
-	void cull( XNA::Frustum* frustum );
-	void cullLight( PointLight* light );
-	void cullLight( SpotLight* light );
-	void render();
-	void renderShadowmap( Camera3D* pShadowCamera );
-	void renderRSM( Camera3D* pShadowCamera, SpotLight* pLightSource );
-	void renderBoundingBox();
+	void Update( float deltaTime );
+	void ClearLights();
+	void Cull( XNA::Frustum* frustum );
+	void CullLight( PointLight* light );
+	void CullLight( SpotLight* light );
+	void Render();
+	void RenderShadowmap( Camera3D* pShadowCamera );
+	void RenderRSM( Camera3D* pShadowCamera, SpotLight* pLightSource );
+	void RenderBoundingBox();
 
 protected:
 	Mesh* m_pMesh;
@@ -76,11 +76,11 @@ class Entity_Prop : public Entity_StaticProp
 public:
 	Entity_Prop(RenderSystem* pRender, PhysicsSystem* pPhysics, Mesh* pMesh, hkpRigidBody* pRigidBody, Transform rigidBodyRelative = Transform());
 	Entity_Prop(Entity_Prop& other);
-	virtual void setPhysicsSystem( PhysicsSystem* ptr )		{ m_pPhysicsSystem = ptr; };
-	PhysicsSystem* getPhysicsSystem()						{ return m_pPhysicsSystem; };
+	virtual void SetPhysicsSystem( PhysicsSystem* ptr )		{ m_pPhysicsSystem = ptr; };
+	PhysicsSystem* GetPhysicsSystem()						{ return m_pPhysicsSystem; };
 
-	void onAddToScene( Scene* ptr );
-	void update( float deltaTime );
+	void OnAddToScene( Scene* ptr );
+	void Update( float deltaTime );
 
 public:
 	hkpRigidBody* m_pRigidBody;

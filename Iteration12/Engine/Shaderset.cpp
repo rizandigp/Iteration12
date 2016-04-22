@@ -29,10 +29,10 @@ D3D11Shaderset::~D3D11Shaderset()
 	SAFE_RELEASE( m_pInputSignature );
 }
 
-void D3D11Shaderset::bind( RenderDispatcher* pDispatcher )
+void D3D11Shaderset::Bind( RenderDispatcher* pDispatcher )
 {
 	DX11RenderDispatcher* pd3d11Dispatcher = dynamic_cast<DX11RenderDispatcher*>(pDispatcher);
-	pd3d11Dispatcher->setActiveShaderset( this );
-	pd3d11Dispatcher->getImmediateContext()->VSSetShader( m_pVertexShader, NULL, 0 );
-	pd3d11Dispatcher->getImmediateContext()->PSSetShader( m_pPixelShader, NULL, 0 );
+	pd3d11Dispatcher->SetActiveShaderset( this );
+	pd3d11Dispatcher->GetImmediateContext()->VSSetShader( m_pVertexShader, NULL, 0 );
+	pd3d11Dispatcher->GetImmediateContext()->PSSetShader( m_pPixelShader, NULL, 0 );
 }

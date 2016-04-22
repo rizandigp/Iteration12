@@ -127,7 +127,7 @@ INT IntersectFrustumFrustum( const Frustum* pVolumeA, const Frustum* pVolumeB );
 
 //-----------------------------------------------------------------------------
 // Test vs six planes (usually forming a frustum) intersection routines.
-// The intended use for these routines is for fast culling to a view frustum.  
+// The intended use for these routines is for fast Culling to a view frustum.  
 // When the volume being tested against a view frustum is small relative to the
 // view frustum it is usually either inside all six planes of the frustum or 
 // outside one of the planes of the frustum. If neither of these cases is true

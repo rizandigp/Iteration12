@@ -27,36 +27,36 @@ void* RenderCommand::operator new( size_t, void* ptr )
    return ptr;
 }*/
 
-void GenericRenderCommand::execute( RenderDispatcher *pDispatcher )
+void GenericRenderCommand::Execute( RenderDispatcher *pDispatcher )
 {
 	if (!m_pRenderTargetTexture)
 	{
-		m_pShaderset->bind( pDispatcher );
-		pDispatcher->bindShaderParams( &m_ShaderParamBlock );
+		m_pShaderset->Bind( pDispatcher );
+		pDispatcher->BindShaderParams( &m_ShaderParamBlock );
 
-		for ( std::vector< std::pair< std::string, Texture2D* > >::iterator it = getTextures()->begin(); it!=getTextures()->end(); ++it )
+		for ( std::vector< std::pair< std::string, Texture2D* > >::iterator it = GetTextures()->begin(); it!=GetTextures()->end(); ++it )
 		{
 			if ( it->second )
-			it->second->bind( it->first, pDispatcher );
+				it->second->Bind( it->first, pDispatcher );
 		}
 
-		m_pGeometryChunk->bind( pDispatcher );
+		m_pGeometryChunk->Bind( pDispatcher );
 	}
 	else
 	{
-			static_cast<DX11RenderDispatcher*>(pDispatcher)->setRenderTarget( getRenderTargetTexture() );
+			static_cast<DX11RenderDispatcher*>(pDispatcher)->SetRenderTarget( GetRenderTargetTexture() );
 			D3D11_VIEWPORT vp;
-			vp.Width = getRenderTargetTexture()->getWidth();
-			vp.Height = getRenderTargetTexture()->getHeight();
+			vp.Width = GetRenderTargetTexture()->GetWidth();
+			vp.Height = GetRenderTargetTexture()->GetHeight();
 			vp.MinDepth = 0.0f;
 			vp.MaxDepth = 1.0f;
 			vp.TopLeftX = 0;
 			vp.TopLeftY = 0;
-			static_cast<DX11RenderDispatcher*>(pDispatcher)->getImmediateContext()->RSSetViewports( 1, &vp );
+			static_cast<DX11RenderDispatcher*>(pDispatcher)->GetImmediateContext()->RSSetViewports( 1, &vp );
 	}
 }
 
-void D3D11RenderCommand_Draw::execute( RenderDispatcher *pDispatcher )
+void D3D11RenderCommand_Draw::Execute( RenderDispatcher *pDispatcher )
 {
 	//pDispatcher->drawcalls++;
 	
@@ -67,44 +67,44 @@ void D3D11RenderCommand_Draw::execute( RenderDispatcher *pDispatcher )
 	//pDispatcher->drawcalls += 1;
 	if (pDispatcher->drawcalls==0)
 	{
-		pDispatcher->t_starve = pDispatcher->timer2.getMiliseconds();
+		pDispatcher->t_starve = pDispatcher->timer2.GetMiliseconds();
 	}*/
 	
-	m_pShaderset->bind( pDispatcher );
+	m_pShaderset->Bind( pDispatcher );
 	Timer timer;
-	pDispatcher->bindShaderParams( &m_ShaderParamBlock );
-	pd3d11Dispatcher->t_bindparams += timer.getMiliseconds();
-	m_pGeometryChunk->bind( pDispatcher );
+	pDispatcher->BindShaderParams( &m_ShaderParamBlock );
+	pd3d11Dispatcher->t_bindparams += timer.GetMiliseconds();
+	m_pGeometryChunk->Bind( pDispatcher );
 
 	
 	
-	timer.start();
-	for ( std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = getTextures()->begin(); it!=getTextures()->end(); ++it )
+	timer.Start();
+	for ( std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = GetTextures()->begin(); it!=GetTextures()->end(); ++it )
 	{
 		if ( it->second )
-		it->second->bind( it->first, pDispatcher );
+		it->second->Bind( it->first, pDispatcher );
 	}
-	pd3d11Dispatcher->t_bindtextures += timer.getMiliseconds();
+	pd3d11Dispatcher->t_bindtextures += timer.GetMiliseconds();
 
-	timer.start();
-	pd3d11Dispatcher->getImmediateContext()->RSSetState( m_pRasterizerState );
-	pd3d11Dispatcher->getImmediateContext()->OMSetDepthStencilState( m_pDepthStencilState, 0 );
-	pd3d11Dispatcher->getImmediateContext()->OMSetBlendState( m_pBlendState, NULL, 0xffffffff );
-	pd3d11Dispatcher->getImmediateContext()->DrawIndexed( m_pGeometryChunk->getNumberOfVerts(), 0, 0 );
-	pd3d11Dispatcher->t_drawcalls += timer.getMiliseconds();
+	timer.Start();
+	pd3d11Dispatcher->GetImmediateContext()->RSSetState( m_pRasterizerState );
+	pd3d11Dispatcher->GetImmediateContext()->OMSetDepthStencilState( m_pDepthStencilState, 0 );
+	pd3d11Dispatcher->GetImmediateContext()->OMSetBlendState( m_pBlendState, NULL, 0xffffffff );
+	pd3d11Dispatcher->GetImmediateContext()->DrawIndexed( m_pGeometryChunk->GetNumberOfVerts(), 0, 0 );
+	pd3d11Dispatcher->t_drawcalls += timer.GetMiliseconds();
 	
-	for ( std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = getTextures()->begin(); it!=getTextures()->end(); ++it )
+	for ( std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = GetTextures()->begin(); it!=GetTextures()->end(); ++it )
 	{
 		if ( it->second )
-		it->second->unbind( it->first, pDispatcher );
+		it->second->Unbind( it->first, pDispatcher );
 	}
 	
-	pDispatcher->numVerts += m_pGeometryChunk->getNumberOfVerts();
+	pDispatcher->numVerts += m_pGeometryChunk->GetNumberOfVerts();
 	pDispatcher->drawcalls++;
-	//pDispatcher->t_work += timer.getMiliseconds();
+	//pDispatcher->t_work += timer.GetMiliseconds();
 }
 
-void D3D11RenderCommand_Draw::setTexture( std::string name, DX11Texture2D *pTexture )
+void D3D11RenderCommand_Draw::SetTexture( std::string name, DX11Texture2D *pTexture )
 {
 	std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = std::find_if( m_pTextures.begin(), m_pTextures.end(), FindFirst<std::string, DX11Texture2D*>( name ) );
 	if (it==m_pTextures.end())
@@ -113,12 +113,12 @@ void D3D11RenderCommand_Draw::setTexture( std::string name, DX11Texture2D *pText
 		it->second = pTexture;
 }
 
-void D3D11RenderCommand_BeginFrame::execute( RenderDispatcher *pDispatcher )
+void D3D11RenderCommand_BeginFrame::Execute( RenderDispatcher *pDispatcher )
 {
 	Timer timer;
 
 	pDispatcher->frameFinished = false;
-	pDispatcher->renderTimer.start();
+	pDispatcher->renderTimer.Start();
 	pDispatcher->t_work = 0.0f;
 	pDispatcher->t_renderloop = 0.0f;
 	pDispatcher->t_bindparams = 0.0f;
@@ -128,120 +128,120 @@ void D3D11RenderCommand_BeginFrame::execute( RenderDispatcher *pDispatcher )
 	pDispatcher->t_drawcalls = 0.0f;
 	pDispatcher->numVerts = 0.0f;
 	pDispatcher->drawcalls = 0;
-	pDispatcher->clearBackbuffer( m_ClearColor );
-	pDispatcher->clearDepthStencil( m_Depth, m_Stencil );
+	pDispatcher->ClearBackbuffer( m_ClearColor );
+	pDispatcher->ClearDepthStencil( m_Depth, m_Stencil );
 
-	pDispatcher->t_beginframe = timer.getMiliseconds();
+	pDispatcher->t_BeginFrame = timer.GetMiliseconds();
 
-	//pDispatcher->t_work += timer2.getMiliseconds();
+	//pDispatcher->t_work += timer2.GetMiliseconds();
 }
 
-void D3D11RenderCommand_ClearTexture::execute( RenderDispatcher *pDispatcher )
+void D3D11RenderCommand_ClearTexture::Execute( RenderDispatcher *pDispatcher )
 {
-	((DX11RenderDispatcher*)pDispatcher)->getImmediateContext()->ClearRenderTargetView( ((DX11Texture2D*)m_pTexture)->getRenderTargetView(), m_ClearColor );
-    ((DX11RenderDispatcher*)pDispatcher)->getImmediateContext()->ClearDepthStencilView( ((DX11Texture2D*)m_pTexture)->getDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
+	((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearRenderTargetView( ((DX11Texture2D*)m_pTexture)->GetRenderTargetView(), m_ClearColor );
+    ((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearDepthStencilView( ((DX11Texture2D*)m_pTexture)->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 }
 
-void D3D11RenderCommand_EndFrame::execute( RenderDispatcher *pDispatcher )
+void D3D11RenderCommand_EndFrame::Execute( RenderDispatcher *pDispatcher )
 {
 	Timer timer;
 
-	pDispatcher->present( 0 );
-	//double dt = timer.getMiliseconds();
+	pDispatcher->Present( 0 );
+	//double dt = timer.GetMiliseconds();
 	//pDispatcher->t_renderloop += dt;
-	pDispatcher->t_renderthread = pDispatcher->renderTimer.getMiliseconds();
+	pDispatcher->t_renderthread = pDispatcher->renderTimer.GetMiliseconds();
 	//pDispatcher->t_work += dt;
 	//pDispatcher->frameFinished = true;
-	pDispatcher->m_pRenderSystem->signalFrameFinished();
+	pDispatcher->m_pRenderSystem->SignalFrameFinished();
 	
-	pDispatcher->t_endframe = timer.getMiliseconds();
+	pDispatcher->t_EndFrame = timer.GetMiliseconds();
 }
 
-void D3D11RenderCommand_RenderTarget::execute( RenderDispatcher* pDispatcher )
+void D3D11RenderCommand_RenderTarget::Execute( RenderDispatcher* pDispatcher )
 {
 	if( m_pRenderTargetTexture )
 	{
-		pDispatcher->setRenderTarget( m_pRenderTargetTexture );
+		pDispatcher->SetRenderTarget( m_pRenderTargetTexture );
 		
 		/*
-		// Setting default viewports already done by RenderDispatcher::setRenderTarget()
+		// Setting default viewports already done by RenderDispatcher::SetRenderTarget()
 		D3D11_VIEWPORT vp;
-		vp.Width = (FLOAT)m_pRenderTargetTexture->getWidth();
-		vp.Height = (FLOAT)m_pRenderTargetTexture->getHeight();
+		vp.Width = (FLOAT)m_pRenderTargetTexture->GetWidth();
+		vp.Height = (FLOAT)m_pRenderTargetTexture->GetHeight();
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
 		vp.TopLeftY = 0;
-		((DX11RenderDispatcher*)pDispatcher)->getImmediateContext()->RSSetViewports( 1, &vp );*/
+		((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->RSSetViewports( 1, &vp );*/
 	}
 	else
-		pDispatcher->setBackbufferAsRenderTarget();	// Default
+		pDispatcher->SetBackbufferAsRenderTarget();	// Default
 }
 
-void D3D11RenderCommand_MRT::setRenderTargetTextures( UINT numRenderTargets, DX11Texture2D** pTextureArray )	
+void D3D11RenderCommand_MRT::SetRenderTargetTextures( UINT numRenderTargets, DX11Texture2D** pTextureArray )	
 { 
 	m_numRenderTargets = numRenderTargets; 
 	for(int i=0; i<numRenderTargets; i++)
 		m_pRenderTargetTextureArray.push_back(pTextureArray[i]); 
 }
 
-void D3D11RenderCommand_MRT::execute( RenderDispatcher* pDispatcher )
+void D3D11RenderCommand_MRT::Execute( RenderDispatcher* pDispatcher )
 {
 	if( m_pRenderTargetTextureArray.size() )
 	{
-		pDispatcher->setMultipleRenderTargets( m_numRenderTargets, (Texture2D**)&m_pRenderTargetTextureArray[0] );
+		pDispatcher->SetMultipleRenderTargets( m_numRenderTargets, (Texture2D**)&m_pRenderTargetTextureArray[0] );
 		
 		/*
-		// Setting default viewports already done by RenderDispatcher::setRenderTarget()
+		// Setting default viewports already done by RenderDispatcher::SetRenderTarget()
 		D3D11_VIEWPORT vp;
-		vp.Width = (FLOAT)m_pRenderTargetTexture->getWidth();
-		vp.Height = (FLOAT)m_pRenderTargetTexture->getHeight();
+		vp.Width = (FLOAT)m_pRenderTargetTexture->GetWidth();
+		vp.Height = (FLOAT)m_pRenderTargetTexture->GetHeight();
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
 		vp.TopLeftY = 0;
-		((DX11RenderDispatcher*)pDispatcher)->getImmediateContext()->RSSetViewports( 1, &vp );*/
+		((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->RSSetViewports( 1, &vp );*/
 	}
 	else
-		pDispatcher->setBackbufferAsRenderTarget();	// Default
+		pDispatcher->SetBackbufferAsRenderTarget();	// Default
 }
 
-void D3D11RenderCommand_ResolveMSAA::execute( RenderDispatcher* pDispatcher )
+void D3D11RenderCommand_ResolveMSAA::Execute( RenderDispatcher* pDispatcher )
 {
-	pDispatcher->resolveMSAA( m_pDestination, m_pSource );
+	pDispatcher->ResolveMSAA( m_pDestination, m_pSource );
 }
 
-void D3D11RenderCommand_Draw::clone( RenderCommand* ptr )
+void D3D11RenderCommand_Draw::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_Draw(*this);
 }
 
-void D3D11RenderCommand_BeginFrame::clone( RenderCommand* ptr )
+void D3D11RenderCommand_BeginFrame::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_BeginFrame(*this);
 }
 
-void D3D11RenderCommand_EndFrame::clone( RenderCommand* ptr )
+void D3D11RenderCommand_EndFrame::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_EndFrame(*this);
 }
 
-void D3D11RenderCommand_ClearTexture::clone( RenderCommand* ptr )
+void D3D11RenderCommand_ClearTexture::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_ClearTexture(*this);
 }
 
-void D3D11RenderCommand_RenderTarget::clone( RenderCommand* ptr )
+void D3D11RenderCommand_RenderTarget::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_RenderTarget(*this);
 }
 
-void D3D11RenderCommand_MRT::clone( RenderCommand* ptr )
+void D3D11RenderCommand_MRT::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_MRT(*this);
 }
 
-void D3D11RenderCommand_ResolveMSAA::clone( RenderCommand* ptr )
+void D3D11RenderCommand_ResolveMSAA::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_ResolveMSAA(*this);
 }

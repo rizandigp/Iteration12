@@ -45,7 +45,7 @@ public:
 	RenderThreadWork( RenderSystem* ptr ) : m_pRenderSystem(ptr)	{};
 	void operator()()
 	{
-		m_pRenderSystem->consumeRenderQueue( false );
+		m_pRenderSystem->ConsumeRenderQueue( false );
 	}
 
 	RenderSystem* m_pRenderSystem;
@@ -315,34 +315,34 @@ HRESULT InitDevice()
 	config.Multithreaded = false;
 
 	pRenderSystem = new RenderSystem();
-	pRenderSystem->initialize( config );
-	//pRenderSystem->setOutputWindow( hWnd, width, height );
+	pRenderSystem->Initialize( config );
+	//pRenderSystem->SetOutputWindow( hWnd, width, height );
 
 	// Create and initialize physics system
 	pPhysicsSystem = new PhysicsSystem();
-	pPhysicsSystem->initHavok();
+	pPhysicsSystem->InitHavok();
 	//pPhysicsSystem = NULL;
 
 	// Create fps camera
 	pCamera = new CameraFPS();
-	pCamera->setPosition( Vector3( 0.0f, 5.0f, 2.0f ) );
-	pCamera->setLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
-	pCamera->setUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
-	pCamera->setProjection( XM_PI*0.35f, width / (FLOAT)height, 0.1f, 5000.0f );
-	pCamera->update( 0.0f );
+	pCamera->SetPosition( Vector3( 0.0f, 5.0f, 2.0f ) );
+	pCamera->SetLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
+	pCamera->SetUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
+	pCamera->SetProjection( XM_PI*0.35f, width / (FLOAT)height, 0.1f, 5000.0f );
+	pCamera->Update( 0.0f );
 
 	// Create controllable player entity
 	pPlayer = new PlayerEntity( pRenderSystem );
-	pPlayer->transform()->setPosition( 10.5f, 10.5f, 5.8f );
+	pPlayer->Transformation()->SetPosition( 10.5f, 10.5f, 5.8f );
 
 	pFPPlayer = new FPPlayerEntity( pRenderSystem );
-	pFPPlayer->transform()->setPosition( 0.0f, 0.0f, 2.0f );
+	pFPPlayer->Transformation()->SetPosition( 0.0f, 0.0f, 2.0f );
 
 	// Set up the scene
-	scene.init( pRenderSystem, pPhysicsSystem );
-	scene.loadFromFile( L"Levels/physics_testlevel09.txt" );
-	//scene.loadCustomObjects();
-	scene.addEntity(pFPPlayer);
+	scene.Init( pRenderSystem, pPhysicsSystem );
+	scene.GetPhysicsSystem( L"Levels/physics_testlevel09.txt" );
+	//scene.LoadCustomObjects();
+	scene.AddEntity(pFPPlayer);
 
 	return S_OK;
 }
@@ -357,30 +357,30 @@ void DoFrame()
 
     // Clear backbuffer and begin frame
     float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
-	pRenderSystem->beginFrame( ClearColor, 1.0f, 0 );
+	pRenderSystem->BeginFrame( ClearColor, 1.0f, 0 );
 	
 	static double t = 0, dt = 0;
 	dt=t;
-	t = globalTimer.getSeconds();
+	t = globalTimer.GetSeconds();
 	dt = t-dt;
 
 	if (dt > 1/30.0f)
 		dt = 1/30.0f;
 
 	Timer updateTimer;
-	scene.update( dt );
-	double t_update = updateTimer.getMiliseconds();
+	scene.Update( dt );
+	double t_update = updateTimer.GetMiliseconds();
 
-	scene.renderDeferred();
-	pRenderSystem->endFrame();
+	scene.RenderDeferred();
+	pRenderSystem->EndFrame();
 
-	double t_main = mainTimer.getMiliseconds();
+	double t_main = mainTimer.GetMiliseconds();
 
 
 	// Wait for render thread to finish
-	// pRenderSystem->waitForFrameToFinish();
+	// pRenderSystem->WaitForFrameToFinish();
 
-	double t_waitrender = mainTimer.getMiliseconds() - t_main;
+	double t_waitrender = mainTimer.GetMiliseconds() - t_main;
 	
 	char str[20];
 
@@ -411,7 +411,7 @@ void DoFrame()
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_renderthread, 5, str );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_renderthread, 5, str );
 		DEBUG_OUTPUT( "render thread: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
@@ -426,8 +426,8 @@ void DoFrame()
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_bindparams, 6, str );
-		DEBUG_OUTPUT( "bind shader params: " );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_bindparams, 6, str );
+		DEBUG_OUTPUT( "Bind shader params: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
@@ -436,38 +436,38 @@ void DoFrame()
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 		/*
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_1, 6, str );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_1, 6, str );
 		DEBUG_OUTPUT( "(t_1: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_2, 6, str );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_2, 6, str );
 		DEBUG_OUTPUT( "t_2: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms)\t  " );
 	
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_bindtextures, 6, str );
-		DEBUG_OUTPUT( "bind textures: " );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_bindtextures, 6, str );
+		DEBUG_OUTPUT( "Bind textures: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_drawcalls, 6, str );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_drawcalls, 6, str );
 		DEBUG_OUTPUT( "draw calls: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 	
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_beginframe, 6, str );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_BeginFrame, 6, str );
 		DEBUG_OUTPUT( "begin frame: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
-		_gcvt( pRenderSystem->getRenderDispatcher()->t_endframe, 6, str );
+		_gcvt( pRenderSystem->GetRenderDispatcher()->t_EndFrame, 6, str );
 		DEBUG_OUTPUT( "end frame: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 		*/
-		_gcvt( scene.t_cull, 5, str );
-		DEBUG_OUTPUT( "culling: " );
+		_gcvt( scene.t_Cull, 5, str );
+		DEBUG_OUTPUT( "Culling: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
@@ -511,12 +511,12 @@ void DoFrame()
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "mus\t  " );
 		*/
-		itoa( pRenderSystem->getRenderDispatcher()->drawcalls, str, 10 );
+		itoa( pRenderSystem->GetRenderDispatcher()->drawcalls, str, 10 );
 		DEBUG_OUTPUT( "draw calls: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "\t  " );
 
-		itoa( pRenderSystem->getRenderDispatcher()->numVerts, str, 10 );
+		itoa( pRenderSystem->GetRenderDispatcher()->numVerts, str, 10 );
 		DEBUG_OUTPUT( "verts: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "\n  " );

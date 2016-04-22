@@ -2,14 +2,14 @@
 
 #include "Renderer.h"
 
-void Renderer::setRenderSystem( RenderSystem*	pRenderSystem )
+void Renderer::SetRenderSystem( RenderSystem*	pRenderSystem )
 {
 	m_pRenderSystem = pRenderSystem;
-	m_pShadowmapShader = pRenderSystem->loadShaderset( L"Shaders/Shadowmap.hlsl", "VS", "PS", SM_5_0 );
+	m_pShadowmapShader = pRenderSystem->LoadShaderset( L"Shaders/Shadowmap.hlsl", "VS", "PS", SM_5_0 );
 }
 
 // TODO : optimize implementation
-void Renderer::setMesh( Mesh* pMesh )
+void Renderer::SetMesh( Mesh* pMesh )
 {
 	if (m_pMesh!=pMesh && pMesh)
 	{
@@ -33,10 +33,10 @@ void Renderer::setMesh( Mesh* pMesh )
 
 		m_bVisible.clear();
 
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			m_bVisible.push_back( true );
-			Submesh* submesh = m_pMesh->getSubmesh( i );
+			Submesh* submesh = m_pMesh->GetSubmesh( i );
 
 			m_PointLights.push_back( std::vector<PointLight*>() );
 			m_SpotLights.push_back( std::vector<SpotLight*>() );
@@ -45,21 +45,21 @@ void Renderer::setMesh( Mesh* pMesh )
 			for (int multipass = 0; multipass < 4; multipass++)
 			{
 				D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
-				RC->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
+				RC->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
 				m_pSubmeshRenderCommands.push_back(std::vector<D3D11RenderCommand_Draw*>());
 				m_pSubmeshRenderCommands[i].push_back( RC );
 			}
 
 			// Shadowmap rendering
 			D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
-			RC->setShaderset( (D3D11Shaderset*)m_pShadowmapShader );
-			RC->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
+			RC->SetShaderset( (D3D11Shaderset*)m_pShadowmapShader );
+			RC->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
 			m_pShadowmapRenderCommands.push_back( RC );
 
 			// Debug OBB drawing
 			D3D11RenderCommand_Draw* rcDebug = new D3D11RenderCommand_Draw();
-			rcDebug->setGeometryChunk( (D3D11GeometryChunk*)m_pRenderSystem->createBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->getSubmesh(0)->getGeometryChunk() );
-			rcDebug->setShaderset( (D3D11Shaderset*)m_pRenderSystem->loadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
+			rcDebug->SetGeometryChunk( (D3D11GeometryChunk*)m_pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
+			rcDebug->SetShaderset( (D3D11Shaderset*)m_pRenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
 			m_pDebugRenderCommands.push_back( rcDebug );
 		}
 	
@@ -69,9 +69,9 @@ void Renderer::setMesh( Mesh* pMesh )
 }
 
 
-void Renderer::addLight( PointLight* pLight )
+void Renderer::AddLight( PointLight* pLight )
 {
-	for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+	for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 	{
 		if (m_bVisible[i])
 		{
@@ -80,9 +80,9 @@ void Renderer::addLight( PointLight* pLight )
 	}
 }
 
-void Renderer::addLight( SpotLight* pLight )
+void Renderer::AddLight( SpotLight* pLight )
 {
-	for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+	for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 	{
 		if (m_bVisible[i])
 		{
@@ -92,7 +92,7 @@ void Renderer::addLight( SpotLight* pLight )
 }
 
 
-void Renderer::clearLights()
+void Renderer::ClearLights()
 {
 	for (std::vector<std::vector<PointLight*>>::iterator it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
 	{
@@ -106,24 +106,24 @@ void Renderer::clearLights()
 }
 
 // TODO : optimize implementation
-void Renderer::render( Transform* pTransform )
+void Renderer::Render( Transform* pTransform )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_bVisible[i])
 			{
-				Submesh* submesh = m_pMesh->getSubmesh( i );
+				Submesh* submesh = m_pMesh->GetSubmesh( i );
 
 				Timer matTimer;
 				// BOTTLENECK!!
-				UINT passes = submesh->getMaterial()->bind( this, &m_pSubmeshRenderCommands[i], i,pTransform );
-				m_pRenderSystem->t_material += matTimer.getMiliseconds();
+				UINT passes = submesh->GetMaterial()->Bind( this, &m_pSubmeshRenderCommands[i], i,pTransform );
+				m_pRenderSystem->t_material += matTimer.GetMiliseconds();
 
 				for( int ii=0; ii<passes; ii++ )
 				{
-					m_pRenderSystem->submitThreaded( m_pSubmeshRenderCommands[i].at(ii) );
+					m_pRenderSystem->SubmitThreaded( m_pSubmeshRenderCommands[i].at(ii) );
 					m_pRenderSystem->drawcalls++;
 				}
 			}
@@ -131,73 +131,73 @@ void Renderer::render( Transform* pTransform )
 	}
 }
 
-void Renderer::renderShadowmap( Transform* pTransform, Camera3D* pShadowCamera )
+void Renderer::RenderShadowmap( Transform* pTransform, Camera3D* pShadowCamera )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_bVisible[i])
 			{
 				D3D11RenderCommand_Draw* rc = m_pShadowmapRenderCommands[i];
 
-				rc->shaderParams()->assign( "World", 0, &pTransform->getMatrix().transpose() );
-				rc->shaderParams()->assign( "SpotLightViewProjection", 0, &pShadowCamera->getViewProjectionMatrix().transpose() );
+				rc->shaderParams()->assign( "World", 0, &pTransform->GetMatrix().transpose() );
+				rc->shaderParams()->assign( "SpotLightViewProjection", 0, &pShadowCamera->GetViewProjectionMatrix().transpose() );
 			
-				m_pRenderSystem->submitThreaded( rc ); 
+				m_pRenderSystem->SubmitThreaded( rc ); 
 				m_pRenderSystem->drawcalls++;
 			}
 		}
 	}
 }
 
-void Renderer::renderOBB( Transform* pTransform )
+void Renderer::RenderOBB( Transform* pTransform )
 {
 	if (m_pMesh)
 	{
-	for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+	for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 	{
 		if ( m_bVisible[i] )
 		{
 			D3D11RenderCommand_Draw* rc = m_pDebugRenderCommands[i];
 			
-			Submesh* submesh = m_pMesh->getSubmesh( i );
-			XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-			XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-			XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
+			Submesh* submesh = m_pMesh->GetSubmesh( i );
+			XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+			XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+			XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
 			scale *= extents;
-			position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+			position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 
-			XMMATRIX transform = XMMatrixAffineTransformation( scale, XMVectorZero(), XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()), position );
+			XMMATRIX transform = XMMatrixAffineTransformation( scale, XMVectorZero(), XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()), position );
 
-			rc->shaderParams()->assign( "ViewProjection", 0, &m_pRenderSystem->getCamera()->getViewProjectionMatrix().transpose().intoXMFLOAT4X4() );
+			rc->shaderParams()->assign( "ViewProjection", 0, &m_pRenderSystem->GetCamera()->GetViewProjectionMatrix().transpose() );
 			rc->shaderParams()->assign( "World", 0, &XMMatrixTranspose(transform) );
-			rc->shaderParams()->assign( "vMeshColor", 0, &XMFLOAT4( 0.1f, 0.1f, 0.2f, 0.0f ) );
+			rc->shaderParams()->assign( "vMeshColor", 0, &Vector4( 0.1f, 0.1f, 0.2f, 0.0f ) );
 
-			m_pRenderSystem->submitThreaded( rc ); 
+			m_pRenderSystem->SubmitThreaded( rc ); 
 		}
 	}
 	}
 }
 
-void Renderer::cull( XNA::Frustum* frustum, Transform* pTransform )
+void Renderer::Cull( XNA::Frustum* frustum, Transform* pTransform )
 {
 	if (m_pMesh)
 	{
 		XNA::OrientedBox objectBox;
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
-			Submesh* submesh = m_pMesh->getSubmesh( i );
+			Submesh* submesh = m_pMesh->GetSubmesh( i );
 
-			XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-			XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-			XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
-			position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+			XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+			XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+			XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
+			position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 			XMStoreFloat3( &objectBox.Center, position );
 			XMStoreFloat3( &objectBox.Extents, extents*scale );
-			objectBox.Orientation = pTransform->getOrientation().intoXMFLOAT4();
+			objectBox.Orientation = pTransform->GetOrientation().intoXMFLOAT4();
 
 			if( XNA::IntersectOrientedBoxFrustum( &objectBox, frustum ) > 0 )
 			m_bVisible[i] = true;
@@ -207,17 +207,17 @@ void Renderer::cull( XNA::Frustum* frustum, Transform* pTransform )
 	}
 }
 
-void Renderer::cull( XNA::Sphere* sphere, Transform* pTransform )
+void Renderer::Cull( XNA::Sphere* sphere, Transform* pTransform )
 {/*
 	XNA::OrientedBox objectBox;
 	for (std::vector< std::pair<D3D11RenderCommand_Draw*,bool > >::iterator it = m_pRenderCommands.begin(); it != m_pRenderCommands.end(); ++it)
 	{
-		objectBox.Center = pTransform->getPosition();
+		objectBox.Center = pTransform->GetPosition();
 		objectBox.Orientation = pTransform->getRotation();
 
-		objectBox.Extents = XMFLOAT3(	it->first->getGeometryChunk()->getAABB()->Extents.x*pTransform->getScale().x,
-										it->first->getGeometryChunk()->getAABB()->Extents.y*pTransform->getScale().y,
-										it->first->getGeometryChunk()->getAABB()->Extents.z*pTransform->getScale().z	);
+		objectBox.Extents = XMFLOAT3(	it->first->GetGeometryChunk()->getAABB()->Extents.x*pTransform->GetScale().x,
+										it->first->GetGeometryChunk()->getAABB()->Extents.y*pTransform->GetScale().y,
+										it->first->GetGeometryChunk()->getAABB()->Extents.z*pTransform->GetScale().z	);
 
 		if( XNA::IntersectSphereOrientedBox( sphere, &objectBox ) > 0 )
 		it->second = true;
@@ -226,29 +226,29 @@ void Renderer::cull( XNA::Sphere* sphere, Transform* pTransform )
 	}*/
 }
 
-void Renderer::cullLight( PointLight* light, Transform* pTransform )
+void Renderer::CullLight( PointLight* light, Transform* pTransform )
 {
 	if (m_pMesh)
 	{
 	XNA::OrientedBox objectBox;
 	XNA::Sphere lightSphere;
-	for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+	for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 	{
 		if (m_bVisible[i])
 		{
-			Submesh* submesh = m_pMesh->getSubmesh( i );
+			Submesh* submesh = m_pMesh->GetSubmesh( i );
 
-			XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-			XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-			XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
-			position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+			XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+			XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+			XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
+			position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 			XMStoreFloat3( &objectBox.Center, position );
 			XMStoreFloat3( &objectBox.Extents, extents*scale );
-			objectBox.Orientation = pTransform->getOrientation().intoXMFLOAT4();
+			objectBox.Orientation = pTransform->GetOrientation().intoXMFLOAT4();
 
-			lightSphere.Center = light->transform()->getPosition().intoXMFLOAT3();
-			lightSphere.Radius = light->getRadius();
+			lightSphere.Center = light->Transformation()->GetPosition().intoXMFLOAT3();
+			lightSphere.Radius = light->GetRadius();
 
 			if( XNA::IntersectSphereOrientedBox( &lightSphere, &objectBox ) )
 			m_PointLights[i].push_back( light );
@@ -257,26 +257,26 @@ void Renderer::cullLight( PointLight* light, Transform* pTransform )
 	}
 }
 
-void Renderer::cullLight( SpotLight* light, Transform* pTransform )
+void Renderer::CullLight( SpotLight* light, Transform* pTransform )
 {
 	if (m_pMesh)
 	{
 		XNA::OrientedBox objectBox;
-		XNA::Frustum lightFrustum = light->getFrustum();
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		XNA::Frustum lightFrustum = light->GetFrustum();
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_bVisible[i])
 			{
-				Submesh* submesh = m_pMesh->getSubmesh( i );
+				Submesh* submesh = m_pMesh->GetSubmesh( i );
 
-				XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-				XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-				XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
-				position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+				XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+				XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+				XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
+				position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 				XMStoreFloat3( &objectBox.Center, position );
 				XMStoreFloat3( &objectBox.Extents, extents*scale );
-				objectBox.Orientation = pTransform->getOrientation().intoXMFLOAT4();
+				objectBox.Orientation = pTransform->GetOrientation().intoXMFLOAT4();
 
 				if( XNA::IntersectOrientedBoxFrustum( &objectBox, &lightFrustum ) > 0 )
 				m_SpotLights[i].push_back( light );
@@ -285,10 +285,10 @@ void Renderer::cullLight( SpotLight* light, Transform* pTransform )
 	}
 }
 
-void Renderer::setCulled( bool culled )
+void Renderer::SetCulled( bool Culled )
 {
-	for(int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++)
+	for(int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++)
 	{
-		m_bVisible[i] = !culled;
+		m_bVisible[i] = !Culled;
 	}
 }

@@ -9,7 +9,7 @@ Transform::Transform()
 	m_Matrix = Matrix4x4::IDENTITY;
 }
 
-void Transform::update()
+void Transform::Update()
 {
 	/*
 	XMFLOAT4X4 mat;
@@ -21,26 +21,26 @@ void Transform::update()
 	m_Matrix = m_Matrix.transpose();
 }
 
-void Transform::setPosition( const Vector3& pos )
+void Transform::SetPosition( const Vector3& pos )
 {
 	m_Position = pos;
 }
 
-void Transform::setPosition( const XMFLOAT3& pos )
+void Transform::SetPosition( const XMFLOAT3& pos )
 {
 	m_Position = Vector3( pos.x, pos.y, pos.z );
 }
 
-void Transform::setPosition( float x, float y, float z )
+void Transform::SetPosition( float x, float y, float z )
 {
 	m_Position = Vector3( x, y, z );
 }
-void Transform::setOrientation( const Quaternion& q )
+void Transform::SetOrientation( const Quaternion& q )
 {
 	m_Orientation = q;
 }
 
-void Transform::setOrientation( const XMFLOAT4& quaternion )
+void Transform::SetOrientation( const XMFLOAT4& quaternion )
 {
 	m_Orientation.x = quaternion.y;
 	m_Orientation.y = quaternion.z;
@@ -48,75 +48,75 @@ void Transform::setOrientation( const XMFLOAT4& quaternion )
 	m_Orientation.w = quaternion.x;
 }
 
-void Transform::setOrientation( float w, float x, float y, float z )
+void Transform::SetOrientation( float w, float x, float y, float z )
 {
 	m_Orientation = Quaternion( w, x, y, z );
 }
 
-void Transform::setScale( const XMFLOAT3& scale )
+void Transform::SetScale( const XMFLOAT3& scale )
 {
 	m_Scale.x = scale.x;
 	m_Scale.y = scale.y;
 	m_Scale.z = scale.z;
 }
 
-void Transform::setScale( float x, float y, float z )
+void Transform::SetScale( float x, float y, float z )
 {
 	m_Scale.x = x;
 	m_Scale.y = y;
 	m_Scale.z = z;
 }
 
-void Transform::rotate( const Quaternion& q )
+void Transform::Rotate( const Quaternion& q )
 {
 	m_Orientation = m_Orientation*q;
 }
 
-void Transform::translate( const Vector3& xyz )
+void Transform::Translate( const Vector3& xyz )
 {
 	m_Position += xyz;
 }
 
-void Transform::translate( const XMFLOAT3& xyz )
+void Transform::Translate( const XMFLOAT3& xyz )
 {
 	m_Position.x += xyz.x;
 	m_Position.y += xyz.y;
 	m_Position.z += xyz.z;
 }
 
-void Transform::translate( float x, float y, float z )
+void Transform::Translate( float x, float y, float z )
 {
 	m_Position.x += x;
 	m_Position.y += y;
 	m_Position.z += z;
 }
 
-void Transform::scale( const Vector3& xyz )
+void Transform::Scale( const Vector3& xyz )
 {
 	m_Scale *= xyz;
 }
 
-void Transform::scale( const XMFLOAT3& xyz )
+void Transform::Scale( const XMFLOAT3& xyz )
 {
 	m_Scale.x *= xyz.x;
 	m_Scale.y *= xyz.y;
 	m_Scale.z *= xyz.z;
 }
 
-void Transform::scale( float x, float y, float z )
+void Transform::Scale( float x, float y, float z )
 {
 	m_Scale.x *= x;
 	m_Scale.y *= y;
 	m_Scale.z *= z;
 }
 
-void Transform::lookAt( const XMFLOAT3& target, float roll )
+void Transform::LookAt( const XMFLOAT3& target, float roll )
 {
 	Vector3 v(target.x,target.y,target.z);
-	lookAt( v, roll );
+	LookAt( v, roll );
 }
 
-void Transform::lookAt( const Vector3& target, float roll )
+void Transform::LookAt( const Vector3& target, float roll )
 {
 	//Vector3 v(target.x - m_Position.x, target.y - m_Position.y, target.z - m_Position.z);
 	Vector3 v = target-m_Position;
@@ -127,12 +127,12 @@ void Transform::lookAt( const Vector3& target, float roll )
 	m_Orientation = q;
 }
 
-void Transform::orientToVector( XMFLOAT3 directionVector, float roll )
+void Transform::OrientToVector( XMFLOAT3 directionVector, float roll )
 {
 	m_Orientation.lookAt( Vector3(directionVector.x,directionVector.y,directionVector.z), Vector3::UNIT_Z );
 }
 
-XMMATRIX Transform::getXMMatrix() const
+XMMATRIX Transform::GetXMMatrix() const
 {
 	return XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(&m_Matrix));
 }

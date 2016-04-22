@@ -2,7 +2,6 @@
 
 #include "Prerequisites.h"
 #include <Windows.h>
-//#include <d3d11.h>
 #include <d3dx11.h>
 
 class RenderOutput
@@ -15,9 +14,9 @@ public:
 		m_pRenderTarget(pRenderTarget),
 		m_pSwapChain(pSwapChain)	{};
 
-	IDXGISwapChain* getSwapChain()	{ return m_pSwapChain; };
+	IDXGISwapChain* GetSwapChain()	{ return m_pSwapChain; };
 
-	void present();
+	void Present();
 
 protected:
 	HWND m_hWnd;

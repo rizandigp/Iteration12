@@ -9,8 +9,8 @@ public:
 	DX11Material( RenderSystem* pRenderSystem );
 
 	// Bind material to the render commands, return number of passes
-	virtual UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform );
-	virtual UINT bind(Renderer* pRenderer, std::vector< RenderCommand* >* pRenderCommands, SubmeshRenderData* pRenderData, Transform* pTransform );
+	virtual UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform );
+	virtual UINT Bind(Renderer* pRenderer, std::vector< RenderCommand* >* pRenderCommands, SubmeshRenderData* pRenderData, Transform* pTransform );
 	UINT getNumberOfPasses();
 
 protected:
@@ -32,25 +32,25 @@ class DX11Material_DiffuseDetailbump : public Material
 public:
 	DX11Material_DiffuseDetailbump( RenderSystem* pRenderSystem );
 
-	void setDiffusemap( Texture2D* pTexture )		{ m_pDiffuse = pTexture; };
-	void setNormalmap( Texture2D* pTexture )		{ m_pNormal = pTexture; };
-	void setSpecularIntensity( float val )			{ m_SpecIntensity = val; };
-	void setSpecularPower( float val )				{ m_SpecPower = val; };
-	void setDetailNormalmap( Texture2D* pTexture )	{ m_pDetailNormal = pTexture; };
-	void setDetailNormalStrength( float val )		{ m_DetailNormalStrength = val; };
-	void setDetailTiling( float val )				{ m_DetailTiling = val; };
+	void SetDiffusemap( Texture2D* pTexture )		{ m_pDiffuse = pTexture; };
+	void SetNormalmap( Texture2D* pTexture )		{ m_pNormal = pTexture; };
+	void SetSpecularIntensity( float val )			{ m_SpecIntensity = val; };
+	void SetSpecularPower( float val )				{ m_SpecPower = val; };
+	void SetDetailNormalmap( Texture2D* pTexture )	{ m_pDetailNormal = pTexture; };
+	void SetDetailNormalStrength( float val )		{ m_DetailNormalStrength = val; };
+	void SetDetailTiling( float val )				{ m_DetailTiling = val; };
 
-	Texture2D* getDetailNormalmap()					{ return m_pDetailNormal; };
-	Texture2D* getDiffuse()							{ return m_pDiffuse; };
-	Texture2D* getNormalmap()						{ return m_pNormal; };
+	Texture2D* GetDetailNormalmap()					{ return m_pDetailNormal; };
+	Texture2D* GetDiffuse()							{ return m_pDiffuse; };
+	Texture2D* GetNormalmap()						{ return m_pNormal; };
 
-	float getDetailTiling()							{ return m_DetailTiling; };
+	float GetDetailTiling()							{ return m_DetailTiling; };
 		
-	float getSpecularIntensity()					{ return m_SpecIntensity; };
-	float getSpecularPower()						{ return m_SpecPower; };
+	float GetSpecularIntensity()					{ return m_SpecIntensity; };
+	float GetSpecularPower()						{ return m_SpecPower; };
 
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform )	{return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform )	{return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pDiffuse;
@@ -72,20 +72,20 @@ class DX11Material_BlinnPhong : public Material
 public:
 	DX11Material_BlinnPhong( RenderSystem* pRenderSystem );
 
-	void setDiffusemap( Texture2D* pTexture )	{ m_pDiffuse = pTexture; };
-	void setNormalmap( Texture2D* pTexture )	{ m_pNormal = pTexture; };
-	void setSpecularMap( Texture2D* pTexture )	{ m_pSpecular = pTexture; };
-	void setSpecularIntensity( float val )		{ m_SpecIntensity = val; };
-	void setSpecularPower( float val )			{ m_SpecPower = val; };
+	void SetDiffusemap( Texture2D* pTexture )	{ m_pDiffuse = pTexture; };
+	void SetNormalmap( Texture2D* pTexture )	{ m_pNormal = pTexture; };
+	void SetSpecularMap( Texture2D* pTexture )	{ m_pSpecular = pTexture; };
+	void SetSpecularIntensity( float val )		{ m_SpecIntensity = val; };
+	void SetSpecularPower( float val )			{ m_SpecPower = val; };
 
-	Texture2D* getDiffuse()			{ return m_pDiffuse; };
-	Texture2D* getNormalmap()		{ return m_pNormal; };
-	Texture2D* getSpecularMap()		{ return m_pSpecular; };
-	float getSpecularIntensity()	{ return m_SpecIntensity; };
-	float getSpecularPower()		{ return m_SpecPower; };
+	Texture2D* GetDiffuse()			{ return m_pDiffuse; };
+	Texture2D* GetNormalmap()		{ return m_pNormal; };
+	Texture2D* GetSpecularMap()		{ return m_pSpecular; };
+	float GetSpecularIntensity()	{ return m_SpecIntensity; };
+	float GetSpecularPower()		{ return m_SpecPower; };
 
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pDiffuse;
@@ -107,20 +107,20 @@ class DX11Material_Deferred : public Material
 public:
 	DX11Material_Deferred( RenderSystem* pRenderSystem );
 
-	void setDiffusemap( Texture2D* pTexture )	{ m_pDiffuse = pTexture; };
-	void setNormalmap( Texture2D* pTexture )	{ m_pNormal = pTexture; };
-	void setSpecularMap( Texture2D* pTexture )	{ m_pSpecular = pTexture; };
-	void setSpecularIntensity( float val )		{ m_SpecIntensity = val; };
-	void setGlossiness( float val )				{ m_Glossiness = val; };
+	void SetDiffusemap( Texture2D* pTexture )	{ m_pDiffuse = pTexture; };
+	void SetNormalmap( Texture2D* pTexture )	{ m_pNormal = pTexture; };
+	void SetSpecularMap( Texture2D* pTexture )	{ m_pSpecular = pTexture; };
+	void SetSpecularIntensity( float val )		{ m_SpecIntensity = val; };
+	void SetGlossiness( float val )				{ m_Glossiness = val; };
 
-	Texture2D* getDiffusemap()				{ return m_pDiffuse; };
-	Texture2D* getNormalmap()			{ return m_pNormal; };
-	Texture2D* getSpecularMap()			{ return m_pSpecular; };
-	float getSpecularIntensity()		{ return m_SpecIntensity; };
-	float getSpecularPower()			{ return m_Glossiness; };
+	Texture2D* GetDiffusemap()			{ return m_pDiffuse; };
+	Texture2D* GetNormalmap()			{ return m_pNormal; };
+	Texture2D* GetSpecularMap()			{ return m_pSpecular; };
+	float GetSpecularIntensity()		{ return m_SpecIntensity; };
+	float GetSpecularPower()			{ return m_Glossiness; };
 
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pDiffuse;
@@ -139,13 +139,13 @@ class DX11Material_DeferredIBL : public DX11Material_Deferred
 public:
 	DX11Material_DeferredIBL( RenderSystem* pRenderSystem );
 
-	void setIBL( Texture2D* ptr )		{ m_pIBL = ptr; };
-	void setAOMap( Texture2D* ptr )		{ m_pAO = ptr; };
-	Texture2D* getAOMap()				{ return m_pAO; };
-	Texture2D* getIBL()				{ return m_pIBL; };
+	void SetIBL( Texture2D* ptr )		{ m_pIBL = ptr; };
+	void SetAOMap( Texture2D* ptr )		{ m_pAO = ptr; };
+	Texture2D* GetAOMap()				{ return m_pAO; };
+	Texture2D* GetIBL()				{ return m_pIBL; };
 
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pAO;
@@ -161,7 +161,7 @@ public:
 	void setGBuffer( Texture2D* ptr[3] )				{ m_pGbuffer[0] = ptr[0]; m_pGbuffer[1] = ptr[1]; m_pGbuffer[2] = ptr[2]; };
 	void setShadowmap( Texture2D* ptr )					{ m_pShadowmap = ptr; };
 	void setCookie( Texture2D* ptr )					{ m_pCookie = ptr; };
-	void setPosition( const Vector3 &spotlightPosition)	{ m_Position = spotlightPosition; };
+	void SetPosition( const Vector3 &spotlightPosition)	{ m_Position = spotlightPosition; };
 	void setColor( const Vector3 &spotlightColor )		{ m_Color = spotlightColor; };
 	void setIntensity( float spotlightIntensity )		{ m_Intensity = spotlightIntensity; };
 	void setRadius( float spotlightRadius )				{ m_Radius = spotlightRadius; };
@@ -172,8 +172,8 @@ public:
 	Texture2D** getGBuffer()					{ return m_pGbuffer; };
 	Texture2D* getShadowmap()					{ return m_pShadowmap; };
 	
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pGbuffer[3];
@@ -201,7 +201,7 @@ public:
 	void setGBuffer( Texture2D* ptr[3] )				{ m_pGbuffer[0] = ptr[0]; m_pGbuffer[1] = ptr[1]; m_pGbuffer[2] = ptr[2]; };
 	void setShadowmap( Texture2D* ptr )					{ m_pShadowmap = ptr; };
 	void setCookie( Texture2D* ptr )					{ m_pCookie = ptr; };
-	void setPosition( const Vector3 &spotlightPosition)	{ m_Position = spotlightPosition; };
+	void SetPosition( const Vector3 &spotlightPosition)	{ m_Position = spotlightPosition; };
 	void setColor( const Vector3 &spotlightColor )		{ m_Color = spotlightColor; };
 	void setIntensity( float spotlightIntensity )		{ m_Intensity = spotlightIntensity; };
 	void setRadius( float spotlightRadius )				{ m_Radius = spotlightRadius; };
@@ -209,8 +209,8 @@ public:
 	Texture2D** getGBuffer()					{ return m_pGbuffer; };
 	Texture2D* getShadowmap()					{ return m_pShadowmap; };
 	
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pGbuffer[3];
@@ -232,23 +232,23 @@ class DX11Material_Water : public Material
 public:
 	DX11Material_Water( RenderSystem* pRenderSystem );
 
-	void setDiffusemap( Texture2D* pTexture )	{ m_pDiffuse = pTexture; };
-	void setNormalmap( Texture2D* pTexture )	{ m_pNormal = pTexture; };
-	void setFoam( Texture2D* pTexture )			{ m_pFoam = pTexture; };
-	void setSpecularMap( Texture2D* pTexture )	{ m_pSpecular = pTexture; };
-	void setSpecularIntensity( float val )		{ m_SpecIntensity = val; };
-	void setSpecularPower( float val )			{ m_SpecPower = val; };
-	void setIBL( Texture2D* ptr )				{ m_pIBL = ptr; };
+	void SetDiffusemap( Texture2D* pTexture )	{ m_pDiffuse = pTexture; };
+	void SetNormalmap( Texture2D* pTexture )	{ m_pNormal = pTexture; };
+	void SetFoamTexture( Texture2D* pTexture )	{ m_pFoam = pTexture; };
+	void SetSpecularMap( Texture2D* pTexture )	{ m_pSpecular = pTexture; };
+	void SetSpecularIntensity( float val )		{ m_SpecIntensity = val; };
+	void SetSpecularPower( float val )			{ m_SpecPower = val; };
+	void SetIBL( Texture2D* ptr )				{ m_pIBL = ptr; };
 
-	Texture2D* getDiffuse()			{ return m_pDiffuse; };
-	Texture2D* getNormalmap()		{ return m_pNormal; };
-	Texture2D* getSpecularMap()		{ return m_pSpecular; };
-	float getSpecularIntensity()	{ return m_SpecIntensity; };
-	float getSpecularPower()		{ return m_SpecPower; };
-	Texture2D* getIBL()				{ return m_pIBL; };
+	Texture2D* GetDiffuse()			{ return m_pDiffuse; };
+	Texture2D* GetNormalmap()		{ return m_pNormal; };
+	Texture2D* GetSpecularMap()		{ return m_pSpecular; };
+	float GetSpecularIntensity()	{ return m_SpecIntensity; };
+	float GetSpecularPower()		{ return m_SpecPower; };
+	Texture2D* GetIBL()				{ return m_pIBL; };
 
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pDiffuse;
@@ -270,11 +270,11 @@ class DX11Material_Skybox : public Material
 public:
 	DX11Material_Skybox( RenderSystem* pRenderSystem );
 
-	void setCubemap( Texture2D* pTexture )	{ m_pCubemap = pTexture; };
-	Texture2D* getCubemap()					{ return m_pCubemap; };
+	void SetCubemap( Texture2D* pTexture )	{ m_pCubemap = pTexture; };
+	Texture2D* GetCubemap()					{ return m_pCubemap; };
 	
-	UINT bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
-	UINT bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
+	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
+	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pCubemap;

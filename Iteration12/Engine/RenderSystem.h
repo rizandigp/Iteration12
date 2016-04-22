@@ -28,7 +28,7 @@
 class RenderCommandAllocator
 {
 public:
-	void initialize(UINT numBlocks)	{	m_Blocks.resize( numBlocks );
+	void Initialize(UINT numBlocks)	{	m_Blocks.resize( numBlocks );
 										for(UINT i=0; i<numBlocks; i++)
 										{
 											RenderCommandBlock* ptr = &m_Blocks[i];
@@ -37,12 +37,12 @@ public:
 										}
 									};	
 
-	inline RenderCommand* allocate()	{	RenderCommandBlock* block; 
+	inline RenderCommand* Allocate()	{	RenderCommandBlock* block; 
 											if (m_Free.try_pop(block)) 
 												return reinterpret_cast<RenderCommand*>(block); 
 											else return NULL; };
 
-	inline void deallocate(RenderCommand* ptr)	{	ptr->~RenderCommand(); 
+	inline void Deallocate(RenderCommand* ptr)	{	ptr->~RenderCommand(); 
 													/*ZeroMemory(ptr, sizeof(RenderCommandBlock));*/ 
 													m_Free.push(reinterpret_cast<RenderCommandBlock*>(ptr)); };
 
@@ -73,89 +73,89 @@ class RenderSystem
 public:
 	RenderSystem() :m_pBoundingBoxWireframeMesh(NULL), frameFinishedSemaphore(0), m_Multithreaded(false)	{};
 
-	HRESULT initialize( RenderSystemConfig creationConfig );
+	HRESULT Initialize( RenderSystemConfig creationConfig );
 
-	RenderDispatcher* getRenderDispatcher();
+	RenderDispatcher* GetRenderDispatcher();
 
 	// Set output HWND. This will reinitialize some parts of the renderer.
 	// KNOWN BUG: This call will cause PIX to crash
-	void setOutputWindow( HWND hWnd, UINT width, UINT height );
+	void SetOutputWindow( HWND hWnd, UINT width, UINT height );
 	// Set a single render target.
-	void setRenderTarget( Texture2D* pRenderTarget );
+	void SetRenderTarget( Texture2D* pRenderTarget );
 	// Set multiple render targets (MRTs).
-	void setMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray );
+	void SetMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray );
 	// Set render target to default (directly to the back buffer).
-	void setBackbufferAsRenderTarget();
+	void SetBackbufferAsRenderTarget();
 	// Resolve multisampled texture into a non-MSAA one.
-	void resolveMSAA( Texture2D* pDestination, Texture2D* pSource );
+	void ResolveMSAA( Texture2D* pDestination, Texture2D* pSource );
 	// Set active camera for rendering.
-	void setCamera( Camera3D* pCamera );
+	void SetCamera( Camera3D* pCamera );
 	// Submit render command to execute.
-	virtual void submit( RenderCommand* pRenderCommand );
+	virtual void Submit( RenderCommand* pRenderCommand );
 	/*	Submit render command to execute (multithreaded).
 		Submitted render commands are pushed on the render queue to be 
-		executed on a dedicated rendering thread by consumeRenderQueue().*/
-	void submitThreaded( RenderCommand* pRenderCommand );
+		executed on a dedicated rendering thread by ConsumeRenderQueue().*/
+	void SubmitThreaded( RenderCommand* pRenderCommand );
 	// Present the main backbuffer. SyncInterval is not yet used.
-	void present( UINT SyncInterval );
+	void Present( UINT SyncInterval );
 	// Present a render output. SyncInterval is not yet used.
-	void present( RenderOutput* pOutput, UINT SyncInterval );
+	void Present( RenderOutput* pOutput, UINT SyncInterval );
 	// Render target clears.
-	void clearBackbuffer( float* clearColorRGBA );
-	void clearDepthStencil( float depth, UINT8 stencil );
+	void ClearBackbuffer( float* clearColorRGBA );
+	void ClearDepthStencil( float depth, UINT8 stencil );
 	// Texture clear
-	void clearTexture( Texture2D* pTexture, float* clearColorRGBA );
-	void downsampleTexture( Texture2D* target, Texture2D* source );
+	void ClearTexture( Texture2D* pTexture, float* clearColorRGBA );
+	void DownsampleTexture( Texture2D* target, Texture2D* source );
 	// Returns current bound render target
-	Texture2D*	getRenderTarget()	{ return m_pRenderTarget; };
+	Texture2D*	GetRenderTarget()	{ return m_pRenderTarget; };
 	// Get backbuffer
-	Texture2D*	getBackbuffer();
+	Texture2D*	GetBackbuffer();
 
 	// Returns configuration of the render system.
-	RenderSystemConfig	getConfig()		{ return m_Config; };
+	RenderSystemConfig	GetConfig()		{ return m_Config; };
 	// Returns active camera.
-	Camera3D*	getCamera();
+	Camera3D*	GetCamera();
 
 	// Begin and end called every frame.
-	virtual void	beginFrame( float* clearColorRGBA, float depthClear, UINT8 stencilClear );
-	virtual void	beginFrame();
-	virtual void	endFrame();
+	virtual void	BeginFrame( float* clearColorRGBA, float depthClear, UINT8 stencilClear );
+	virtual void	BeginFrame();
+	virtual void	EndFrame();
 
 	/*	Executes all render commands in the render queue.
 		Called on the rendering thread only when multithreaded rendering is enabled,
 		on single-threaded rendering render queues are not used. */
-	virtual void	consumeRenderQueue( bool returnAfterFrameFinished );
+	virtual void	ConsumeRenderQueue( bool returnAfterFrameFinished );
 
 	// Synchronization purposes.
-	void signalFrameFinished();
-	void waitForFrameToFinish();
+	void SignalFrameFinished();
+	void WaitForFrameToFinish();
 
 	// Cached resource loading & creation.
-	virtual Mesh*	loadMesh( std::string filename, bool cache = true );
-	virtual Shaderset*	loadShaderset( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros = NULL, bool debug = false, bool cache = true );
-	virtual Texture2D*	loadTexture( std::wstring filename, bool cache = true );
+	virtual Mesh*	LoadMesh( std::string filename, bool cache = true );
+	virtual Shaderset*	LoadShaderset( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros = NULL, bool debug = false, bool cache = true );
+	virtual Texture2D*	LoadTexture( std::wstring filename, bool cache = true );
 	// Resource creation.
-	virtual GeometryChunk*	createGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-	virtual Shaderset*	createShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug );
-	virtual Texture2D*	createTextureFromFile( std::wstring filename );
-	virtual Texture2D*	createTexture( UINT height, UINT width, TEXTURE_FORMAT format );
-	virtual Texture2D*	createTexture( const Image* const initialData );
-	template<typename T> Texture2D*	createTexture( const Array2D<T>* const initialData, TEXTURE_FORMAT format );
-	//virtual	Texture3D*	createTexture3D( UINT height, UINT width, UINT depth, TEXTURE_FORMAT format );
-	template<typename T> Texture3D* createTexture3D( Array3D<T>* data, TEXTURE_FORMAT format );
+	virtual GeometryChunk*	CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	virtual Shaderset*	CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug );
+	virtual Texture2D*	CreateTextureFromFile( std::wstring filename );
+	virtual Texture2D*	CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format );
+	virtual Texture2D*	CreateTexture( const Image* const initialData );
+	template<typename T> Texture2D*	CreateTexture( const Array2D<T>* const initialData, TEXTURE_FORMAT format );
+	//virtual	Texture3D*	CreateTexture3D( UINT height, UINT width, UINT depth, TEXTURE_FORMAT format );
+	template<typename T> Texture3D* CreateTexture3D( Array3D<T>* data, TEXTURE_FORMAT format );
 
 	// Create cubemap from 6 images in the order: x+,x-,y+,y-,z+,z-.
 	// All images must have the same dimensions. Only TEXTURE_FORMAT_R8G8B8A8_UNORM supported for now.
-	virtual TextureCube*	createCubemap( Image* faces[6] );
+	virtual TextureCube*	CreateCubemap( Image* faces[6] );
 
 	// Simple meshes
 	//virtual Mesh* createBoxMesh( XMFLOAT3 dimensions, XMFLOAT3 uvscale );
-	virtual Mesh* createPlaneMesh( XMFLOAT2 dimensions, XMFLOAT2 uvscale );
-	virtual Mesh* createBoxWireframeMesh(XMFLOAT3 dimensions);
-	virtual Mesh* createMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	virtual Mesh* CreatePlaneMesh( XMFLOAT2 dimensions, XMFLOAT2 uvscale );
+	virtual Mesh* CreateBoxWireframeMesh(XMFLOAT3 dimensions);
+	virtual Mesh* CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// Object renderer
-	virtual Renderer*	createRenderer();
+	virtual Renderer*	CreateRenderer();
 
 	// Timings
 	//double t_work;
@@ -202,29 +202,29 @@ protected:
 };
 
 template<typename T> 
-Texture2D*	RenderSystem::createTexture( const Array2D<T>* const initialData, TEXTURE_FORMAT format )
+Texture2D*	RenderSystem::CreateTexture( const Array2D<T>* const initialData, TEXTURE_FORMAT format )
 {
 	Texture2D* tex;
 	if ( initialData != NULL)
-		tex = m_pDispatcher->createTexture( initialData->height(), 
-											initialData->width(), 
+		tex = m_pDispatcher->CreateTexture( initialData->Height(), 
+											initialData->Width(), 
 											format, 
-											initialData->data(), 
-											initialData->pitch(), 
-											initialData->size() );
+											initialData->Data(), 
+											initialData->Pitch(), 
+											initialData->Size() );
 
 	if (tex)
-		tex->setRenderSystem(this);
+		tex->SetRenderSystem(this);
 	
 	return tex;
 }
 
 template<typename T>
-Texture3D* RenderSystem::createTexture3D( Array3D<T>* data, TEXTURE_FORMAT format )
+Texture3D* RenderSystem::CreateTexture3D( Array3D<T>* data, TEXTURE_FORMAT format )
 {
-	Texture3D* tex = m_pDispatcher->createTexture3D( data->width(), data->height(), data->depth(), format, data->data(), data->pitch(), data->slicePitch(), data->size() ); 
+	Texture3D* tex = m_pDispatcher->CreateTexture3D( data->width(), data->height(), data->depth(), format, data->data(), data->pitch(), data->slicePitch(), data->size() ); 
 	if (tex)
-		tex->setRenderSystem(this);
+		tex->SetRenderSystem(this);
 	
 	return tex;
 }

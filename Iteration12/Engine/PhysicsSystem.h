@@ -63,22 +63,22 @@ void onHavokError(const char* msg, void* userArgGivenToInit);
 class PhysicsSystem
 {
 public:
-	void initHavok();
-	void deinitHavok();
+	void InitHavok();
+	void DeinitHavok();
 
-	void step(float deltaTime);
-	hkpWorld* getWorld();
-	hkVisualDebugger* getVisualDebugger();
-	hkpPhysicsContext* getContext();
+	void Step(float deltaTime);
+	hkpWorld* GetWorld();
+	hkVisualDebugger* GetVisualDebugger();
+	hkpPhysicsContext* GetContext();
 
-	hkpRigidBody* createBoxRigidBody( Vector3 halfExtents, float mass, float friction = 0.5f, float restitution = 0.35f  );
+	hkpRigidBody* CreateBoxRigidBody( Vector3 halfExtents, float mass, float friction = 0.5f, float restitution = 0.35f  );
 
 protected:
-	void initMemory();
-	void initPhysicalWorld();
-	void initVDB();
-	void deinitVDB();
-	void stepVDB();
+	void InitMemory();
+	void InitPhysicalWorld();
+	void InitVDB();
+	void DeinitVDB();
+	void StepVDB();
 
 	hkpWorld* m_pWorld;
 	hkVisualDebugger* m_pVDB;

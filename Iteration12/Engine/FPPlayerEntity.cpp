@@ -8,42 +8,42 @@ FPPlayerEntity::FPPlayerEntity(RenderSystem* pRenderSystem)
 	m_TimeSinceLastShot = 0.0f;
 	m_ShotEntityId = 0;
 	m_bMouseDragged = false;
-	setRenderSystem( pRenderSystem );
+	SetRenderSystem( pRenderSystem );
 
 	// Set up flashlight
 	m_pSpotlight = new SpotLight();
-	m_pSpotlight->setRadius( 100.0f );
-	m_pSpotlight->setIntensity( 20.0f );
-	m_pSpotlight->setColor( Vector3(1.0f,1.0f,0.8f) );
-	m_pSpotlight->setCone( Vector2( XM_PI/3.0f, XM_PI/3.0f ) );
-	m_pSpotlight->setCookie( m_pRenderSystem->loadTexture( L"Media/spotlight.bmp" ) );
-	m_pSpotlight->transform()->setPosition( 0.0f, 0.0f, 0.0f );
-	m_pSpotlight->pointTo( Vector3( 0.0f, 0.0f, 25.0f ), 0.0f );
-	m_pSpotlight->setRSMEnabled( false );
+	m_pSpotlight->SetRadius( 100.0f );
+	m_pSpotlight->SetIntensity( 20.0f );
+	m_pSpotlight->SetColor( Vector3(1.0f,1.0f,0.8f) );
+	m_pSpotlight->SetCone( Vector2( XM_PI/3.0f, XM_PI/3.0f ) );
+	m_pSpotlight->SetCookie( m_pRenderSystem->LoadTexture( L"Media/spotlight.bmp" ) );
+	m_pSpotlight->Transformation()->SetPosition( 0.0f, 0.0f, 0.0f );
+	m_pSpotlight->PointTo( Vector3( 0.0f, 0.0f, 25.0f ), 0.0f );
+	m_pSpotlight->SetRSMEnabled( false );
 	//m_pSpotlight->disable();
 
 	UINT width, height;
-	RenderSystemConfig config = pRenderSystem->getConfig();
+	RenderSystemConfig config = pRenderSystem->GetConfig();
 	width = config.Width;
 	height = config.Height;
 
 	// Set up first person camera
 	m_pCamera = new Camera3D();
-	m_pCamera->setPosition( transform()->getPosition() );
-	m_pCamera->setLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
-	m_pCamera->setUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
-	m_pCamera->setProjection( XM_PI*0.35f, width / (float)height, 0.1f, 2000.0f );
-	m_pCamera->update( 0.0f );
+	m_pCamera->SetPosition( Transformation()->GetPosition() );
+	m_pCamera->SetLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
+	m_pCamera->SetUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
+	m_pCamera->SetProjection( XM_PI*0.35f, width / (float)height, 0.1f, 2000.0f );
+	m_pCamera->Update( 0.0f );
 }
 
-void FPPlayerEntity::onAddToScene( Scene* ptr )
+void FPPlayerEntity::OnAddToScene( Scene* ptr )
 {
-	ptr->addSpotLight( m_pSpotlight );
-	ptr->setCamera( m_pCamera );
-	Entity::onAddToScene(ptr);
+	ptr->AddSpotLight( m_pSpotlight );
+	ptr->SetCamera( m_pCamera );
+	Entity::OnAddToScene(ptr);
 }
 
-void FPPlayerEntity::update(float deltaTime)
+void FPPlayerEntity::Update(float deltaTime)
 {
 	POINT ptMousePos;
 	Vector2 ptMousePosDelta;
@@ -131,7 +131,7 @@ void FPPlayerEntity::update(float deltaTime)
 		vCamMovement.z -= 1.0f*deltaTime;
 	
 	// Shoot a cardboard box when space bar is hit
-	if ( KEYDOWN( VK_SPACE ) && m_pScene->getPhysicsSystem())
+	if ( KEYDOWN( VK_SPACE ) && m_pScene->GetPhysicsSystem())
 	{
 		if ( m_TimeSinceLastShot > 0.2f )
 		{
@@ -156,13 +156,13 @@ void FPPlayerEntity::update(float deltaTime)
 				m_ShotEntityId = 0;
 
 			m_TimeSinceLastShot = 0.0f;
-			XMFLOAT3 position = transform()->getPosition().intoXMFLOAT3();
+			Vector3 position = Transformation()->GetPosition();
 			float shootingSpeed = 10.0f;
 			hkVector4 shootingDirection( cos(m_DirEuler.z)*cos(m_DirEuler.y)*shootingSpeed, sin(m_DirEuler.z)*cos(m_DirEuler.y)*shootingSpeed, sin(m_DirEuler.y)*shootingSpeed );
 			Entity_Prop* entity = new Entity_Prop(*m_pScene->m_pPrefabs[prop]);
 			entity->m_pRigidBody->setPosition( hkVector4(position.x, position.y, position.z ) );
 			entity->m_pRigidBody->setLinearVelocity( shootingDirection );
-			m_pScene->addEntity(entity);
+			m_pScene->AddEntity(entity);
 		}
 	}
 	
@@ -179,38 +179,38 @@ void FPPlayerEntity::update(float deltaTime)
 	relPos.x += vCamMovement.x*sin(-m_DirEuler.z);						
 	relPos.y += vCamMovement.x*cos(-m_DirEuler.z);
 
-	transform()->translate( relPos );
-	pos = transform()->getPosition();
+	Transformation()->Translate( relPos );
+	pos = Transformation()->GetPosition();
 	//pos.z = 1.6f;
-	transform()->setPosition( pos );
+	Transformation()->SetPosition( pos );
 	
 	lookat.x = pos.x + cos(m_DirEuler.z)*cos(m_DirEuler.y);
 	lookat.y = pos.y + sin(m_DirEuler.z)*cos(m_DirEuler.y);
 	lookat.z = pos.z + sin(m_DirEuler.y);
 
-	m_pCamera->setPosition( transform()->getPosition() );
-	m_pCamera->setLookAt( lookat );
-	m_pCamera->update( deltaTime );
+	m_pCamera->SetPosition( Transformation()->GetPosition() );
+	m_pCamera->SetLookAt( lookat );
+	m_pCamera->Update( deltaTime );
 
 	Vector3 flashlightpos, flashlighttarget;
 	flashlightpos.x = pos.x + 0.35f*cosf(m_DirEuler.z-XM_PIDIV2);
 	flashlightpos.y = pos.y + 0.35f*sinf(m_DirEuler.z-XM_PIDIV2);
 	//flashlightpos.z = 1.45f;
 	flashlightpos.z = pos.z;
-	m_pSpotlight->transform()->setPosition(flashlightpos);
+	m_pSpotlight->Transformation()->SetPosition(flashlightpos);
 	flashlighttarget.x = pos.x + 25.0f*cosf(m_PointingEulerDir.z)*cosf(m_PointingEulerDir.y);
 	flashlighttarget.y = pos.y + 25.0f*sinf(m_PointingEulerDir.z)*cosf(m_PointingEulerDir.y);
 	flashlighttarget.z = pos.z + 25.0f*sinf(m_PointingEulerDir.y);
-	m_pSpotlight->pointTo( flashlighttarget, 0.0f );
-	m_pSpotlight->update();
+	m_pSpotlight->PointTo( flashlighttarget, 0.0f );
+	m_pSpotlight->Update();
 
-	//m_pPointLight->transform()->setPosition( pos );
+	//m_pPointLight->transform()->SetPosition( pos );
 
 	if ( KEYDOWN( 'F' ) )
 	{
 		if (m_FlashlightButtonCooldown < 0.0f)
 		{
-			m_pSpotlight->setEnabled(!m_pSpotlight->isEnabled());
+			m_pSpotlight->SetEnabled(!m_pSpotlight->IsEnabled());
 			m_FlashlightButtonCooldown = 0.2f;
 		}
 	}

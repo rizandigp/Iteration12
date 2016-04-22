@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning( disable : 4244 )
 
-#include <stdint.h>
+#include "Math.h"
 
 // 8-bit RGBA color class
 class Color
@@ -14,7 +14,7 @@ public:
 	Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {};
 	Color(uint8_t val) : r(val), g(val), b(val), a(255)	{};
 
-	inline Color toLinear()
+	inline Color ToLinear()
 	{
 		return Color( pow(r,2.2f),
 						pow(g,2.2f),
@@ -22,7 +22,7 @@ public:
 						pow(a,2.2f) );
 	}
 
-	inline Color toGamma()
+	inline Color ToGamma()
 	{
 		return Color( pow(r,1.0/2.2f),
 						pow(g,1.0/2.2f),

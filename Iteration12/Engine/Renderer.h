@@ -15,36 +15,36 @@ struct SubmeshRenderData
 	std::vector<SpotLight*>	AffectingSpotLights;
 };
 
-// Object renderer. Submits RenderCommands's to the RenderSystem to be executed.
+// Object renderer. Handles culling, lighting configuration, etc and submits RenderCommands's to the RenderSystem to be executed.
 class Renderer
 {
 public:
-	virtual void setRenderSystem( RenderSystem*	pRenderSystem );
-	virtual void setMesh( Mesh* pMesh );
+	virtual void SetRenderSystem( RenderSystem*	pRenderSystem );
+	virtual void SetMesh( Mesh* pMesh );
 
-	virtual void addLight( PointLight* pLight );
-	virtual void addLight( SpotLight* pLight );
-	virtual void clearLights();
+	virtual void AddLight( PointLight* pLight );
+	virtual void AddLight( SpotLight* pLight );
+	virtual void ClearLights();
 
-	virtual void cull( XNA::Frustum* frustum, Transform* pTransform );
-	virtual void cull( XNA::Sphere* sphere, Transform* pTransform );
-	//virtual void cull( XNA::OrientedBox* box, Transform* pTransform );
-	virtual void cullLight( PointLight* light, Transform* pTransform );
-	virtual void cullLight( SpotLight* light, Transform* pTransform );
-	virtual void setCulled( bool culled );
+	virtual void Cull( XNA::Frustum* frustum, Transform* pTransform );
+	virtual void Cull( XNA::Sphere* sphere, Transform* pTransform );
+	//virtual void Cull( XNA::OrientedBox* box, Transform* pTransform );
+	virtual void CullLight( PointLight* light, Transform* pTransform );
+	virtual void CullLight( SpotLight* light, Transform* pTransform );
+	virtual void SetCulled( bool Culled );
 
-	virtual void render( Transform* pTransform );
-	virtual void renderShadowmap( Transform* pTransform, Camera3D* pShadowCamera );
-	virtual void renderRSM( Transform* pTransform, Camera3D* pShadowCamera, SpotLight* pLightSource )	{};
-	virtual void renderOBB( Transform* pTransform );
+	virtual void Render( Transform* pTransform );
+	virtual void RenderShadowmap( Transform* pTransform, Camera3D* pShadowCamera );
+	virtual void RenderRSM( Transform* pTransform, Camera3D* pShadowCamera, SpotLight* pLightSource )	{};
+	virtual void RenderOBB( Transform* pTransform );
 
-	inline RenderSystem* getRenderSystem()	{ return m_pRenderSystem; };
-	inline Mesh* getMesh()					{ return m_pMesh; };
-	inline std::vector<PointLight*>* getAffectingPointLights(UINT submeshIndex)	{ return &m_PointLights[submeshIndex]; };
-	inline std::vector<SpotLight*>* getAffectingSpotLights(UINT submeshIndex)	{ return &m_SpotLights[submeshIndex]; };
+	inline RenderSystem* GetRenderSystem()	{ return m_pRenderSystem; };
+	inline Mesh* GetMesh()					{ return m_pMesh; };
+	inline std::vector<PointLight*>* GetAffectingPointLights(UINT submeshIndex)	{ return &m_PointLights[submeshIndex]; };
+	inline std::vector<SpotLight*>* GetAffectingSpotLights(UINT submeshIndex)	{ return &m_SpotLights[submeshIndex]; };
 
-	inline void setTime( float t )	{ m_Time = t; };
-	inline float getTime()			{ return m_Time; };
+	inline void SetTime( float t )	{ m_Time = t; };
+	inline float GetTime()			{ return m_Time; };
 
 protected:
 	RenderSystem*	m_pRenderSystem;

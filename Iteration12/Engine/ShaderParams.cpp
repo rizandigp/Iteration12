@@ -15,8 +15,8 @@ void ShaderParams::initialize( Shaderset* shader )
 	{
 		ConstantBufferData empty;
 		m_VSConstantBuffers.push_back(empty);
-		UINT size = ((D3D11Shaderset*)m_pShaderset)->getVSConstantBufferSize(i);
-		m_VSConstantBuffers.back().init( size );
+		UINT size = ((D3D11Shaderset*)m_pShaderset)->GetVSConstantBufferSize(i);
+		m_VSConstantBuffers.back().Init( size );
 	}
 	
 	// Pixel Shader
@@ -27,8 +27,8 @@ void ShaderParams::initialize( Shaderset* shader )
 	{
 		ConstantBufferData empty;
 		m_PSConstantBuffers.push_back(empty);
-		UINT size = ((D3D11Shaderset*)m_pShaderset)->getPSConstantBufferSize(i);
-		m_PSConstantBuffers.back().init( size );
+		UINT size = ((D3D11Shaderset*)m_pShaderset)->GetPSConstantBufferSize(i);
+		m_PSConstantBuffers.back().Init( size );
 	}
 }
 
@@ -36,14 +36,14 @@ void ShaderParams::initialize( Shaderset* shader )
 void ShaderParams::setParam( const std::string& paramName, UINT index, const XMFLOAT4X4* pMatrixParam )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->getVSVariable( paramName );
+	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
 		{
 			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
-			m_VSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)pMatrixParam, size );
+			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)pMatrixParam, size );
 		}
 		else
 		{
@@ -59,14 +59,14 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->getPSVariable( paramName );
+	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
 		{
 			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
-			m_PSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)pMatrixParam, size );
+			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)pMatrixParam, size );
 		}
 		else
 		{
@@ -85,14 +85,14 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 void ShaderParams::setParam( const std::string& paramName, UINT index, const XMFLOAT4* pVectorParam )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->getVSVariable( paramName );
+	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
 		{
 			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
-			m_VSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4), (void*)pVectorParam, size );
+			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), (void*)pVectorParam, size );
 		}
 		else
 		{
@@ -108,14 +108,14 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->getPSVariable( paramName );
+	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
 		{
 			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
-			m_PSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4), (void*)pVectorParam, size );
+			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), (void*)pVectorParam, size );
 		}
 		else
 		{
@@ -134,7 +134,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 void ShaderParams::setParam( const std::string& paramName, UINT index, float pScalarParam )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->getVSVariable( paramName );
+	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -142,7 +142,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
 			//UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
 			UINT size = sizeof(float);
-			m_VSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4), &pScalarParam, size );
+			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), &pScalarParam, size );
 		}
 		else
 		{
@@ -158,7 +158,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->getPSVariable( paramName );
+	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -166,7 +166,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
 			//UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
 			UINT size = sizeof(float);
-			m_PSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4), &pScalarParam, size );
+			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), &pScalarParam, size );
 		}
 		else
 		{
@@ -185,14 +185,14 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 void ShaderParams::setParam( const std::string& paramName, UINT index, const Matrix4x4* matrix )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->getVSVariable( paramName );
+	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
 		{
 			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
-			m_VSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)matrix, size );
+			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)matrix, size );
 		}
 		else
 		{
@@ -208,14 +208,14 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const Mat
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->getPSVariable( paramName );
+	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
 		{
 			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
-			m_PSConstantBuffers.at(pvar->ConstantBuffer).setData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)matrix, size );
+			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)matrix, size );
 		}
 		else
 		{
@@ -291,7 +291,7 @@ void ShaderParams::setParam( const std::string& paramName, int pScalarParam )
 
 void ShaderParams::assign( ShaderParamBlock* pParamBlock )
 {
-	std::map< std::pair< std::string, UINT > , XMFLOAT4X4, std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> > *pMatrixParams = pParamBlock->getMatrixParams();
+	std::map< std::pair< std::string, UINT > , XMFLOAT4X4, std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> > *pMatrixParams = pParamBlock->GetMatrixParams();
 	std::map< std::pair< std::string, UINT > , XMFLOAT4 , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> > *pVectorParams = pParamBlock->getVectorParams();
 	std::map< std::pair< std::string, UINT > , float , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> > *pScalarParams = pParamBlock->getScalarParams();
 

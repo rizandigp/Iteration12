@@ -4,51 +4,51 @@
 
 
 
-void DX11Texture2D::bind( std::string const &name, RenderDispatcher* pDispatcher )
+void DX11Texture2D::Bind( std::string const &name, RenderDispatcher* pDispatcher )
 {
 	DX11RenderDispatcher* pd3d11Dispatcher = dynamic_cast<DX11RenderDispatcher*>(pDispatcher);
-	int index = pd3d11Dispatcher->getActiveShaderset()->getVSShaderResourceIndex( name );
+	int index = pd3d11Dispatcher->GetActiveShaderset()->GetVSShaderResourceIndex( name );
 	if (index!=-1) 
-		pd3d11Dispatcher->getImmediateContext()->VSSetShaderResources( index, 1, &m_pSRV );
+		pd3d11Dispatcher->GetImmediateContext()->VSSetShaderResources( index, 1, &m_pSRV );
 
-	index = pd3d11Dispatcher->getActiveShaderset()->getPSShaderResourceIndex( name );
+	index = pd3d11Dispatcher->GetActiveShaderset()->GetPSShaderResourceIndex( name );
 	if (index!=-1) 
-		pd3d11Dispatcher->getImmediateContext()->PSSetShaderResources( index, 1, &m_pSRV );
+		pd3d11Dispatcher->GetImmediateContext()->PSSetShaderResources( index, 1, &m_pSRV );
 }
 
-void DX11Texture2D::unbind( std::string const &name, RenderDispatcher* pDispatcher )
+void DX11Texture2D::Unbind( std::string const &name, RenderDispatcher* pDispatcher )
 {
 	DX11RenderDispatcher* pd3d11Dispatcher = dynamic_cast<DX11RenderDispatcher*>(pDispatcher);
 	ID3D11ShaderResourceView* nullSRV[1];
 	nullSRV[0]=NULL;
 
-	INT index = pd3d11Dispatcher->getActiveShaderset()->getVSShaderResourceIndex( name );
+	INT index = pd3d11Dispatcher->GetActiveShaderset()->GetVSShaderResourceIndex( name );
 	if (index!=-1) 
-		pd3d11Dispatcher->getImmediateContext()->VSSetShaderResources( index, 1, nullSRV );
+		pd3d11Dispatcher->GetImmediateContext()->VSSetShaderResources( index, 1, nullSRV );
 
-	index = pd3d11Dispatcher->getActiveShaderset()->getPSShaderResourceIndex( name );
+	index = pd3d11Dispatcher->GetActiveShaderset()->GetPSShaderResourceIndex( name );
 	if (index!=-1) 
-		pd3d11Dispatcher->getImmediateContext()->PSSetShaderResources( index, 1, nullSRV );
+		pd3d11Dispatcher->GetImmediateContext()->PSSetShaderResources( index, 1, nullSRV );
 }
 
-void DX11Texture2D::bindRenderTarget( RenderDispatcher* pDispatcher )
+void DX11Texture2D::BindRenderTarget( RenderDispatcher* pDispatcher )
 {
 	DX11RenderDispatcher* pd3d11Dispatcher = dynamic_cast<DX11RenderDispatcher*>(pDispatcher);
-	ID3D11RenderTargetView *pRTV = getRenderTargetView();
-	ID3D11DepthStencilView *pDSV = getDepthStencilView();
-	pd3d11Dispatcher->getImmediateContext()->OMSetRenderTargets( 1, &pRTV , pDSV );
+	ID3D11RenderTargetView *pRTV = GetRenderTargetView();
+	ID3D11DepthStencilView *pDSV = GetDepthStencilView();
+	pd3d11Dispatcher->GetImmediateContext()->OMSetRenderTargets( 1, &pRTV , pDSV );
 }
 
-void DX11Texture2D::unbindRenderTarget( RenderDispatcher* pDispatcher )
+void DX11Texture2D::UnBindRenderTarget( RenderDispatcher* pDispatcher )
 {
 }
 
-void DX11Texture2D::clearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )
+void DX11Texture2D::ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )
 {
-	m_pRenderSystem->clearTexture(this, clearColorRGBA);
+	m_pRenderSystem->ClearTexture(this, clearColorRGBA);
 }
 
-void DX11Texture2D::releaseResources()
+void DX11Texture2D::ReleaseResources()
 {
 	m_pResource->Release();
 	m_pSRV->Release();
@@ -57,18 +57,18 @@ void DX11Texture2D::releaseResources()
 }
 
 
-void DX10Texture2D::bind( RenderDispatcher* pDispatcher, std::string name )
+void DX10Texture2D::Bind( RenderDispatcher* pDispatcher, std::string name )
 {
 }
 
-void DX10Texture2D::unbind( RenderDispatcher* pDispatcher, std::string name )
+void DX10Texture2D::Unbind( RenderDispatcher* pDispatcher, std::string name )
 {
 }
 
-void DX10Texture2D::bindRenderTarget( RenderDispatcher* pDispatcher )
+void DX10Texture2D::BindRenderTarget( RenderDispatcher* pDispatcher )
 {
 }
 
-void DX10Texture2D::unbindRenderTarget( RenderDispatcher* pDispatcher )
+void DX10Texture2D::UnBindRenderTarget( RenderDispatcher* pDispatcher )
 {
 }

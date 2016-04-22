@@ -11,7 +11,7 @@ FFT::FFT(unsigned int N) : N(N), reversed(0), W(0), pi2(2 * PI)
 
 	// Prepare bit-reserved indices
 	reversed = new unsigned int[N];
-	for (int i = 0; i < N; i++) reversed[i] = reverse(i);
+	for (int i = 0; i < N; i++) reversed[i] = ReverseIndices(i);
 
 	// Prepare danielson-lanczos lemma twiddle factor
 	int pow2 = 1;
@@ -43,7 +43,7 @@ FFT::~FFT()
 	if (reversed) delete [] reversed;
 }
 
-unsigned int FFT::reverse(unsigned int i) 
+unsigned int FFT::ReverseIndices(unsigned int i) 
 {
 	unsigned int res = 0;
 	for (int j = 0; j < log_2_N; j++)
@@ -142,12 +142,12 @@ int pown(const int p)
   return a;
 }
 
-Complex FFT::twiddleFactor(UINT x, UINT N) 
+Complex FFT::TwiddleFactor(UINT x, UINT N) 
 {
     return Complex(cos(2.0f * PI * x / N), sin(2.0f * PI * x / N));
 }
 
-void FFT::iterativeIFFT( Complex* primal, Complex* dual, UINT stride, UINT zeroOffset )
+void FFT::IterativeFFT( Complex* primal, Complex* dual, UINT stride, UINT zeroOffset )
 {
 	const int absP = logf(N)/logf(2.0f);
 
@@ -190,7 +190,7 @@ void FFT::iterativeIFFT( Complex* primal, Complex* dual, UINT stride, UINT zeroO
 		dual[j*stride + zeroOffset] /= N;*/
 }
 
-void FFT::parallelfft( UINT index, Complex* primal, Complex* dual, UINT stride, UINT zeroOffset )
+void FFT::ParallelFFT( UINT index, Complex* primal, Complex* dual, UINT stride, UINT zeroOffset )
 {
 	const int absP = logf(N)/logf(2.0f);
 

@@ -4,7 +4,7 @@
 #include "DX11RenderCommand.h"
 #include "RenderSystem.h"
 
-void D3D11GeometryChunk::updateVertexBuffer( float* vertices, UINT vertexCount, UINT byteSize, UINT stride )
+void D3D11GeometryChunk::UpdateVertexBuffer( float* vertices, UINT vertexCount, UINT byteSize, UINT stride )
 {
 	if (!m_bDynamic)
 	{
@@ -14,31 +14,32 @@ void D3D11GeometryChunk::updateVertexBuffer( float* vertices, UINT vertexCount, 
 
 	// Map new data to GPU
 	DX11RenderCommand_Map mapcommand;
-	mapcommand.setResource( this->getVertexBuffer(0)->getBuffer(), vertices, byteSize );
-	m_pRenderSystem->submit( &mapcommand );
+	mapcommand.SetResource( this->GetVertexBuffer(0)->GetBuffer(), vertices, byteSize );
+	m_pRenderSystem->Submit( &mapcommand );
 
 	// Update bounding box
 	XNA::AxisAlignedBox AABB;
 	XNA::ComputeBoundingAxisAlignedBoxFromPoints( &AABB, vertexCount, (XMFLOAT3*)vertices, stride );
-	this->setAABB(&AABB);
+	this->SetAABB(&AABB);
 }
 
-void D3D11GeometryChunk::bind( RenderDispatcher* pDispatcher )
+void D3D11GeometryChunk::Bind( RenderDispatcher* pDispatcher )
 {
 	// Retrieve pointers
 	DX11RenderDispatcher *pd3d11Dispatcher = dynamic_cast<DX11RenderDispatcher*>(pDispatcher);
-	ID3D11Device* pDevice = pd3d11Dispatcher->getDevice();
-	ID3D11DeviceContext *pContext = pd3d11Dispatcher->getImmediateContext();
-	// TODO : multiple VBs
-	ID3D11Buffer* vb = getVertexBuffer(0)->getBuffer();
-	ID3D11Buffer* ib = getIndexBuffer()->getBuffer();
+	ID3D11Device* pDevice = pd3d11Dispatcher->GetDevice();
+	ID3D11DeviceContext *pContext = pd3d11Dispatcher->GetImmediateContext();
 
-	BufferLayout *buffLayout = getVertexBuffer(0)->getBufferLayout();
+	// TODO : multiple VBs
+	ID3D11Buffer* vb = GetVertexBuffer(0)->GetBuffer();
+	ID3D11Buffer* ib = GetIndexBuffer()->GetBuffer();
+
+	BufferLayout *buffLayout = GetVertexBuffer(0)->GetBufferLayout();
 
 	// Set input layout
 	// TODO : optimize! too many input layouts get created!
 	ID3D11InputLayout* pInputLayout = NULL;
-	pInputLayout = getCompatibleInputLayout( pd3d11Dispatcher->getActiveShaderset() );
+	pInputLayout = GetCompatibleInputLayout( pd3d11Dispatcher->GetActiveShaderset() );
 
 	if ( pInputLayout )
 	{
@@ -46,14 +47,14 @@ void D3D11GeometryChunk::bind( RenderDispatcher* pDispatcher )
 	}
 	else
 	{
-		pInputLayout = CreateInputLayoutFromBufferLayouts( pDevice, &buffLayout, 1, pd3d11Dispatcher->getActiveShaderset()->getInputSignature()->GetBufferPointer(), pd3d11Dispatcher->getActiveShaderset()->getInputSignature()->GetBufferSize() );
-		setCompatibleInputLayout( pd3d11Dispatcher->getActiveShaderset(), pInputLayout );
+		pInputLayout = CreateInputLayoutFromBufferLayouts( pDevice, &buffLayout, 1, pd3d11Dispatcher->GetActiveShaderset()->GetInputSignature()->GetBufferPointer(), pd3d11Dispatcher->GetActiveShaderset()->GetInputSignature()->GetBufferSize() );
+		SetCompatibleInputLayout( pd3d11Dispatcher->GetActiveShaderset(), pInputLayout );
 		pContext->IASetInputLayout( pInputLayout );
 	}
 	
 	
 	// Set vertex & index buffer
-    UINT stride = getVertexBuffer(0)->getStride();
+    UINT stride = GetVertexBuffer(0)->GetStride();
     UINT offset = 0;
     pContext->IASetVertexBuffers( 0, 1, &vb , &stride, &offset );
     pContext->IASetIndexBuffer( ib, DXGI_FORMAT_R32_UINT, 0 );
@@ -70,8 +71,8 @@ ID3D11InputLayout* D3D11GeometryChunk::CreateInputLayoutFromBufferLayouts( ID3D1
 	int i, ii;
 	for ( i = 0; i < numberOfBuffers; i++ )
 	{
-		VertexElement* pElements = (*BufferLayouts[i]).getElements();
-		int numElements = (*BufferLayouts[i]).getNumberOfElements();
+		VertexElement* pElements = (*BufferLayouts[i]).GetElements();
+		int numElements = (*BufferLayouts[i]).GetNumberOfElements();
 		for (ii=0; ii<numElements; ii++)
 		{
 			D3D11_INPUT_ELEMENT_DESC elementDesc;

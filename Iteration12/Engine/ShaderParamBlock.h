@@ -29,7 +29,7 @@ public:
 
 	void assign( ShaderParamBlock paramBlock );
 	
-	inline std::map< std::pair< std::string, UINT > , XMFLOAT4X4 , std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> >*	getMatrixParams()	{ return &m_MatrixParams; };
+	inline std::map< std::pair< std::string, UINT > , XMFLOAT4X4 , std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> >*	GetMatrixParams()	{ return &m_MatrixParams; };
 	inline std::map< std::pair< std::string, UINT > , XMFLOAT4 , std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> >*	getVectorParams()	{ return &m_VectorParams; };
 	inline std::map< std::pair< std::string, UINT > , float , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> >*		getScalarParams()	{ return &m_ScalarParams; };
 

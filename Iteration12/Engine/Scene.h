@@ -21,36 +21,36 @@ class Scene
 {
 public:
 	Scene() : m_pRenderSystem(NULL), m_pPhysicsSystem(NULL), m_pActiveCamera(NULL), m_Time(NULL)	{};
-	void init( RenderSystem* pRendering, PhysicsSystem* pPhysics );
-	void setRenderSystem( RenderSystem* pRenderSystem );
-	void setPhysicsSystem( PhysicsSystem* ptr );
-	void addEntity( Entity* ent );
-	void addPointLight( PointLight* light )	{m_pPointLights.push_back(light);};
-	void addSpotLight( SpotLight* light )	{m_pSpotLights.push_back(light);};
-	void setCamera( Camera3D* camera );
+	void Init( RenderSystem* pRendering, PhysicsSystem* pPhysics );
+	void SetRenderSystem( RenderSystem* pRenderSystem );
+	void SetPhysicsSystem( PhysicsSystem* ptr );
+	void AddEntity( Entity* ent );
+	void AddPointLight( PointLight* light )	{m_pPointLights.push_back(light);};
+	void AddSpotLight( SpotLight* light )	{m_pSpotLights.push_back(light);};
+	void SetCamera( Camera3D* camera );
 
-	void setDeltaTime( float value )		{ m_DeltaTime = value; };
-	void update( float deltaTime );
-	void render();
-	void parallelRender();
-	void renderDeferred();
-	void parallelRenderDeferred();
-	RenderSystem* getRenderSystem()		{ return m_pRenderSystem; };
-	PhysicsSystem* getPhysicsSystem()	{ return m_pPhysicsSystem; };
+	void SetDeltaTime( float value )		{ m_DeltaTime = value; };
+	void Update( float deltaTime );
+	void Render();
+	void ParallelRender();
+	void RenderDeferred();
+	void ParallelRenderDeferred();
+	RenderSystem* GetRenderSystem()		{ return m_pRenderSystem; };
+	PhysicsSystem* GetPhysicsSystem()	{ return m_pPhysicsSystem; };
 
-	void loadFromFile( std::wstring filename );
-	void loadCustomObjects();	// Programmatically create objects
+	void GetPhysicsSystem( std::wstring filename );
+	void LoadCustomObjects();	// Programmatically create objects
 
-	double	t_cull, t_scenerender, t_physics, t_ocean;
+	double	t_Cull, t_scenerender, t_physics, t_ocean;
 
 public:
 	std::map<std::wstring, Mesh*> m_pMeshes;
 	std::map<std::wstring, Entity_Prop*> m_pPrefabs;
 
 protected:
-	void loadMeshes();
-	void loadPrefabs();
-	hkpRigidBody* createBoxRigidBody( Vector3 halfExtents, float mass );
+	void LoadMeshes();
+	void LoadPrefabs();
+	hkpRigidBody* CreateBoxRigidBody( Vector3 halfExtents, float mass );
 
 protected:
 	RenderSystem* m_pRenderSystem;

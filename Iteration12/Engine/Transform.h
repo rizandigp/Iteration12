@@ -15,35 +15,35 @@ public:
 	Transform();
 
 	// Updates the transformation matrix
-	void update();
+	void Update();
 
-	void setPosition( const Vector3& pos );
-	void setPosition( const XMFLOAT3& pos );
-	void setPosition( float x, float y, float z );
-	void setOrientation( const Quaternion& q );
-	void setOrientation( const XMFLOAT4& quaternion );
-	void setOrientation( float x, float y, float z, float w );
-	void setScale( const Vector3& scale );
-	void setScale( const XMFLOAT3& scale );
-	void setScale( float x, float y, float z );
-	void translate( const Vector3& xyz );
-	void translate( const XMFLOAT3& xyz );
-	void translate( float x, float y, float z );
-	void scale( const Vector3& xyz );
-	void scale( const XMFLOAT3& xyz );
-	void scale( float x, float y, float z );
-	void rotate( const Quaternion& q );
+	void SetPosition( const Vector3& pos );
+	void SetPosition( const XMFLOAT3& pos );
+	void SetPosition( float x, float y, float z );
+	void SetOrientation( const Quaternion& q );
+	void SetOrientation( const XMFLOAT4& quaternion );
+	void SetOrientation( float x, float y, float z, float w );
+	void SetScale( const Vector3& scale );
+	void SetScale( const XMFLOAT3& scale );
+	void SetScale( float x, float y, float z );
+	void Translate( const Vector3& xyz );
+	void Translate( const XMFLOAT3& xyz );
+	void Translate( float x, float y, float z );
+	void Scale( const Vector3& xyz );
+	void Scale( const XMFLOAT3& xyz );
+	void Scale( float x, float y, float z );
+	void Rotate( const Quaternion& q );
 	
-	void lookAt( const XMFLOAT3& target, float roll );
-	void lookAt( const Vector3& target, float roll );
-	void orientToVector( XMFLOAT3 directionVector, float roll );
+	void LookAt( const XMFLOAT3& target, float roll );
+	void LookAt( const Vector3& target, float roll );
+	void OrientToVector( XMFLOAT3 directionVector, float roll );
 
-	inline const Vector3& getPosition() const			{ return m_Position; };
-	inline const Quaternion& getOrientation() const		{ return m_Orientation; };
-	inline const Vector3& getScale() const				{ return m_Scale; };
+	inline const Vector3& GetPosition() const			{ return m_Position; };
+	inline const Quaternion& GetOrientation() const		{ return m_Orientation; };
+	inline const Vector3& GetScale() const				{ return m_Scale; };
 
-	inline const Matrix4x4& getMatrix() const			{ return m_Matrix; };
-	XMMATRIX getXMMatrix() const;
+	inline const Matrix4x4& GetMatrix() const			{ return m_Matrix; };
+	XMMATRIX GetXMMatrix() const;
 	
 	Vector3			m_Position;
 	Quaternion		m_Orientation;

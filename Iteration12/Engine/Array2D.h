@@ -15,15 +15,15 @@ public:
     }
 
 	// Return pointer to data. Read-only
-	inline const T* data()	const	{ return &m_Data[0]; };
+	inline const T* Data()	const	{ return &m_Data[0]; };
 	// Return pointer to data. Can modify content
-	inline T* dataRaw()				{ return &m_Data[0]; };
+	inline T* DataRaw()				{ return &m_Data[0]; };
 
-	inline size_t width()	const	{ return m_Width; };
-	inline size_t height()	const	{ return m_Height; };
-	inline size_t stride()	const	{ return sizeof(T); };
-	inline size_t pitch()	const	{ return m_Width*sizeof(T); };
-	inline size_t size()	const	{ return m_Width*m_Height*sizeof(T); };
+	inline size_t Width()	const	{ return m_Width; };
+	inline size_t Height()	const	{ return m_Height; };
+	inline size_t Stride()	const	{ return sizeof(T); };
+	inline size_t Pitch()	const	{ return m_Width*sizeof(T); };
+	inline size_t Size()	const	{ return m_Width*m_Height*sizeof(T); };
 
 private:
 	size_t m_Width, m_Height;

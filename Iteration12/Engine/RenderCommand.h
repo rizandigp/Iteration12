@@ -32,10 +32,10 @@ class RenderCommand
 {
 public:
 	// Executes rendering
-	virtual void execute( RenderDispatcher* pDispatcher ) = 0;
+	virtual void Execute( RenderDispatcher* pDispatcher ) = 0;
 
 	// Clone into pre-allocated ptr
-	virtual void clone( RenderCommand* ptr ) = 0;
+	virtual void Clone( RenderCommand* ptr ) = 0;
 
 	virtual ~RenderCommand()	{};
 	/*
@@ -55,25 +55,25 @@ public:
 	D3D11RenderCommand_Draw()	: m_pRasterizerState( NULL ), m_pDepthStencilState(NULL), m_pBlendState( NULL )		{};
 
 	// MUTATORS
-	inline void setGeometryChunk( D3D11GeometryChunk *pGeometryChunk )			{ m_pGeometryChunk = pGeometryChunk; };
-	inline void setShaderset( D3D11Shaderset *pShaderset )						{ m_pShaderset = pShaderset;};
-	inline void clearTextures()													{ m_pTextures.clear(); };
-	void setTexture( std::string name, DX11Texture2D *pTexture );				//{ m_pTextures.push_back( std::pair< std::string, DX11Texture2D* > (name,pTexture) );};
+	inline void SetGeometryChunk( D3D11GeometryChunk *pGeometryChunk )			{ m_pGeometryChunk = pGeometryChunk; };
+	inline void SetShaderset( D3D11Shaderset *pShaderset )						{ m_pShaderset = pShaderset;};
+	inline void ClearTextures()													{ m_pTextures.clear(); };
+	void SetTexture( std::string name, DX11Texture2D *pTexture );				//{ m_pTextures.push_back( std::pair< std::string, DX11Texture2D* > (name,pTexture) );};
 
-	inline void setBlendState( ID3D11BlendState* pBlendState )							{ m_pBlendState = pBlendState; };
-	inline void setDepthStencilState( ID3D11DepthStencilState* pDepthStencilState )		{ m_pDepthStencilState = pDepthStencilState; };
-	inline void setRasterizerState( ID3D11RasterizerState* pRasterizerState )			{ m_pRasterizerState = pRasterizerState; };
+	inline void SetBlendState( ID3D11BlendState* pBlendState )							{ m_pBlendState = pBlendState; };
+	inline void SetDepthStencilState( ID3D11DepthStencilState* pDepthStencilState )		{ m_pDepthStencilState = pDepthStencilState; };
+	inline void SetRasterizerState( ID3D11RasterizerState* pRasterizerState )			{ m_pRasterizerState = pRasterizerState; };
 
 
 	// ACCESSORS
-	inline D3D11GeometryChunk *getGeometryChunk()									{ return m_pGeometryChunk; };
-	inline D3D11Shaderset *getShaderset()											{ return m_pShaderset; };
+	inline D3D11GeometryChunk *GetGeometryChunk()									{ return m_pGeometryChunk; };
+	inline D3D11Shaderset *GetShaderset()											{ return m_pShaderset; };
 	inline ShaderParamBlock* shaderParams()											{ return &m_ShaderParamBlock; };
-	inline std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> > *getTextures()	{ return &m_pTextures; };
+	inline std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> > *GetTextures()	{ return &m_pTextures; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 
 protected:
 	D3D11Shaderset *m_pShaderset;
@@ -92,15 +92,15 @@ class D3D11RenderCommand_RenderTarget : public RenderCommand
 public:
 	D3D11RenderCommand_RenderTarget()	: m_pRenderTargetTexture(NULL)	{};
 
-	void setRenderTargetTexture( DX11Texture2D *pTexture )						{ m_pRenderTargetTexture = pTexture; };
-	void setRenderViewport( RenderViewport vp )									{ m_RenderViewport = vp; };
+	void SetRenderTargetTexture( DX11Texture2D *pTexture )						{ m_pRenderTargetTexture = pTexture; };
+	void SetRenderViewport( RenderViewport vp )									{ m_RenderViewport = vp; };
 
-	DX11Texture2D *getRenderTargetTexture()									{ return m_pRenderTargetTexture; };
-	RenderViewport *getRenderViewport()											{ return &m_RenderViewport; };
+	DX11Texture2D *GetRenderTargetTexture()									{ return m_pRenderTargetTexture; };
+	RenderViewport *GetRenderViewport()											{ return &m_RenderViewport; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 
 protected:
 	DX11Texture2D *m_pRenderTargetTexture;
@@ -113,15 +113,15 @@ class D3D11RenderCommand_MRT : public RenderCommand
 public:
 	D3D11RenderCommand_MRT()	: m_pRenderTargetTextureArray(NULL)	{};
 
-	void setRenderTargetTextures( UINT numRenderTargets, DX11Texture2D** pTextureArray );
-	void setRenderViewport( RenderViewport vp )									{ m_RenderViewport = vp; };
+	void SetRenderTargetTextures( UINT numRenderTargets, DX11Texture2D** pTextureArray );
+	void SetRenderViewport( RenderViewport vp )									{ m_RenderViewport = vp; };
 
-	DX11Texture2D **getRenderTargetTextureArray()								{ return &m_pRenderTargetTextureArray[0]; };
-	RenderViewport *getRenderViewport()											{ return &m_RenderViewport; };
+	DX11Texture2D **GetRenderTargetTextureArray()								{ return &m_pRenderTargetTextureArray[0]; };
+	RenderViewport *GetRenderViewport()											{ return &m_RenderViewport; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 
 protected:
 	UINT m_numRenderTargets;
@@ -135,15 +135,15 @@ class D3D11RenderCommand_ResolveMSAA : public RenderCommand
 public:
 	D3D11RenderCommand_ResolveMSAA()	{};
 
-	void setDestination( Texture2D* ptr )	{ m_pDestination = ptr; };
-	void setSource( Texture2D* ptr )		{ m_pSource = ptr; };
+	void SetDestination( Texture2D* ptr )	{ m_pDestination = ptr; };
+	void SetSource( Texture2D* ptr )		{ m_pSource = ptr; };
 
-	Texture2D* getDestination()		{ return m_pDestination; };
-	Texture2D* getSource()			{ return m_pSource; };
+	Texture2D* GetDestination()		{ return m_pDestination; };
+	Texture2D* GetSource()			{ return m_pSource; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 
 protected:
 	Texture2D* m_pDestination;
@@ -155,14 +155,14 @@ class D3D11RenderCommand_ClearTexture : public RenderCommand
 public:
 	D3D11RenderCommand_ClearTexture()	: m_pTexture(NULL)	{};
 
-	void setTexture( DX11Texture2D *pTexture )				{ m_pTexture = pTexture; };
-	void setClearColor( float* clearColorRGBA )				{ m_ClearColor[0] = clearColorRGBA[0]; m_ClearColor[1] = clearColorRGBA[1]; m_ClearColor[2] = clearColorRGBA[2]; m_ClearColor[3] = clearColorRGBA[3]; };
+	void SetTexture( DX11Texture2D *pTexture )				{ m_pTexture = pTexture; };
+	void SetClearColor( float* clearColorRGBA )				{ m_ClearColor[0] = clearColorRGBA[0]; m_ClearColor[1] = clearColorRGBA[1]; m_ClearColor[2] = clearColorRGBA[2]; m_ClearColor[3] = clearColorRGBA[3]; };
 
-	DX11Texture2D *getTexture()							{ return m_pTexture; };
+	DX11Texture2D *GetTexture()							{ return m_pTexture; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 
 protected:
 	DX11Texture2D *m_pTexture;
@@ -172,20 +172,20 @@ protected:
 class D3D11RenderCommand_EndFrame : public RenderCommand
 {
 public:
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 };
 
 class D3D11RenderCommand_BeginFrame : public RenderCommand
 {
 public:
-	void setClearColor( float* clearColorRGBA )					{ m_ClearColor[0] = clearColorRGBA[0]; m_ClearColor[1] = clearColorRGBA[1]; m_ClearColor[2] = clearColorRGBA[2]; m_ClearColor[3] = clearColorRGBA[3]; };
-	void setDepthStencilClear( float depth, UINT8 stencil )		{ m_Depth = depth; m_Stencil = stencil; };
+	void SetClearColor( float* clearColorRGBA )					{ m_ClearColor[0] = clearColorRGBA[0]; m_ClearColor[1] = clearColorRGBA[1]; m_ClearColor[2] = clearColorRGBA[2]; m_ClearColor[3] = clearColorRGBA[3]; };
+	void SetDepthStencilClear( float depth, UINT8 stencil )		{ m_Depth = depth; m_Stencil = stencil; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
-	void clone( RenderCommand* ptr );
+	void Clone( RenderCommand* ptr );
 
 protected:
 	float m_ClearColor[4];
@@ -213,22 +213,22 @@ class GenericRenderCommand : public RenderCommand
 public:
 	GenericRenderCommand()	: 	m_pShaderset(NULL), m_pGeometryChunk(NULL), m_pRenderTargetTexture(NULL) {};
 	// MUTATORS
-	void setGeometryChunk( GeometryChunk *pGeometryChunk )					{ m_pGeometryChunk = pGeometryChunk; };
-	void setShaderset( Shaderset *pShaderset )								{ m_pShaderset = pShaderset;};
-	void setRenderTargetTexture( Texture2D *pTexture )						{ m_pRenderTargetTexture = pTexture; };
-	void addTexture( std::string name, Texture2D *pTexture )				{ m_pTextures.push_back( std::pair< std::string, Texture2D* > (name,pTexture) );};
-	void clearTextures()													{ m_pTextures.clear(); };
-	void setRenderViewport( RenderViewport vp )								{ m_RenderViewport = vp; };
+	void SetGeometryChunk( GeometryChunk *pGeometryChunk )					{ m_pGeometryChunk = pGeometryChunk; };
+	void SetShaderset( Shaderset *pShaderset )								{ m_pShaderset = pShaderset;};
+	void SetRenderTargetTexture( Texture2D *pTexture )						{ m_pRenderTargetTexture = pTexture; };
+	void AddTexture( std::string name, Texture2D *pTexture )				{ m_pTextures.push_back( std::pair< std::string, Texture2D* > (name,pTexture) );};
+	void ClearTextures()													{ m_pTextures.clear(); };
+	void SetRenderViewport( RenderViewport vp )								{ m_RenderViewport = vp; };
 
 	// ACCESSORS
-	inline GeometryChunk *getGeometryChunk()									{ return m_pGeometryChunk; };
-	inline Shaderset *getShaderset()											{ return m_pShaderset; };
-	inline Texture2D *getRenderTargetTexture()									{ return m_pRenderTargetTexture; };
+	inline GeometryChunk *GetGeometryChunk()									{ return m_pGeometryChunk; };
+	inline Shaderset *GetShaderset()											{ return m_pShaderset; };
+	inline Texture2D *GetRenderTargetTexture()									{ return m_pRenderTargetTexture; };
 	inline ShaderParamBlock* shaderParams()										{ return &m_ShaderParamBlock; };
-	inline std::vector< std::pair< std::string, Texture2D* > > *getTextures()	{ return &m_pTextures; };
-	inline RenderViewport *getRenderViewport()									{ return &m_RenderViewport; };
+	inline std::vector< std::pair< std::string, Texture2D* > > *GetTextures()	{ return &m_pTextures; };
+	inline RenderViewport *GetRenderViewport()									{ return &m_RenderViewport; };
 
-	void execute( RenderDispatcher* pDispatcher );
+	void Execute( RenderDispatcher* pDispatcher );
 
 protected:
 	Shaderset *m_pShaderset;

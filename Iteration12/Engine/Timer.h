@@ -6,36 +6,36 @@
 class Timer
 {
 public:
-	Timer()		{ QueryPerformanceFrequency( &m_frequency ); start(); };
+	Timer()		{ QueryPerformanceFrequency( &m_frequency ); Start(); };
 
-	__forceinline void start();
+	__forceinline void Start();
 
-	__forceinline double getSeconds();
-	__forceinline double getMiliseconds();
-	__forceinline double getMicroseconds();
+	__forceinline double GetSeconds();
+	__forceinline double GetMiliseconds();
+	__forceinline double GetMicroseconds();
 	
 private:
 	LARGE_INTEGER m_frequency, m_counterStart, temp;
 };
 
-__forceinline void Timer::start()
+__forceinline void Timer::Start()
 {
 	QueryPerformanceCounter( &m_counterStart );
 }
 
-__forceinline double Timer::getSeconds()
+__forceinline double Timer::GetSeconds()
 {
 	QueryPerformanceCounter( &temp );
 	return (temp.QuadPart - m_counterStart.QuadPart)/(double)m_frequency.QuadPart;
 }
 
-__forceinline double Timer::getMiliseconds()
+__forceinline double Timer::GetMiliseconds()
 {
 	QueryPerformanceCounter( &temp );
 	return ((temp.QuadPart - m_counterStart.QuadPart)/(double)m_frequency.QuadPart)*1000.0f;
 }
 
-__forceinline double Timer::getMicroseconds()
+__forceinline double Timer::GetMicroseconds()
 {
 	QueryPerformanceCounter( &temp );
 	return ((temp.QuadPart - m_counterStart.QuadPart)/(double)m_frequency.QuadPart)*1000000.0f;

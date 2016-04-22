@@ -11,16 +11,15 @@ class Submesh
 {
 public:
 	Submesh() : m_pGeometryChunk(NULL), m_pMaterial(NULL)	{};
-	void render(D3D11RenderCommand_Draw* pRenderCommand);
 
-	void setGeometryChunk(GeometryChunk* ptr)	{ m_pGeometryChunk = ptr; };
-	void setMaterial(Material* ptr)				{ m_pMaterial = ptr; };
-	void setName(std::string name)				{ m_Name = name; };
+	void SetGeometryChunk(GeometryChunk* ptr)	{ m_pGeometryChunk = ptr; };
+	void SetMaterial(Material* ptr)				{ m_pMaterial = ptr; };
+	void SetName(std::string name)				{ m_Name = name; };
 
-	GeometryChunk* getGeometryChunk()	{ return m_pGeometryChunk; };
-	Material* getMaterial()				{ return m_pMaterial; };
-	XNA::AxisAlignedBox* getAABB()		{ return m_pGeometryChunk->getAABB(); };
-	std::string getName()				{ return m_Name; };
+	GeometryChunk* GetGeometryChunk()	{ return m_pGeometryChunk; };
+	Material* GetMaterial()				{ return m_pMaterial; };
+	XNA::AxisAlignedBox* GetAABB()		{ return m_pGeometryChunk->GetAABB(); };
+	std::string GetName()				{ return m_Name; };
 
 private:
 	GeometryChunk* m_pGeometryChunk;
@@ -38,17 +37,17 @@ public:
 	Mesh()	{};
 	Mesh( Mesh &other );
 
-	void setName( std::string name )		{ m_Name = name; };
-	void addSubmesh( Submesh* submesh )		{ m_pSubmeshes.push_back(submesh); };
+	void SetName( std::string name )		{ m_Name = name; };
+	void AddSubmesh( Submesh* submesh )		{ m_pSubmeshes.push_back(submesh); };
 
-	void setMaterial(Material* ptr);
+	void SetMaterial(Material* ptr);
 	
-	void render();
+	void Render();
 
-	UINT getNumberOfSubmeshes() const		{ return m_pSubmeshes.size(); };
-	std::string getName() const				{ return m_Name; };
-	Submesh* getSubmesh(UINT index);
-	Submesh* getSubmesh(std::string name);
+	UINT GetNumberOfSubmeshes() const		{ return m_pSubmeshes.size(); };
+	std::string GetName() const				{ return m_Name; };
+	Submesh* GetSubmesh(UINT index);
+	Submesh* GetSubmesh(std::string name);
 
 private:
 	std::vector<Submesh*>	m_pSubmeshes;

@@ -116,30 +116,30 @@ public:
 	Texture2D() : m_Height(0), m_Width(0), m_pRenderSystem(NULL), m_Format(TEXTURE_FORMAT_UNKNOWN)	{};
 	virtual ~Texture2D() {};
 
-	inline void setRenderSystem( RenderSystem* ptr )					{ m_pRenderSystem = ptr; };
-	inline void setDimensions( UINT height, UINT width )				{ m_Height = height; m_Width = width; };
-	inline void setFormat( TEXTURE_FORMAT format )						{ m_Format = format; };
-	inline void setMipLevels( UINT levels )								{ m_MipLevels = levels; };
+	inline void SetRenderSystem( RenderSystem* ptr )					{ m_pRenderSystem = ptr; };
+	inline void SetDimensions( UINT height, UINT width )				{ m_Height = height; m_Width = width; };
+	inline void SetFormat( TEXTURE_FORMAT format )						{ m_Format = format; };
+	inline void SetMipLevels( UINT levels )								{ m_MipLevels = levels; };
 
-	inline RenderSystem* getRenderSystem()							{ return m_pRenderSystem; };
-	inline UINT getHeight()											{ return m_Height; };
-	inline UINT getWidth()											{ return m_Width; };
-	inline Vector2 getDimensions()									{ return Vector2( m_Width, m_Height ); };
-	inline TEXTURE_FORMAT getFormat()								{ return m_Format; };
-	inline UINT getMipLevels()										{ return m_MipLevels; };
+	inline RenderSystem* GetRenderSystem()							{ return m_pRenderSystem; };
+	inline UINT GetHeight()											{ return m_Height; };
+	inline UINT GetWidth()											{ return m_Width; };
+	inline Vector2 GetDimensions()									{ return Vector2( m_Width, m_Height ); };
+	inline TEXTURE_FORMAT GetFormat()								{ return m_Format; };
+	inline UINT GetMipLevels()										{ return m_MipLevels; };
 
 	
 	// Bind as shader input to the pipeline
-	virtual void bind( std::string const &name, RenderDispatcher* pDispatcher )=0;
+	virtual void Bind( std::string const &name, RenderDispatcher* pDispatcher )=0;
 	// Unbind from pipeline
-	virtual void unbind( std::string const &name, RenderDispatcher* pDispatcher )=0;
+	virtual void Unbind( std::string const &name, RenderDispatcher* pDispatcher )=0;
 	// Bind to the pipeline as render target
-	virtual void bindRenderTarget( RenderDispatcher* pDispatcher)=0;
+	virtual void BindRenderTarget( RenderDispatcher* pDispatcher)=0;
 	// Unbind render target from pipeline
-	virtual void unbindRenderTarget( RenderDispatcher* pDispatcher)=0;
+	virtual void UnBindRenderTarget( RenderDispatcher* pDispatcher)=0;
 
-	virtual void clearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )=0;
-	virtual void releaseResources()=0;
+	virtual void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )=0;
+	virtual void ReleaseResources() = 0;
 
 protected:
 	UINT						m_Height, m_Width, m_MipLevels;
@@ -152,25 +152,25 @@ class DX11Texture2D : public Texture2D
 public:
 	DX11Texture2D() : m_pSRV(NULL), m_pRTV(NULL), m_pDSV(NULL)	{};
 
-	void bind(  std::string const &name, RenderDispatcher* pDispatcher );
-	void unbind(  std::string const &name, RenderDispatcher* pDispatcher );
-	void bindRenderTarget( RenderDispatcher* pDispatcher );
-	void unbindRenderTarget( RenderDispatcher* pDispatcher );
-	void releaseResources();
+	void Bind(  std::string const &name, RenderDispatcher* pDispatcher );
+	void Unbind(  std::string const &name, RenderDispatcher* pDispatcher );
+	void BindRenderTarget( RenderDispatcher* pDispatcher );
+	void UnBindRenderTarget( RenderDispatcher* pDispatcher );
+	void ReleaseResources();
 
-	void clearBuffer( float* clearColorRGBA, float depth, UINT8 stencil );
+	void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil );
 
 	// Set DX11 objects
-	inline void setResource( ID3D11Texture2D* pResource )				{ m_pResource = pResource; };
-	inline void setShaderResourceView( ID3D11ShaderResourceView* pSRV )	{ m_pSRV = pSRV; };
-	inline void setRenderTargetView( ID3D11RenderTargetView* pRTV )		{ m_pRTV = pRTV; };
-	inline void setDepthStencilView( ID3D11DepthStencilView* pDSV )		{ m_pDSV = pDSV; };
+	inline void SetResource( ID3D11Texture2D* pResource )				{ m_pResource = pResource; };
+	inline void SetShaderResourceView( ID3D11ShaderResourceView* pSRV )	{ m_pSRV = pSRV; };
+	inline void SetRenderTargetView( ID3D11RenderTargetView* pRTV )		{ m_pRTV = pRTV; };
+	inline void SetDepthStencilView( ID3D11DepthStencilView* pDSV )		{ m_pDSV = pDSV; };
 	
 	// Get DX11 objects
-	inline ID3D11Texture2D* getResource()							{ return m_pResource; };
-	inline ID3D11ShaderResourceView* getShaderResourceView()		{ return m_pSRV; };
-	inline ID3D11RenderTargetView* getRenderTargetView()			{ return m_pRTV; };
-	inline ID3D11DepthStencilView* getDepthStencilView()			{ return m_pDSV; };
+	inline ID3D11Texture2D* GetResource()							{ return m_pResource; };
+	inline ID3D11ShaderResourceView* GetShaderResourceView()		{ return m_pSRV; };
+	inline ID3D11RenderTargetView* GetRenderTargetView()			{ return m_pRTV; };
+	inline ID3D11DepthStencilView* GetDepthStencilView()			{ return m_pDSV; };
 
 private:
 	ID3D11Texture2D*			m_pResource;
@@ -184,18 +184,18 @@ class DX10Texture2D : public Texture2D
 public:
 	DX10Texture2D() : m_pSRV(NULL), m_pRTV(NULL), m_pDSV(NULL)	{ Texture2D; };
 
-	void bind( RenderDispatcher* pDispatcher, std::string name );
-	void unbind( RenderDispatcher* pDispatcher, std::string name );
-	void bindRenderTarget( RenderDispatcher* pDispatcher );
-	void unbindRenderTarget( RenderDispatcher* pDispatcher );
+	void Bind( RenderDispatcher* pDispatcher, std::string name );
+	void Unbind( RenderDispatcher* pDispatcher, std::string name );
+	void BindRenderTarget( RenderDispatcher* pDispatcher );
+	void UnBindRenderTarget( RenderDispatcher* pDispatcher );
 
-	inline void setShaderResourceView( ID3D10ShaderResourceView* pSRV )	{ m_pSRV = pSRV; };
-	inline void setRenderTargetView( ID3D10RenderTargetView* pRTV )		{ m_pRTV = pRTV; };
-	inline void setDepthStencilView( ID3D10DepthStencilView* pDSV )		{ m_pDSV = pDSV; };
+	inline void SetShaderResourceView( ID3D10ShaderResourceView* pSRV )	{ m_pSRV = pSRV; };
+	inline void SetRenderTargetView( ID3D10RenderTargetView* pRTV )		{ m_pRTV = pRTV; };
+	inline void SetDepthStencilView( ID3D10DepthStencilView* pDSV )		{ m_pDSV = pDSV; };
 	
-	inline ID3D10ShaderResourceView* getShaderResourceView()		{ return m_pSRV; };
-	inline ID3D10RenderTargetView* getRenderTargetView()			{ return m_pRTV; };
-	inline ID3D10DepthStencilView* getDepthStencilView()			{ return m_pDSV; };
+	inline ID3D10ShaderResourceView* GetShaderResourceView()		{ return m_pSRV; };
+	inline ID3D10RenderTargetView* GetRenderTargetView()			{ return m_pRTV; };
+	inline ID3D10DepthStencilView* GetDepthStencilView()			{ return m_pDSV; };
 
 private:
 	ID3D10ShaderResourceView*	m_pSRV;

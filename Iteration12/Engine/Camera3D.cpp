@@ -20,7 +20,7 @@ Camera3D::Camera3D()
 	m_ViewProjection = Matrix4x4::IDENTITY;
 }
 
-void Camera3D::update( float DeltaTime )
+void Camera3D::Update( float DeltaTime )
 {
 	XMMATRIX view, projection, viewprojection;
 	XMFLOAT4X4 xmView, xmProjection, xmViewProjection;
@@ -52,7 +52,7 @@ void Camera3D::update( float DeltaTime )
 						xmView._31, xmView._32, xmView._33, xmView._34,
 						xmView._41, xmView._42, xmView._43, xmView._44);
 
-	Vector3 v = m_LookAt-getPosition();
+	Vector3 v = m_LookAt - GetPosition();
 	v.normalise();
 	Quaternion orient;
 	orient.lookAt( v, Vector3::UNIT_Z );
@@ -62,28 +62,28 @@ void Camera3D::update( float DeltaTime )
 }
 
 
-void Camera3D::setPosition(const Vector3& pPos)
+void Camera3D::SetPosition(const Vector3& Pos)
 {
-	m_Pos = pPos;
+	m_Pos = Pos;
 }
 
-void Camera3D::setLookAt(const Vector3& pLookAt)
+void Camera3D::SetLookAt(const Vector3& LookAt)
 {
-	m_LookAt = pLookAt;
+	m_LookAt = LookAt;
 }
 
-void Camera3D::setUpVector(const Vector3& pUp)
+void Camera3D::SetUpVector(const Vector3& Up)
 {
-	m_Up = pUp;
+	m_Up = Up;
 }
 
-void Camera3D::setView(const Vector3& pPos, const Vector3& pLookAt)
+void Camera3D::SetView(const Vector3& Pos, const Vector3& LookAt)
 {
-	m_Pos = pPos;
-	m_LookAt = pLookAt;
+	m_Pos = Pos;
+	m_LookAt = LookAt;
 }
 
-void Camera3D::setProjection(float Fov, float Aspect, float NearPlane, float FarPlane)
+void Camera3D::SetProjection(float Fov, float Aspect, float NearPlane, float FarPlane)
 {
 	m_Fov = Fov;
 	m_Aspect = Aspect;
@@ -91,12 +91,12 @@ void Camera3D::setProjection(float Fov, float Aspect, float NearPlane, float Far
 	m_ZFar = FarPlane;
 }
 
-void Camera3D::setOrientation( const Quaternion& quaternion )
+void Camera3D::SetOrientation( const Quaternion& quaternion )
 {
 	m_Orient = quaternion;
 }
 
-void Camera3D::getProjectionParameters( float &Fov , float &Aspect , float &NearPlane , float &FarPlane ) const
+void Camera3D::GetProjectionParameters( float &Fov , float &Aspect , float &NearPlane , float &FarPlane ) const
 {
 	Fov = m_Fov;
 	Aspect = m_Aspect;
@@ -104,7 +104,7 @@ void Camera3D::getProjectionParameters( float &Fov , float &Aspect , float &Near
 	FarPlane = m_ZFar;
 }
 
-Vector3 Camera3D::getDirectionVector()
+Vector3 Camera3D::GetDirectionVector()
 {
 	return (m_LookAt-m_Pos).normalisedCopy();
 }
@@ -120,20 +120,20 @@ CameraFPS::CameraFPS()
 	m_Dir = Vector3( 0.0f , 0.0f , 0.0f );
 }
 
-void CameraFPS::setLookAt(const Vector3& pLookAt)
+void CameraFPS::SetLookAt(const Vector3& LookAt)
 {
-	Camera3D::setLookAt( pLookAt );
+	Camera3D::SetLookAt( LookAt );
 	XMFLOAT3 temp = XMFLOAT3(m_LookAt.x - m_Pos.x, m_LookAt.y - m_Pos.y, m_LookAt.z - m_Pos.z);
 	m_Dir.x = atan( temp.y/temp.x );
 	m_Dir.y = atan( temp.z/sqrt(temp.x*temp.x + temp.y*temp.y) );
 }
 
-Vector3 CameraFPS::getDirectionVector()
+Vector3 CameraFPS::GetDirectionVector()
 {
 	return (m_LookAt-m_Pos);
 }
 
-void CameraFPS::update(float DeltaTime)
+void CameraFPS::Update(float DeltaTime)
 {
 	//
 	// SEMENTARA
@@ -191,10 +191,10 @@ void CameraFPS::update(float DeltaTime)
 	m_LookAt.y = m_Pos.y + sin(m_Dir.x)*cos(m_Dir.y);
 	m_LookAt.z = m_Pos.z + sin(m_Dir.y);
 
-	Camera3D::update( DeltaTime );
+	Camera3D::Update( DeltaTime );
 }
 
-Ray Camera3D::getRayFromScreenPosition( Vector2 xy )
+Ray Camera3D::GetRayFromScreenPosition( Vector2 xy )
 {
 	float WIDTH_DIV_2 = 0.5f;
 	float HEIGHT_DIV_2 = 0.5f;

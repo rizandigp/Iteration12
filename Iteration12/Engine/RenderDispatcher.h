@@ -76,58 +76,58 @@ public:
 	virtual HRESULT initialize( RenderDispatcherConfig creationInfo )=0;
 
 	// Consume a render queue.
-	void consume( std::queue<RenderCommand> *pRenderQueue );
+	void ConsumeRenderQueue( std::queue<RenderCommand> *pRenderQueue );
 	// Executes a RenderCommand. Called by RenderSystem.
-	void execute( RenderCommand *pRenderCommand );
+	//void ExecuteRenderCommand( RenderCommand *pRenderCommand );
 
 	//virtual void addRenderAgent( IRenderAgent* pRenderAgent );
 
 	// Bind shader parameters for drawing via the old ShaderParamBlock.
-	virtual void bindShaderParams( ShaderParamBlock *pParamBlock )=0;
+	virtual void BindShaderParams( ShaderParamBlock *pParamBlock )=0;
 	// Bind shader parameters for drawing via the new ShaderParams class. Faster and more memory-efficient.
-	virtual void bindShaderParams( ShaderParams *pParams )=0;
+	virtual void BindShaderParams( ShaderParams *pParams )=0;
 	// Bind constant buffers to the Vertex Shader.
-	virtual void bindConstantBufferVS( UINT i, ConstantBufferData* pData )=0;
+	virtual void BindConstantBufferVS( UINT i, ConstantBufferData* pData )=0;
 	// Bind constant buffers to the Vertex Shader.
-	virtual void bindConstantBufferPS( UINT i, ConstantBufferData* pData )=0;
+	virtual void BindConstantBufferPS( UINT i, ConstantBufferData* pData )=0;
 	// Set output HWND. This will reinitialize parts of the renderer.
-	virtual void setOutputWindow( HWND hWnd, UINT width, UINT height )=0;
+	virtual void SetOutputWindow( HWND hWnd, UINT width, UINT height )=0;
 	// Resize swapchain target
-	virtual void resizeTarget( UINT height, UINT width )=0;
+	virtual void ResizeTarget( UINT height, UINT width )=0;
 	// Resize backbuffer
-	virtual void resizeBackbuffer( UINT height, UINT width )=0;
+	virtual void ResizeBackbuffer( UINT height, UINT width )=0;
 	// Set a single render target.
-	virtual void setRenderTarget( Texture2D* pRenderTarget )=0;
+	virtual void SetRenderTarget( Texture2D* pRenderTarget )=0;
 	// Set multiple render targets (MRTs).
-	virtual void setMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargets )=0;
+	virtual void SetMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargets )=0;
 	// Set render target to default (directly to the back buffer).
-	virtual void setBackbufferAsRenderTarget()=0;
+	virtual void SetBackbufferAsRenderTarget()=0;
 	// Resolve multisampled texture into a non-MSAA one.
-	virtual void resolveMSAA( Texture2D* pDestination, Texture2D* pSource )=0;
+	virtual void ResolveMSAA( Texture2D* pDestination, Texture2D* pSource )=0;
 	// Present back buffer. SyncInterval not yet in use.
-	virtual void present( UINT SyncInterval )=0;
+	virtual void Present( UINT SyncInterval )=0;
 
-	inline void	setBackbufferTexture( Texture2D* pTexture )		{ m_pBackbuffer = pTexture; };
-	inline Texture2D*	getBackbuffer()							{ return m_pBackbuffer; };
+	inline void	SetBackbufferTexture( Texture2D* pTexture )		{ m_pBackbuffer = pTexture; };
+	inline Texture2D*	GetBackbuffer()							{ return m_pBackbuffer; };
 
 	// Backbuffer clears.
-	virtual void clearBackbuffer( float* clearColorRGBA )=0;
-	virtual void clearDepth( float depth )=0;
-	virtual void clearStencil( UINT8 stencil )=0;
-	virtual void clearDepthStencil( float depth, UINT8 stencil )=0;
+	virtual void ClearBackbuffer( float* clearColorRGBA )=0;
+	virtual void ClearDepth( float depth )=0;
+	virtual void ClearStencil( UINT8 stencil )=0;
+	virtual void ClearDepthStencil( float depth, UINT8 stencil )=0;
 
 	// Resource creation
 	// All resourse creation calls are thread-safe
-	virtual GeometryChunk*	createGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST ) = 0;
-	virtual Shaderset*	createShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro> macros, bool debug ) = 0;
-	virtual Texture2D*	createTextureFromFile( std::wstring filename ) = 0;
-	virtual Texture2D*	createTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data = NULL, size_t pitch = 0, size_t dataSize = 0) = 0; 
-	//virtual Texture2D*	createTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data = NULL, size_t pitch = 0, size_t dataSize = 0) = 0;
-	//virtual Texture3D*	createTexture3D( UINT height, UINT width, UINT depth, DXGI_FORMAT format ) = 0;
-	virtual Texture3D*	createTexture3D( UINT width, UINT height, UINT depth, DXGI_FORMAT format, const void* const data, size_t pitch, size_t slicePitch, size_t dataSize ) = 0;
+	virtual GeometryChunk*	CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST ) = 0;
+	virtual Shaderset*	CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro> macros, bool debug ) = 0;
+	virtual Texture2D*	CreateTextureFromFile( std::wstring filename ) = 0;
+	virtual Texture2D*	CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data = NULL, size_t pitch = 0, size_t dataSize = 0) = 0; 
+	//virtual Texture2D*	CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data = NULL, size_t pitch = 0, size_t dataSize = 0) = 0;
+	//virtual Texture3D*	CreateTexture3D( UINT height, UINT width, UINT depth, DXGI_FORMAT format ) = 0;
+	virtual Texture3D*	CreateTexture3D( UINT width, UINT height, UINT depth, DXGI_FORMAT format, const void* const data, size_t pitch, size_t slicePitch, size_t dataSize ) = 0;
 	// Create cubemap from 6 images in the order: x+,x-,y+,y-,z+,z-.
 	// All images must have the same dimensions. Only R8G8B8A8_UNORM supported for now.
-	virtual TextureCube* createCubemap( Image* const faces[6] ) = 0;
+	virtual TextureCube* CreateCubemap( Image* const faces[6] ) = 0;
 
 	// Flags and timing data.
 	// TODO : a lot
@@ -135,8 +135,8 @@ public:
 	Timer						renderTimer, timer2;
 	double						t_renderthread;
 	double						t_renderloop;
-	double						t_beginframe;
-	double						t_endframe;
+	double						t_BeginFrame;
+	double						t_EndFrame;
 	double						t_work;
 	double						t_starve;
 	double						t_bindparams;
@@ -162,44 +162,44 @@ public:
 
 	HRESULT initialize( RenderDispatcherConfig creationConfig );
 
-	void bindShaderParams( ShaderParamBlock *pParamBlock );
-	void bindShaderParams( ShaderParams *pParams );
-	void bindConstantBufferVS( UINT i, ConstantBufferData* pData );
-	void bindConstantBufferPS( UINT i, ConstantBufferData* pData );
-	void setOutputWindow( HWND hWnd, UINT width, UINT height );
-	void resizeTarget( UINT height, UINT width );
-	void resizeBackbuffer( UINT height, UINT width );
-	void setRenderTarget( Texture2D* pRenderTarget );
-	void setMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray );
-	void setBackbufferAsRenderTarget();
-	void resolveMSAA( Texture2D* pDestination, Texture2D* pSource );
-	void present( UINT SyncInterval )									{ m_pSwapChain->Present( SyncInterval, 0 ); };
+	void BindShaderParams( ShaderParamBlock *pParamBlock );
+	void BindShaderParams( ShaderParams *pParams );
+	void BindConstantBufferVS( UINT i, ConstantBufferData* pData );
+	void BindConstantBufferPS( UINT i, ConstantBufferData* pData );
+	void SetOutputWindow( HWND hWnd, UINT width, UINT height );
+	void ResizeTarget( UINT height, UINT width );
+	void ResizeBackbuffer( UINT height, UINT width );
+	void SetRenderTarget( Texture2D* pRenderTarget );
+	void SetMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray );
+	void SetBackbufferAsRenderTarget();
+	void ResolveMSAA( Texture2D* pDestination, Texture2D* pSource );
+	void Present( UINT SyncInterval )									{ m_pSwapChain->Present( SyncInterval, 0 ); };
 
-	void setDevice( ID3D11Device* pDevice )								{ m_pDevice = pDevice; };
-	void setImmediateContext( ID3D11DeviceContext* pContext )			{ m_pImmediateContext = pContext; };
-	void setActiveShaderset( D3D11Shaderset* pShaderset )				{ m_pActiveShaderset = pShaderset; };
+	void SetDevice( ID3D11Device* pDevice )								{ m_pDevice = pDevice; };
+	void SetImmediateContext( ID3D11DeviceContext* pContext )			{ m_pImmediateContext = pContext; };
+	void SetActiveShaderset( D3D11Shaderset* pShaderset )				{ m_pActiveShaderset = pShaderset; };
 
-	inline ID3D11Device* getDevice()									{ return m_pDevice; };
-	inline ID3D11DeviceContext* getImmediateContext()					{ return m_pImmediateContext; };
-	inline ID3D11RenderTargetView*	getBackbufferRenderTargetView()		{ return m_pRenderTargetView; };
-	inline ID3D11DepthStencilView* getBackbufferDepthStencilView()		{ return m_pDepthStencilView; };
-	inline IDXGISwapChain*	getSwapChain()								{ return m_pSwapChain; };
-	inline D3D11Shaderset* getActiveShaderset()							{ return m_pActiveShaderset; };
+	inline ID3D11Device* GetDevice()									{ return m_pDevice; };
+	inline ID3D11DeviceContext* GetImmediateContext()					{ return m_pImmediateContext; };
+	inline ID3D11RenderTargetView*	GetBackbufferRenderTargetView()		{ return m_pRenderTargetView; };
+	inline ID3D11DepthStencilView* GetBackbufferDepthStencilView()		{ return m_pDepthStencilView; };
+	inline IDXGISwapChain*	GetSwapChain()								{ return m_pSwapChain; };
+	inline D3D11Shaderset* GetActiveShaderset()							{ return m_pActiveShaderset; };
 	
-	//inline Texture2D* getBackbuffer()											{ return (Texture2D*)m_pBackbufferTexture; };
+	//inline Texture2D* GetBackbuffer()											{ return (Texture2D*)m_pBackbufferTexture; };
 
-	void clearBackbuffer( float* clearColorRGBA );
-	void clearDepth( float depth );
-	void clearStencil( UINT8 stencil );
-	void clearDepthStencil( float depth, UINT8 stencil );
+	void ClearBackbuffer( float* clearColorRGBA );
+	void ClearDepth( float depth );
+	void ClearStencil( UINT8 stencil );
+	void ClearDepthStencil( float depth, UINT8 stencil );
 
 	// Resource creation
-	GeometryChunk*	createGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-	Shaderset*		createShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro> macros, bool debug );
-	Texture2D*		createTextureFromFile( std::wstring filename );
-	Texture2D*		createTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data, size_t pitch, size_t dataSize );
-	TextureCube*	createCubemap( Image* const faces[6] );
-	Texture3D*		createTexture3D( UINT width, UINT height, UINT depth, DXGI_FORMAT format, const void* const data, size_t pitch, size_t slicePitch, size_t dataSize );
+	GeometryChunk*	CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	Shaderset*		CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro> macros, bool debug );
+	Texture2D*		CreateTextureFromFile( std::wstring filename );
+	Texture2D*		CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data, size_t pitch, size_t dataSize );
+	TextureCube*	CreateCubemap( Image* const faces[6] );
+	Texture3D*		CreateTexture3D( UINT width, UINT height, UINT depth, DXGI_FORMAT format, const void* const data, size_t pitch, size_t slicePitch, size_t dataSize );
 
 	D3D11VertexBuffer* createVertexBuffer( const void* pData, int dataSize, BufferLayout layout, int stride, bool dynamic = false );
 	D3D11IndexBuffer* createIndexBuffer( UINT* pData, int numOfIndices );
@@ -247,7 +247,7 @@ protected:
 		Returns a constant buffer with the requested size in bytes to bind to the pipeline.
 		Creates a new one if not found. May return NULL if it somehow fails to create one.
 	*/
-	InternalCB* getAvailableConstantBuffer( UINT ByteSize );
+	InternalCB* GetAvailableConstantBuffer( UINT ByteSize );
 };
 
 

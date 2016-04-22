@@ -78,7 +78,7 @@ void ShaderParamBlock::assign( std::string paramName, UINT index, int pScalarPar
 
 void ShaderParamBlock::assign( ShaderParamBlock paramBlock )
 {
-	m_MatrixParams = *paramBlock.getMatrixParams();
+	m_MatrixParams = *paramBlock.GetMatrixParams();
 	m_VectorParams = *paramBlock.getVectorParams();
 	m_ScalarParams = *paramBlock.getScalarParams();
 }

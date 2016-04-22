@@ -17,22 +17,22 @@ public:
 	PointLight();
 	PointLight( Vector3 position, Vector3 color, float radius, float intensity );
 
-	void setColor( Vector3 color )			{ m_Color = color; };
-	void setRadius( float radius )			{ m_fRadius = radius; };
-	void setIntensity( float intensity )	{ m_fIntensity = intensity; };
-	void enable()							{ m_bEnabled = true; };
-	void disable()							{ m_bEnabled = false; };
-	void setEnabled( bool enabled )			{ m_bEnabled = enabled; };
+	void SetColor( Vector3 color )			{ m_Color = color; };
+	void SetRadius( float radius )			{ m_fRadius = radius; };
+	void SetIntensity( float intensity )	{ m_fIntensity = intensity; };
+	void Enable()							{ m_bEnabled = true; };
+	void Disable()							{ m_bEnabled = false; };
+	void SetEnabled( bool enabled )			{ m_bEnabled = enabled; };
 
-	void cull( XNA::Frustum* frustum );
-	void update();
+	void Cull( XNA::Frustum* frustum );
+	void Update();
 
 	inline Vector3 getColor()					{ return m_Color; };
-	inline float getRadius()					{ return m_fRadius; };
-	inline float getIntensity()					{ return m_fIntensity; };
-	inline bool isVisible()						{ return m_bVisible; };
-	inline bool isEnabled()						{ return m_bEnabled; };
-	inline Transform* transform()				{ return &m_Transform; };
+	inline float GetRadius()					{ return m_fRadius; };
+	inline float GetIntensity()					{ return m_fIntensity; };
+	inline bool IsVisible()						{ return m_bVisible; };
+	inline bool IsEnabled()						{ return m_bEnabled; };
+	inline Transform* Transformation()			{ return &m_Transform; };
 
 protected:
 	Transform m_Transform;
@@ -48,42 +48,42 @@ class SpotLight
 public:
 	SpotLight();
 
-	void setCookie( Texture2D* ptr )		{ m_pCookie = ptr; };
-	void setColor( Vector3 color )			{ m_Color = color; };
-	void setRadius( float radius )			{ m_Radius = radius; };
-	void setIntensity( float intensity )	{ m_Intensity = intensity; };
-	void setCone( Vector2 radians )			{ m_Cone = radians; };
-	void setOrientation( XMFLOAT4 orient )	{ m_Transform.setOrientation(orient); };
-	void enable()							{ m_bEnabled = true; };
-	void disable()							{ m_bEnabled = false; };
-	void setEnabled( bool on )				{ m_bEnabled = on; };
-	void setCastShadow( bool on )			{ m_bShadowCasting = on; };
-	void setRSMEnabled( bool on )			{ m_bRSMEnabled = on; };
+	void SetCookie( Texture2D* ptr )		{ m_pCookie = ptr; };
+	void SetColor( Vector3 color )			{ m_Color = color; };
+	void SetRadius( float radius )			{ m_Radius = radius; };
+	void SetIntensity( float intensity )	{ m_Intensity = intensity; };
+	void SetCone( Vector2 radians )			{ m_Cone = radians; };
+	void SetOrientation( XMFLOAT4 orient )	{ m_Transform.SetOrientation(orient); };
+	void Enable()							{ m_bEnabled = true; };
+	void Disable()							{ m_bEnabled = false; };
+	void SetEnabled( bool on )				{ m_bEnabled = on; };
+	void SetCastShadow( bool on )			{ m_bShadowCasting = on; };
+	void SetRSMEnabled( bool on )			{ m_bRSMEnabled = on; };
 
-	void pointTo( Vector3 target, float roll );
-	void cull( XNA::Frustum* frustum );
-	void update();
+	void PointTo( Vector3 target, float roll );
+	void Cull( XNA::Frustum* frustum );
+	void Update();
 
-	inline Texture2D* getCookie()					{ return m_pCookie; };
-	inline Vector3 getColor()						{ return m_Color; };
-	inline float getRadius()						{ return m_Radius; };
-	inline float getIntensity()						{ return m_Intensity; };
-	inline Vector2 getCone()						{ return m_Cone; };
-	inline Quaternion getOrientation()				{ return m_Transform.getOrientation(); };
-	inline Transform* transform()					{ return &m_Transform; };
-	inline Camera3D* getProjectionCamera()			{ return m_pCamera; };
-	inline XNA::Frustum getFrustum()				{ return m_pCamera->getFrustum(); };
-	inline bool isEnabled()							{ return m_bEnabled; };
-	inline bool isVisible()							{ return m_bVisible; };
-	inline bool isCastingShadow()					{ return m_bShadowCasting; };
-	inline bool isRSMEnabled()						{ return m_bRSMEnabled; };
+	inline Texture2D* GetCookie()					{ return m_pCookie; };
+	inline Vector3 GetColor()						{ return m_Color; };
+	inline float GetRadius()						{ return m_Radius; };
+	inline float GetIntensity()						{ return m_Intensity; };
+	inline Vector2 GetCone()						{ return m_Cone; };
+	inline Quaternion GetOrientation()				{ return m_Transform.GetOrientation(); };
+	inline Transform* Transformation()				{ return &m_Transform; };
+	inline Camera3D* GetProjectionCamera()			{ return m_pCamera; };
+	inline XNA::Frustum GetFrustum()				{ return m_pCamera->GetFrustum(); };
+	inline bool IsEnabled()							{ return m_bEnabled; };
+	inline bool IsVisible()							{ return m_bVisible; };
+	inline bool IsCastingShadow()					{ return m_bShadowCasting; };
+	inline bool IsRSMEnabled()						{ return m_bRSMEnabled; };
 
-	inline void setShadowmap( Texture2D* ptr )		{ m_pShadowmap = ptr; };
-	inline void setRSMNormal( Texture2D* ptr )		{ m_pRSMNormal = ptr; };
-	inline void setRSMColor( Texture2D* ptr )		{ m_pRSMColor = ptr; };
-	inline Texture2D* getShadowmap()				{ return m_pShadowmap; };
-	inline Texture2D* getRSMNormal()				{ return m_pRSMNormal; };
-	inline Texture2D* getRSMColor()					{ return m_pRSMColor; };
+	inline void SetShadowmap( Texture2D* ptr )		{ m_pShadowmap = ptr; };
+	inline void SetRSMNormal( Texture2D* ptr )		{ m_pRSMNormal = ptr; };
+	inline void SetRSMColor( Texture2D* ptr )		{ m_pRSMColor = ptr; };
+	inline Texture2D* GetShadowmap()				{ return m_pShadowmap; };
+	inline Texture2D* GetRSMNormal()				{ return m_pRSMNormal; };
+	inline Texture2D* GetRSMColor()					{ return m_pRSMColor; };
 
 protected:
 	Transform m_Transform;

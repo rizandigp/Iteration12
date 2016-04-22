@@ -3,7 +3,7 @@
 #include "ConstantBufferData.h"
 
 
-void ConstantBufferData::setData( UINT byteOffset, void* pData, UINT byteSize )
+void ConstantBufferData::SetData( UINT byteOffset, void* pData, UINT byteSize )
 {
 	//auto it = std::next(v.begin(), index);
 	//std::vector<BYTE,tbb::scalable_allocator<BYTE>>::iterator it = ( m_Data.begin() + byteOffset ); 

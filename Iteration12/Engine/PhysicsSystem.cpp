@@ -7,14 +7,14 @@
 #include <Common/Base/keycode.cxx>
 #include <Common/Base/Config/hkProductFeatures.cxx>
 
-void PhysicsSystem::initHavok()
+void PhysicsSystem::InitHavok()
 {
-	initMemory();
-	initPhysicalWorld();
-	initVDB();
+	InitMemory();
+	InitPhysicalWorld();
+	InitVDB();
 }
 
-void PhysicsSystem::initMemory() 
+void PhysicsSystem::InitMemory() 
 {
  
     #if defined(HK_COMPILER_HAS_INTRINSICS_IA32) && HK_CONFIG_SIMD ==  HK_CONFIG_SIMD_ENABLED
@@ -62,7 +62,7 @@ void PhysicsSystem::initMemory()
     hkMonitorStream::getInstance().resize(200000);
 }
 
-void PhysicsSystem::initPhysicalWorld() 
+void PhysicsSystem::InitPhysicalWorld() 
 {
 	hkpWorldCinfo WorldInfo;
     WorldInfo.m_simulationType = hkpWorldCinfo::SIMULATION_TYPE_MULTITHREADED;
@@ -78,7 +78,7 @@ void PhysicsSystem::initPhysicalWorld()
 	m_pWorld->unlock();
 }
 
-void PhysicsSystem::initVDB() 
+void PhysicsSystem::InitVDB() 
 {
     hkArray<hkProcessContext*> contexts;
     {
@@ -94,7 +94,7 @@ void PhysicsSystem::initVDB()
     m_pVDB->serve();
 }
 
-void PhysicsSystem::deinitHavok()
+void PhysicsSystem::DeinitHavok()
 { 
     m_pWorld->markForWrite();
     m_pWorld->removeReference();
@@ -110,13 +110,13 @@ void PhysicsSystem::deinitHavok()
     hkMemoryInitUtil::quit();
 }
 
-void PhysicsSystem::deinitVDB()
+void PhysicsSystem::DeinitVDB()
 {
 	m_pVDB->removeReference();
 	m_pContext->removeReference();
 }
 
-void PhysicsSystem::step(float deltaTime)
+void PhysicsSystem::Step(float deltaTime)
 {
 	// Multithreaded stepping
 	m_pWorld->stepMultithreaded(m_pJobQueue, m_pThreadPool, deltaTime);
@@ -125,35 +125,35 @@ void PhysicsSystem::step(float deltaTime)
 	//m_pWorld->stepDeltaTime( deltaTime );
 
 	// Step the visual debugger
-	stepVDB();
+	StepVDB();
 
 	// Clear timing
 	hkMonitorStream::getInstance().reset();
     m_pThreadPool->clearTimerData();
 }
 
-void PhysicsSystem::stepVDB() 
+void PhysicsSystem::StepVDB() 
 {
     m_pContext->syncTimers(m_pThreadPool);
     m_pVDB->step();
 }
 
-hkVisualDebugger* PhysicsSystem::getVisualDebugger()
+hkVisualDebugger* PhysicsSystem::GetVisualDebugger()
 {
 	return m_pVDB;
 }
 
-hkpPhysicsContext* PhysicsSystem::getContext()
+hkpPhysicsContext* PhysicsSystem::GetContext()
 {
 	return m_pContext;
 }
 
-hkpWorld* PhysicsSystem::getWorld()
+hkpWorld* PhysicsSystem::GetWorld()
 {
 	return m_pWorld;
 }
 
-hkpRigidBody* PhysicsSystem::createBoxRigidBody( Vector3 halfExtents, float mass, float friction, float restitution )
+hkpRigidBody* PhysicsSystem::CreateBoxRigidBody( Vector3 halfExtents, float mass, float friction, float restitution )
 {
 	float convexRadius = 0.05f;
 	float halfLength = clamp(halfExtents.x-convexRadius, convexRadius,halfExtents.x);

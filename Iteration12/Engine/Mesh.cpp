@@ -4,22 +4,22 @@
 
 Mesh::Mesh( Mesh &other )
 {
-	m_Name = other.getName();
-	for (int i=0; i < other.getNumberOfSubmeshes(); i++)
+	m_Name = other.GetName();
+	for (int i=0; i < other.GetNumberOfSubmeshes(); i++)
 	{
-		addSubmesh( new Submesh(*other.getSubmesh(i)) );
+		AddSubmesh( new Submesh(*other.GetSubmesh(i)) );
 	}
 }
 
-void Mesh::setMaterial(Material* ptr)
+void Mesh::SetMaterial(Material* ptr)
 {
 	for (std::vector<Submesh*>::iterator it = m_pSubmeshes.begin(); it != m_pSubmeshes.end(); ++it)
 	{
-		(*it)->setMaterial( ptr );
+		(*it)->SetMaterial( ptr );
 	}
 }
 
-Submesh* Mesh::getSubmesh(UINT index)
+Submesh* Mesh::GetSubmesh(UINT index)
 { 
 	if (index<=m_pSubmeshes.size()) 
 		return m_pSubmeshes[index]; 
@@ -28,11 +28,11 @@ Submesh* Mesh::getSubmesh(UINT index)
 		return NULL;
 };
 
-Submesh* Mesh::getSubmesh(std::string name)
+Submesh* Mesh::GetSubmesh(std::string name)
 {
 	for (std::vector<Submesh*>::iterator it = m_pSubmeshes.begin(); it != m_pSubmeshes.end(); ++it)
 	{
-		if((*it)->getName()==name)
+		if((*it)->GetName()==name)
 			return (*it);
 	}
 	return NULL;

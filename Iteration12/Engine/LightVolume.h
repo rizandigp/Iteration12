@@ -11,9 +11,9 @@ public:
 	LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight );
 	LightVolume( RenderSystem* pRenderSystem, PointLight* pPointlight );
 
-	void setGBuffer(Texture2D* buffers[3]);
-	void render();
-	void renderVolumetricLight();
+	void SetGBuffer(Texture2D* buffers[3]);
+	void Render();
+	void RenderVolumetricLight();
 
 protected:
 	SpotLight* m_pSpotlight;

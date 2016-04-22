@@ -22,8 +22,8 @@ public:
 //	void _register( GeometryChunkRenderAgent* pRenderAgent )	{ m_GeometryChunkRenderAgent = pRenderAgent; };
 //	Mesh* fromFile( const char* pFile );
 
-	static GeometryChunk* fromFile( DX11RenderDispatcher* pDispatcher , const char* pFile, UINT meshNumber );
+	static GeometryChunk* FromFile( DX11RenderDispatcher* pDispatcher , const char* pFile, UINT meshNumber );
 
-	static Mesh* fromFile( DX11RenderDispatcher* pDispatcher, const char* filename );
+	static Mesh* FromFile( DX11RenderDispatcher* pDispatcher, const char* filename );
 
 };

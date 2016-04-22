@@ -3,15 +3,15 @@
 #include "DX11Renderer.h"
 #include "DX11Material.h"
 
-void DX11Renderer::setRenderSystem( RenderSystem*	pRenderSystem )
+void DX11Renderer::SetRenderSystem( RenderSystem*	pRenderSystem )
 {
 	m_pRenderSystem = pRenderSystem;
-	m_pShadowmapShader = pRenderSystem->loadShaderset( L"Shaders/Shadowmap.hlsl", "VS", "PS", SM_5_0 );
-	m_pRSMShader = pRenderSystem->loadShaderset( L"Shaders/RSM.hlsl", "VS", "PS", SM_5_0 );
+	m_pShadowmapShader = pRenderSystem->LoadShaderset( L"Shaders/Shadowmap.hlsl", "VS", "PS", SM_5_0 );
+	m_pRSMShader = pRenderSystem->LoadShaderset( L"Shaders/RSM.hlsl", "VS", "PS", SM_5_0 );
 }
 
 // TODO : optimize implementation
-void DX11Renderer::setMesh( Mesh* pMesh )
+void DX11Renderer::SetMesh( Mesh* pMesh )
 {
 	if (m_pMesh!=pMesh && pMesh)
 	{
@@ -26,33 +26,33 @@ void DX11Renderer::setMesh( Mesh* pMesh )
 		// Reset render data
 		m_SubmeshRenderData.clear();
 
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			SubmeshRenderData renderData;
 			renderData.bVisible = true;
 			m_SubmeshRenderData.push_back(renderData);
 
-			Submesh* submesh = m_pMesh->getSubmesh( i );
+			Submesh* submesh = m_pMesh->GetSubmesh( i );
 
 			for (int multipass = 0; multipass < 4; multipass++)
 			{
 				// Main render commands
 				DX11RenderCommand_Draw* command = new DX11RenderCommand_Draw();
-				command->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
+				command->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
 				m_pSubmeshRenderCommands.push_back(std::vector<DX11RenderCommand_Draw*>());
 				m_pSubmeshRenderCommands[i].push_back( command );
 			}
 
 			// Render commands for shadowmap rendering
 			DX11RenderCommand_Draw* command = new DX11RenderCommand_Draw();
-			command->setShaderset( (D3D11Shaderset*)m_pShadowmapShader );
-			command->setGeometryChunk( (D3D11GeometryChunk*)submesh->getGeometryChunk() );
+			command->SetShaderset( (D3D11Shaderset*)m_pShadowmapShader );
+			command->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
 			m_pShadowmapRenderCommands.push_back( command );
 
 			// Render commands for debug OBB drawing
 			DX11RenderCommand_Draw* rcDebug = new DX11RenderCommand_Draw();
-			rcDebug->setGeometryChunk( (D3D11GeometryChunk*)m_pRenderSystem->createBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->getSubmesh(0)->getGeometryChunk() );
-			rcDebug->setShaderset( (D3D11Shaderset*)m_pRenderSystem->loadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
+			rcDebug->SetGeometryChunk( (D3D11GeometryChunk*)m_pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
+			rcDebug->SetShaderset( (D3D11Shaderset*)m_pRenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
 			m_pDebugRenderCommands.push_back( rcDebug );
 		}
 	}
@@ -61,28 +61,28 @@ void DX11Renderer::setMesh( Mesh* pMesh )
 }
 
 // TODO : optimize implementation
-void DX11Renderer::render( Transform* pTransform )
+void DX11Renderer::Render( Transform* pTransform )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
-				Submesh* submesh = m_pMesh->getSubmesh( i );
+				Submesh* submesh = m_pMesh->GetSubmesh( i );
 	
 				Timer matTimer;
 				UINT passes = 1;
-				if (submesh->getMaterial())
-						passes = submesh->getMaterial()->bind( this, (RenderCommand**)&m_pSubmeshRenderCommands[i][0], &m_SubmeshRenderData[i], pTransform );
+				if (submesh->GetMaterial())
+						passes = submesh->GetMaterial()->Bind( this, (RenderCommand**)&m_pSubmeshRenderCommands[i][0], &m_SubmeshRenderData[i], pTransform );
 				// else
 				// "No material" shader
 	
-				m_pRenderSystem->t_material += matTimer.getMiliseconds();
+				m_pRenderSystem->t_material += matTimer.GetMiliseconds();
 					
 				for( int ii=0; ii<passes; ii++ )
 				{
-					m_pRenderSystem->submit( m_pSubmeshRenderCommands[i].at(ii) );
+					m_pRenderSystem->Submit( m_pSubmeshRenderCommands[i].at(ii) );
 					m_pRenderSystem->drawcalls++;
 				}
 			}
@@ -90,11 +90,11 @@ void DX11Renderer::render( Transform* pTransform )
 	}
 }
 
-void DX11Renderer::renderShadowmap( Transform* pTransform, Camera3D* pShadowCamera )
+void DX11Renderer::RenderShadowmap( Transform* pTransform, Camera3D* pShadowCamera )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
@@ -103,26 +103,26 @@ void DX11Renderer::renderShadowmap( Transform* pTransform, Camera3D* pShadowCame
 				ShaderParams params;
 				params.initialize( m_pShadowmapShader );
 
-				params.setParam( "World", 0, &pTransform->getMatrix().transpose() );
-				params.setParam( "SpotLightViewProjection", 0, &pShadowCamera->getViewProjectionMatrix().transpose() );
-				params.setParam( "SpotLightView", 0, &pShadowCamera->getViewMatrix().transpose() );
-				params.setParam( "fFarPlane", 0, pShadowCamera->getFarPlane() );
+				params.setParam( "World", 0, &pTransform->GetMatrix().transpose() );
+				params.setParam( "SpotLightViewProjection", 0, &pShadowCamera->GetViewProjectionMatrix().transpose() );
+				params.setParam( "SpotLightView", 0, &pShadowCamera->GetViewMatrix().transpose() );
+				params.setParam( "fFarPlane", 0, pShadowCamera->GetFarPlane() );
 			
-				command->setShaderParams( &params );
-				command->setShaderset( (D3D11Shaderset*)m_pShadowmapShader );
+				command->SetShaderParams( &params );
+				command->SetShaderset( (D3D11Shaderset*)m_pShadowmapShader );
 
-				m_pRenderSystem->submit( command ); 
+				m_pRenderSystem->Submit( command ); 
 				m_pRenderSystem->drawcalls++;
 			}
 		}
 	}
 }
 
-void DX11Renderer::renderRSM( Transform* pTransform, Camera3D* pShadowCamera, SpotLight* pLightSource )
+void DX11Renderer::RenderRSM( Transform* pTransform, Camera3D* pShadowCamera, SpotLight* pLightSource )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
@@ -131,74 +131,74 @@ void DX11Renderer::renderRSM( Transform* pTransform, Camera3D* pShadowCamera, Sp
 				ShaderParams params;
 				params.initialize( m_pRSMShader );
 
-				params.setParam( "World", 0, &pTransform->getMatrix().transpose() );
-				params.setParam( "SpotLightViewProjection", 0, &pShadowCamera->getViewProjectionMatrix().transpose() );
-				params.setParam( "SpotLightView", 0, &pShadowCamera->getViewMatrix().transpose() );
-				params.setParam( "NormalMatrix", 0, &pTransform->getMatrix().transpose() ) ;
-				params.setParam( "vResolution", 0, &Vector4(pLightSource->getCookie()->getDimensions(),0.0f,0.0f) );
-				params.setParam( "fFarPlane", 0, pShadowCamera->getFarPlane() );
+				params.setParam( "World", 0, &pTransform->GetMatrix().transpose() );
+				params.setParam( "SpotLightViewProjection", 0, &pShadowCamera->GetViewProjectionMatrix().transpose() );
+				params.setParam( "SpotLightView", 0, &pShadowCamera->GetViewMatrix().transpose() );
+				params.setParam( "NormalMatrix", 0, &pTransform->GetMatrix().transpose() ) ;
+				params.setParam( "vResolution", 0, &Vector4(pLightSource->GetCookie()->GetDimensions(),0.0f,0.0f) );
+				params.setParam( "fFarPlane", 0, pShadowCamera->GetFarPlane() );
 			
-				command->setShaderParams( &params );
-				command->setShaderset( (D3D11Shaderset*)m_pRSMShader );
-				command->setTexture( "txCookie", (DX11Texture2D*)pLightSource->getCookie() );
-				if (dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->getSubmesh(i)->getMaterial()))
+				command->SetShaderParams( &params );
+				command->SetShaderset( (D3D11Shaderset*)m_pRSMShader );
+				command->SetTexture( "txCookie", (DX11Texture2D*)pLightSource->GetCookie() );
+				if (dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial()))
 				{
-					command->setTexture( "txDiffuse", (DX11Texture2D*)dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->getSubmesh(i)->getMaterial())->getDiffusemap() );
-					command->setTexture( "txNormal", (DX11Texture2D*)dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->getSubmesh(i)->getMaterial())->getNormalmap() );
+					command->SetTexture( "txDiffuse", (DX11Texture2D*)dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
+					command->SetTexture( "txNormal", (DX11Texture2D*)dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
 				}
-				else if (dynamic_cast<DX11Material_Deferred*>(m_pMesh->getSubmesh(i)->getMaterial()))
+				else if (dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial()))
 				{
-					command->setTexture( "txDiffuse", (DX11Texture2D*)dynamic_cast<DX11Material_Deferred*>(m_pMesh->getSubmesh(i)->getMaterial())->getDiffusemap() );
-					command->setTexture( "txNormal", (DX11Texture2D*)dynamic_cast<DX11Material_Deferred*>(m_pMesh->getSubmesh(i)->getMaterial())->getNormalmap() );
+					command->SetTexture( "txDiffuse", (DX11Texture2D*)dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
+					command->SetTexture( "txNormal", (DX11Texture2D*)dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
 				}
-				m_pRenderSystem->submit( command ); 
+				m_pRenderSystem->Submit( command ); 
 				m_pRenderSystem->drawcalls++;
 			}
 		}
 	}
 }
 
-void DX11Renderer::renderOBB( Transform* pTransform )
+void DX11Renderer::RenderOBB( Transform* pTransform )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
 				DX11RenderCommand_Draw* command = m_pDebugRenderCommands[i];
 				
-				Submesh* submesh = m_pMesh->getSubmesh( i );
-				XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-				XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-				XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
+				Submesh* submesh = m_pMesh->GetSubmesh( i );
+				XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+				XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+				XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
 				scale *= extents;
-				position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+				position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 	
-				XMMATRIX transform = XMMatrixAffineTransformation( scale, XMVectorZero(), XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()), position );
+				XMMATRIX transform = XMMatrixAffineTransformation( scale, XMVectorZero(), XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()), position );
 
 				ShaderParams params;
-				params.initialize( command->getShaderset() );
+				params.initialize( command->GetShaderset() );
 
-				params.setParam( "ViewProjection", 0, &m_pRenderSystem->getCamera()->getViewMatrix().transpose() );
+				params.setParam( "ViewProjection", 0, &m_pRenderSystem->GetCamera()->GetViewMatrix().transpose() );
 				params.setParam( "World", 0, &XMMatrixTranspose(transform) );
 				params.setParam( "vMeshColor", 0, &Vector4( 0.1f, 0.1f, 0.2f, 0.0f ) );
 
-				command->setShaderParams( &params );
+				command->SetShaderParams( &params );
 
-				m_pRenderSystem->submit( command ); 
+				m_pRenderSystem->Submit( command ); 
 			}
 		}
 	}
 }
 
 
-void DX11Renderer::addLight( PointLight* pLight )
+void DX11Renderer::AddLight( PointLight* pLight )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
@@ -208,11 +208,11 @@ void DX11Renderer::addLight( PointLight* pLight )
 	}
 }
 
-void DX11Renderer::addLight( SpotLight* pLight )
+void DX11Renderer::AddLight( SpotLight* pLight )
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
@@ -223,11 +223,11 @@ void DX11Renderer::addLight( SpotLight* pLight )
 }
 
 
-void DX11Renderer::clearLights()
+void DX11Renderer::ClearLights()
 {
 	if (m_pMesh)
 	{
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			m_SubmeshRenderData[i].AffectingPointLights.clear();
 			m_SubmeshRenderData[i].AffectingSpotLights.clear();
@@ -235,23 +235,23 @@ void DX11Renderer::clearLights()
 	}
 }
 
-void DX11Renderer::cull( XNA::Frustum* frustum, Transform* pTransform )
+void DX11Renderer::Cull( XNA::Frustum* frustum, Transform* pTransform )
 {
 	if (m_pMesh)
 	{
 		XNA::OrientedBox objectBox;
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
-			Submesh* submesh = m_pMesh->getSubmesh( i );
+			Submesh* submesh = m_pMesh->GetSubmesh( i );
 
-			XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-			XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-			XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
-			position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+			XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+			XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+			XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+			XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
+			position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 			XMStoreFloat3( &objectBox.Center, position );
 			XMStoreFloat3( &objectBox.Extents, extents*scale );
-			objectBox.Orientation = pTransform->getOrientation().intoXMFLOAT4();
+			objectBox.Orientation = pTransform->GetOrientation().intoXMFLOAT4();
 	
 			if( XNA::IntersectOrientedBoxFrustum( &objectBox, frustum ) > 0 )
 				m_SubmeshRenderData[i].bVisible = true;
@@ -261,17 +261,17 @@ void DX11Renderer::cull( XNA::Frustum* frustum, Transform* pTransform )
 	}
 }
 
-void DX11Renderer::cull( XNA::Sphere* sphere, Transform* pTransform )
+void DX11Renderer::Cull( XNA::Sphere* sphere, Transform* pTransform )
 {/*
 	XNA::OrientedBox objectBox;
 	for (std::vector< std::pair<D3D11RenderCommand_Draw*,bool > >::iterator it = m_pRenderCommands.begin(); it != m_pRenderCommands.end(); ++it)
 	{
-		objectBox.Center = pTransform->getPosition();
+		objectBox.Center = pTransform->GetPosition();
 		objectBox.Orientation = pTransform->getRotation();
 
-		objectBox.Extents = XMFLOAT3(	it->first->getGeometryChunk()->getAABB()->Extents.x*pTransform->getScale().x,
-										it->first->getGeometryChunk()->getAABB()->Extents.y*pTransform->getScale().y,
-										it->first->getGeometryChunk()->getAABB()->Extents.z*pTransform->getScale().z	);
+		objectBox.Extents = XMFLOAT3(	it->first->GetGeometryChunk()->getAABB()->Extents.x*pTransform->GetScale().x,
+										it->first->GetGeometryChunk()->getAABB()->Extents.y*pTransform->GetScale().y,
+										it->first->GetGeometryChunk()->getAABB()->Extents.z*pTransform->GetScale().z	);
 
 		if( XNA::IntersectSphereOrientedBox( sphere, &objectBox ) > 0 )
 		it->second = true;
@@ -280,29 +280,29 @@ void DX11Renderer::cull( XNA::Sphere* sphere, Transform* pTransform )
 	}*/
 }
 
-void DX11Renderer::cullLight( PointLight* light, Transform* pTransform )
+void DX11Renderer::CullLight( PointLight* light, Transform* pTransform )
 {
 	if (m_pMesh)
 	{
 		XNA::OrientedBox objectBox;
 		XNA::Sphere lightSphere;
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
-				Submesh* submesh = m_pMesh->getSubmesh( i );
+				Submesh* submesh = m_pMesh->GetSubmesh( i );
 
-				XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-				XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-				XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
-				position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+				XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+				XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+				XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
+				position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 				XMStoreFloat3( &objectBox.Center, position );
 				XMStoreFloat3( &objectBox.Extents, extents*scale );
-				objectBox.Orientation = pTransform->getOrientation().intoXMFLOAT4();
+				objectBox.Orientation = pTransform->GetOrientation().intoXMFLOAT4();
 
-				lightSphere.Center = light->transform()->getPosition().intoXMFLOAT3();
-				lightSphere.Radius = light->getRadius();
+				lightSphere.Center = light->Transformation()->GetPosition().intoXMFLOAT3();
+				lightSphere.Radius = light->GetRadius();
 
 				if( XNA::IntersectSphereOrientedBox( &lightSphere, &objectBox ) )
 					m_SubmeshRenderData[i].AffectingPointLights.push_back( light );
@@ -311,26 +311,26 @@ void DX11Renderer::cullLight( PointLight* light, Transform* pTransform )
 	}
 }
 
-void DX11Renderer::cullLight( SpotLight* light, Transform* pTransform )
+void DX11Renderer::CullLight( SpotLight* light, Transform* pTransform )
 {
 	if (m_pMesh)
 	{
 		XNA::OrientedBox objectBox;
-		XNA::Frustum lightFrustum = light->getFrustum();
-		for( int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++ )
+		XNA::Frustum lightFrustum = light->GetFrustum();
+		for( int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++ )
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
-				Submesh* submesh = m_pMesh->getSubmesh( i );
+				Submesh* submesh = m_pMesh->GetSubmesh( i );
 
-				XMVECTOR extents = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Extents );
-				XMVECTOR scale = XMLoadFloat3( &pTransform->getScale().intoXMFLOAT3() );
-				XMVECTOR offset = XMLoadFloat3( &submesh->getGeometryChunk()->getAABB()->Center )*scale;
-				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->getOrientation().intoXMFLOAT4()) );
-				position += XMLoadFloat3( &pTransform->getPosition().intoXMFLOAT3() );
+				XMVECTOR extents = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Extents );
+				XMVECTOR scale = XMLoadFloat3( &pTransform->GetScale().intoXMFLOAT3() );
+				XMVECTOR offset = XMLoadFloat3( &submesh->GetGeometryChunk()->GetAABB()->Center )*scale;
+				XMVECTOR position = XMVector3Rotate( offset, XMLoadFloat4(&pTransform->GetOrientation().intoXMFLOAT4()) );
+				position += XMLoadFloat3( &pTransform->GetPosition().intoXMFLOAT3() );
 				XMStoreFloat3( &objectBox.Center, position );
 				XMStoreFloat3( &objectBox.Extents, extents*scale );
-				objectBox.Orientation = pTransform->getOrientation().intoXMFLOAT4();
+				objectBox.Orientation = pTransform->GetOrientation().intoXMFLOAT4();
 
 				if( XNA::IntersectOrientedBoxFrustum( &objectBox, &lightFrustum ) > 0 )
 					m_SubmeshRenderData[i].AffectingSpotLights.push_back( light );
@@ -339,10 +339,10 @@ void DX11Renderer::cullLight( SpotLight* light, Transform* pTransform )
 	}
 }
 
-void DX11Renderer::setCulled( bool culled )
+void DX11Renderer::SetCulled( bool Culled )
 {
-	for(int i=0; i<m_pMesh->getNumberOfSubmeshes(); i++)
+	for(int i=0; i<m_pMesh->GetNumberOfSubmeshes(); i++)
 	{
-		m_SubmeshRenderData[i].bVisible = !culled;
+		m_SubmeshRenderData[i].bVisible = !Culled;
 	}
 }

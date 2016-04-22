@@ -417,7 +417,7 @@ public:
     */
     /** Sets the scale part of the matrix.
     */
-    inline void setScale( const Vector3& v )
+    inline void SetScale( const Vector3& v )
     {
         m[0][0] = v.x;
         m[1][1] = v.y;
@@ -426,7 +426,7 @@ public:
 
     /** Gets a scale matrix.
     */
-    inline static Matrix4x4 getScale( const Vector3& v )
+    inline static Matrix4x4 GetScale( const Vector3& v )
     {
         Matrix4x4 r;
         r.m[0][0] = v.x; r.m[0][1] = 0.0; r.m[0][2] = 0.0; r.m[0][3] = 0.0;
@@ -439,7 +439,7 @@ public:
 
     /** Gets a scale matrix - variation for not using a vector.
     */
-    inline static Matrix4x4 getScale( float s_x, float s_y, float s_z )
+    inline static Matrix4x4 GetScale( float s_x, float s_y, float s_z )
     {
         Matrix4x4 r;
         r.m[0][0] = s_x; r.m[0][1] = 0.0; r.m[0][2] = 0.0; r.m[0][3] = 0.0;

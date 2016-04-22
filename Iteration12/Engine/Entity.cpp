@@ -9,113 +9,113 @@ MyEntity::MyEntity() : 	Entity()
 
 MyEntity::MyEntity( const MyEntity& other ) : Entity( other )
 {
-	setRenderSystem( other.m_pRenderSystem );
-	setMesh( other.m_pMesh );
+	SetRenderSystem( other.m_pRenderSystem );
+	SetMesh( other.m_pMesh );
 }
 
-void MyEntity::setRenderSystem( RenderSystem* ptr )
+void MyEntity::SetRenderSystem( RenderSystem* ptr )
 {
-	Entity::setRenderSystem( ptr );
-	m_Renderer.setRenderSystem( ptr );
+	Entity::SetRenderSystem( ptr );
+	m_Renderer.SetRenderSystem( ptr );
 }
 
-void MyEntity::setMesh( Mesh* ptr )
+void MyEntity::SetMesh( Mesh* ptr )
 {
 	m_pMesh = ptr;
-	m_Renderer.setMesh( ptr );
+	m_Renderer.SetMesh( ptr );
 };
 
-void MyEntity::update(float deltaTime)
+void MyEntity::Update(float deltaTime)
 {
-	m_Transform.update();
+	m_Transform.Update();
 }
 
-void MyEntity::clearLights()
+void MyEntity::ClearLights()
 {
-	m_Renderer.clearLights();
+	m_Renderer.ClearLights();
 }
 
-void MyEntity::render()
+void MyEntity::Render()
 {
-	m_Renderer.render( &m_Transform );
+	m_Renderer.Render( &m_Transform );
 }
 
-void MyEntity::renderShadowmap( Camera3D* pShadowCamera )
+void MyEntity::RenderShadowmap( Camera3D* pShadowCamera )
 {
-	m_Renderer.renderShadowmap( &m_Transform, pShadowCamera );
+	m_Renderer.RenderShadowmap( &m_Transform, pShadowCamera );
 }
 
-void MyEntity::renderBoundingBox()
+void MyEntity::RenderBoundingBox()
 {
-	m_Renderer.renderOBB( &m_Transform );
+	m_Renderer.RenderOBB( &m_Transform );
 }
 
-void MyEntity::cull( XNA::Frustum* frustum )
+void MyEntity::Cull( XNA::Frustum* frustum )
 {
-	m_Renderer.cull( frustum, &m_Transform );
+	m_Renderer.Cull( frustum, &m_Transform );
 }
 
-void MyEntity::cullLight( PointLight* light )
+void MyEntity::CullLight( PointLight* light )
 {
-	m_Renderer.cullLight( light, &m_Transform );
+	m_Renderer.CullLight( light, &m_Transform );
 }
 
-void MyEntity::cullLight( SpotLight* light )
+void MyEntity::CullLight( SpotLight* light )
 {
-	m_Renderer.cullLight( light, &m_Transform );
+	m_Renderer.CullLight( light, &m_Transform );
 }
 
-void MyEntity::setCulled( bool culled )
+void MyEntity::SetCulled( bool Culled )
 {
-	m_Renderer.setCulled( culled );
+	m_Renderer.SetCulled( Culled );
 }
 
 PlayerEntity::PlayerEntity(RenderSystem* ptr)
 {
-	setRenderSystem( ptr );
+	SetRenderSystem( ptr );
 
 	m_DirEuler = XMFLOAT3( 0.0f , 0.0f , -XM_PIDIV2 );
 	m_bMouseDragged = false;
 
 	m_pSpotlight = new SpotLight();
-	m_pSpotlight->setRadius( 40.0f );
-	m_pSpotlight->setIntensity( 10.0f );
-	m_pSpotlight->setColor( Vector3(1.0f,1.0f,0.8f) );
-	m_pSpotlight->setCone( Vector2( XM_PI/4.0f, XM_PI/4.0f ) );
-	m_pSpotlight->setCookie( m_pRenderSystem->loadTexture( L"Media/spotlight.bmp" ) );
-	m_pSpotlight->transform()->setPosition( 0.0f, 0.0f, 0.0f );
-	m_pSpotlight->pointTo( Vector3( 0.0f, 0.0f, 25.0f ), 0.0f );
-	m_pSpotlight->disable();
+	m_pSpotlight->SetRadius( 40.0f );
+	m_pSpotlight->SetIntensity( 10.0f );
+	m_pSpotlight->SetColor( Vector3(1.0f,1.0f,0.8f) );
+	m_pSpotlight->SetCone( Vector2( XM_PI/4.0f, XM_PI/4.0f ) );
+	m_pSpotlight->SetCookie( m_pRenderSystem->LoadTexture( L"Media/spotlight.bmp" ) );
+	m_pSpotlight->Transformation()->SetPosition( 0.0f, 0.0f, 0.0f );
+	m_pSpotlight->PointTo( Vector3( 0.0f, 0.0f, 25.0f ), 0.0f );
+	m_pSpotlight->Disable();
 
 	m_pPointLight = new PointLight();
-	m_pPointLight->setRadius( 10000.0f );
-	m_pPointLight->setIntensity( 0.03f );
-	m_pPointLight->setColor( Vector3(1.0f,1.0f,1.0f) );
-	m_pPointLight->transform()->setPosition( 0.0f, 0.0f, 0.0f );
+	m_pPointLight->SetRadius( 10000.0f );
+	m_pPointLight->SetIntensity( 0.03f );
+	m_pPointLight->SetColor( Vector3(1.0f,1.0f,1.0f) );
+	m_pPointLight->Transformation()->SetPosition( 0.0f, 0.0f, 0.0f );
 	//m_pPointLight->disable();
 
 	UINT width, height;
-	RenderSystemConfig config = ptr->getConfig();
+	RenderSystemConfig config = ptr->GetConfig();
 	width = config.Width;
 	height = config.Height;
 
 	m_pCamera = new Camera3D();
-	m_pCamera->setPosition( transform()->getPosition() );
-	m_pCamera->setLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
-	m_pCamera->setUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
-	m_pCamera->setProjection( XM_PI*0.35f, width / (float)height, 0.1f, 5000.0f );
-	m_pCamera->update( 0.0f );
+	m_pCamera->SetPosition( Transformation()->GetPosition() );
+	m_pCamera->SetLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
+	m_pCamera->SetUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
+	m_pCamera->SetProjection( XM_PI*0.35f, width / (float)height, 0.1f, 5000.0f );
+	m_pCamera->Update( 0.0f );
 }
 
-void PlayerEntity::onAddToScene( Scene* ptr )
+void PlayerEntity::OnAddToScene( Scene* ptr )
 {
-	ptr->addSpotLight( m_pSpotlight );
-	//ptr->addPointLight( m_pPointLight );
-	ptr->setCamera( m_pCamera );
-	Entity::onAddToScene(ptr);
+	ptr->AddSpotLight( m_pSpotlight );
+	//ptr->AddPointLight( m_pPointLight );
+	ptr->SetCamera( m_pCamera );
+	Entity::OnAddToScene(ptr);
 }
 
-void PlayerEntity::update(float deltaTime)
+void PlayerEntity::Update(float deltaTime)
 {
 	POINT ptMousePos;
 	XMFLOAT2 ptMousePosDelta;
@@ -165,33 +165,33 @@ void PlayerEntity::update(float deltaTime)
 	relPos.x += vCamMovement.x*sin(-m_DirEuler.z);						// Kiri-Kanan
 	relPos.y += vCamMovement.x*cos(-m_DirEuler.z);
 
-	transform()->translate( relPos );
-	pos = transform()->getPosition();
+	Transformation()->Translate( relPos );
+	pos = Transformation()->GetPosition();
 	//pos.z = 1.6f;
-	transform()->setPosition( pos );
+	Transformation()->SetPosition( pos );
 
 	lookat.x = pos.x + cos(m_DirEuler.z)*cos(m_DirEuler.y);
 	lookat.y = pos.y + sin(m_DirEuler.z)*cos(m_DirEuler.y);
 	lookat.z = pos.z + sin(m_DirEuler.y);
 
-	m_pCamera->setPosition( transform()->getPosition() );
-	m_pCamera->setLookAt( lookat );
-	m_pCamera->update( deltaTime );
+	m_pCamera->SetPosition( Transformation()->GetPosition() );
+	m_pCamera->SetLookAt( lookat );
+	m_pCamera->Update( deltaTime );
 
 	Vector3 flashlightpos, flashlightlookat;
 	flashlightpos.x = pos.x + 0.35f*cosf(m_DirEuler.z-XM_PIDIV2);
 	flashlightpos.y = pos.y + 0.35f*sinf(m_DirEuler.z-XM_PIDIV2);
 	//flashlightpos.z = 1.45f;
 	flashlightpos.z = pos.z;
-	m_pSpotlight->transform()->setPosition(flashlightpos);
+	m_pSpotlight->Transformation()->SetPosition(flashlightpos);
 	flashlightlookat.x = pos.x + 25.0f*cosf(m_DirEuler.z)*cosf(m_DirEuler.y);
 	flashlightlookat.y = pos.y + 25.0f*sinf(m_DirEuler.z)*cosf(m_DirEuler.y);
 	flashlightlookat.z = pos.z + 25.0f*sinf(m_DirEuler.y);
-	m_pSpotlight->pointTo( flashlightlookat, 0.0f );
-	m_pSpotlight->update();
+	m_pSpotlight->PointTo( flashlightlookat, 0.0f );
+	m_pSpotlight->Update();
 
-	m_pPointLight->transform()->setPosition( pos );
+	m_pPointLight->Transformation()->SetPosition( pos );
 
 	if ( KEYDOWN( 'F' ) )
-		m_pSpotlight->setEnabled(!m_pSpotlight->isEnabled());
+		m_pSpotlight->SetEnabled(!m_pSpotlight->IsEnabled());
 }

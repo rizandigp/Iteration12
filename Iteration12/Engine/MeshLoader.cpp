@@ -4,7 +4,7 @@
 #include "Vector3.h"
 #include "Vector3.h"
 
-GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const char* pFile, UINT meshNumber )
+GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const char* pFile, UINT meshNumber )
 {
 	// Create an instance of the Importer class   
 	Assimp::Importer importer;   
@@ -59,7 +59,7 @@ GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const c
 	// Set up vertex buffer data layout
 	if( mesh->HasPositions() )
 	{
-		layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		vertexFloatSize += 3;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -69,7 +69,7 @@ GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const c
 	
 	if( mesh->HasTextureCoords(0) )
 	{
-		layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
 		vertexFloatSize += 2;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -79,7 +79,7 @@ GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const c
 	}
 	if( mesh->HasNormals() )
 	{
-		layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		vertexFloatSize += 3;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -88,8 +88,8 @@ GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const c
 	}
 	if( mesh->HasTangentsAndBitangents() )
 	{
-		layout.addElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		vertexFloatSize += 6;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -154,7 +154,7 @@ GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const c
 		}
 	};
 	
-	GeometryChunk* geom = pDispatcher->createGeometryChunk( pVertexData, vertexFloatSize*sizeof(float), arraySize*sizeof(float), layout, pIndexData, arraySize2 );
+	GeometryChunk* geom = pDispatcher->CreateGeometryChunk( pVertexData, vertexFloatSize*sizeof(float), arraySize*sizeof(float), layout, pIndexData, arraySize2 );
 	delete[] pVertexData;
 	delete[] pIndexData;
 	importer.FreeScene();
@@ -178,7 +178,7 @@ GeometryChunk* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher , const c
 }
 
 
-Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filename )
+Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filename )
 {
 	// Create an instance of the Importer class   
 	Assimp::Importer importer;   
@@ -214,7 +214,7 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 	}
 
 	Mesh* ret = new Mesh();
-	ret->setName( filename );
+	ret->SetName( filename );
 
 	// Get the meshes
 	const aiMesh* mesh = NULL;
@@ -243,7 +243,7 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		// Set up vertex buffer data layout
 		if( mesh->HasPositions() )
 		{
-			layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 			vertexFloatSize += 3;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -253,7 +253,7 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 	
 		if( mesh->HasTextureCoords(0) )
 		{
-			layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+			layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
 			vertexFloatSize += 2;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -263,7 +263,7 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		}
 		if( mesh->HasNormals() )
 		{
-			layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 			vertexFloatSize += 3;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -272,8 +272,8 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		}
 		if( mesh->HasTangentsAndBitangents() )
 		{
-			layout.addElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-			layout.addElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 			vertexFloatSize += 6;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -339,7 +339,7 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 				}
 			};
 		
-			GeometryChunk* geom = pDispatcher->createGeometryChunk( pVertexData, 
+			GeometryChunk* geom = pDispatcher->CreateGeometryChunk( pVertexData, 
 																	vertexFloatSize*sizeof(float), 
 																	arraySize*sizeof(float), 
 																	layout, pIndexData, 
@@ -348,10 +348,10 @@ Mesh* MeshLoader::fromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 			delete[] pIndexData;
 
 			Submesh* submesh = new Submesh();
-			submesh->setGeometryChunk( geom );
-			submesh->setName(mesh->mName.C_Str());
+			submesh->SetGeometryChunk( geom );
+			submesh->SetName(mesh->mName.C_Str());
 	
-			ret->addSubmesh( submesh );
+			ret->AddSubmesh( submesh );
 		}
 		
 		catch(std::bad_alloc& exc)

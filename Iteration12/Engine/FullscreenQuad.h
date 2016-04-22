@@ -9,11 +9,11 @@ class FullscreenQuad
 public:
 	FullscreenQuad( RenderSystem *ptr );
 
-	void setShaderset( Shaderset* ptr );
-	void setTexture( std::string const &name, Texture2D *pTexture );
-	void setShaderParams( ShaderParamBlock params );
-	void clearTextures();
-	void render( bool renderAdditive );
+	void SetShaderset( Shaderset* ptr );
+	void SetTexture( std::string const &name, Texture2D *pTexture );
+	void SetShaderParams( ShaderParamBlock params );
+	void ClearTextures();
+	void Render( bool renderAdditive );
 
 protected:
 	RenderSystem* m_pRenderSystem;

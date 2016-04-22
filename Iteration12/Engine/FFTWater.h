@@ -19,27 +19,27 @@ class FFTWater
 public:
 	FFTWater(RenderSystem* ptr, const int N, const float A, const Vector2 w, const float length, bool geometry, const bool infinite = false);
 	~FFTWater();
-	void release();
+	void Release();
 
-	void createSpectrum( const float A, const Vector2 wind );
-	// Deep water dispersion relation ,Omega(n,m)
-	float dispersion(int n_prime, int m_prime);
+	void CreateSpectrum( const float A, const Vector2 wind );
+	// Deep water dispersion relation, Omega(n,m)
+	float Dispersion(int n_prime, int m_prime);
 	// Phillips wave spectrum, P(n,m)
-	float phillips(int n_prime, int m_prime);
+	float Phillips(int n_prime, int m_prime);
 	// Perform FFT and generate the wave displacement
-	void evaluateWavesFFT(float t, bool parallel = true);
+	void EvaluateWavesFFT(float t, bool parallel = true);
 	// Generate and update the water mesh
-	void generateWaterSurface();
-	void generateWaterSurfaceLod( int lod );
+	void GenerateWaterSurface();
+	void GenerateWaterSurfaceLod( int lod );
 	// Interpolate a sample between indices
-	Complex sampleBilinear( Complex* buffer, const Vector2 &ij );
+	Complex SampleBilinear( Complex* buffer, const Vector2 &ij );
 	
-	void createGrid( int Xsegments, int Ysegments );
-	void createRadialGrid( int Xsegments, int Ysegments );
+	void CreateGrid( int Xsegments, int Ysegments );
+	void CreateRadialGrid( int Xsegments, int Ysegments );
 
-	void setGridProjectorCamera( Camera3D* ptr )	{ m_pProjectorCamera = ptr; };
-	Camera3D* getGridProjectorCamera()				{ return m_pProjectorCamera; };
-	Mesh* getMesh()									{ return m_pMesh; };
+	void SetGridProjectorCamera( Camera3D* ptr )	{ m_pProjectorCamera = ptr; };
+	Camera3D* GetGridProjectorCamera()				{ return m_pProjectorCamera; };
+	Mesh* GetMesh()									{ return m_pMesh; };
 
 private:
 	Complex hTilde_0(int n_prime, int m_prime);
@@ -48,7 +48,7 @@ private:
 	bool	infinite;			// Renders the ocean with a (practically) infinitie radial grid instead of a patch of it
 	bool	geometry;			// Flag to render wireframe or surface
 	float	g;					// Gravity constant
-	int		N;			// Dimension -- N should be a power of 2
+	int		N;					// Dimension -- N should be a power of 2
 	int		Ndisplay;
 	float	A;					// Phillips spectrum parameter -- affects heights of waves
 	Vector2	w;					// Wind parameter
@@ -74,7 +74,7 @@ private:
 };
 
 // Uniform random variable [0...1]
-float uniformRandomVariable();
+float UniformRandomVariable();
 // Generates a complex number where the real and imaginary parts are
 // independet random draws
-Complex gaussianRandomVariable();
+Complex GaussianRandomVariable();

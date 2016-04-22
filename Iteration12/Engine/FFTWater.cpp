@@ -54,14 +54,14 @@ FFTWater::FFTWater(RenderSystem* ptr, const int N, const float A, const Vector2 
 		normals[i] = new Vector3[lodN*lodN];
 	}
 
-	createSpectrum( A, w );
+	CreateSpectrum( A, w );
 
 	if (!infinite)
 	{
 		Ndisplay		= N+1;
 		vertices		= new WaterVertex[Ndisplay*Ndisplay];
 		indices			= new UINT[Ndisplay*Ndisplay*6];
-		createGrid(N, N);
+		CreateGrid(N, N);
 	}
 	else
 	{
@@ -69,22 +69,22 @@ FFTWater::FFTWater(RenderSystem* ptr, const int N, const float A, const Vector2 
 		vertices		= new WaterVertex[Ndisplay*Ndisplay];
 		indices			= new UINT[Ndisplay*Ndisplay*6];
 		positionsBase	= new Vector2[Ndisplay*Ndisplay];
-		createRadialGrid(Ndisplay, Ndisplay);
+		CreateRadialGrid(Ndisplay, Ndisplay);
 	}
 
 	// Create the mesh, set to dynamic so we can update data
 	BufferLayout vertexLayout;
-	vertexLayout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-	vertexLayout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-	vertexLayout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+	vertexLayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+	vertexLayout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+	vertexLayout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
 
-	m_pMesh = m_pRenderSystem->createMesh( (float*)&vertices[0], Ndisplay*Ndisplay, &indices[0], indices_count, vertexLayout, true, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	m_pMesh = m_pRenderSystem->CreateMesh( (float*)&vertices[0], Ndisplay*Ndisplay, &indices[0], indices_count, vertexLayout, true );
 	DX11Material_Water* mat = new DX11Material_Water( m_pRenderSystem );
-	mat->setDiffusemap( m_pRenderSystem->loadTexture(L"Media/perlin.bmp") );
-	mat->setNormalmap( m_pRenderSystem->loadTexture(L"Media/water_normal1.png") );
-	mat->setFoam( m_pRenderSystem->loadTexture(L"Media/SimpleFoam.png") );
-	mat->setIBL( ptr->loadTexture( L"Media/cubemap4.dds" ) );
-	m_pMesh->setMaterial( mat );
+	mat->SetDiffusemap( m_pRenderSystem->LoadTexture(L"Media/perlin.bmp") );
+	mat->SetNormalmap( m_pRenderSystem->LoadTexture(L"Media/water_normal1.png") );
+	mat->SetFoamTexture( m_pRenderSystem->LoadTexture(L"Media/SimpleFoam.png") );
+	mat->SetIBL( ptr->LoadTexture( L"Media/cubemap4.dds" ) );
+	m_pMesh->SetMaterial( mat );
 }
 
 FFTWater::~FFTWater() 
@@ -100,15 +100,15 @@ FFTWater::~FFTWater()
 	if (vertices)		delete [] vertices;
 	if (indices)		delete [] indices;
 
-	release();
+	Release();
 }
 
-void FFTWater::release() 
+void FFTWater::Release() 
 {
 	//m_pMesh->release();
 }
 
-float FFTWater::dispersion(int n_prime, int m_prime) 
+float FFTWater::Dispersion(int n_prime, int m_prime) 
 {
 	float w_0 = 2.0f * PI / 200.0f;
 	float kx = PI * (2 * n_prime - N) / length;
@@ -116,7 +116,7 @@ float FFTWater::dispersion(int n_prime, int m_prime)
 	return floor(sqrt(g * sqrt(kx * kx + kz * kz)) / w_0) * w_0;
 }
 
-float FFTWater::phillips(int n_prime, int m_prime) 
+float FFTWater::Phillips(int n_prime, int m_prime) 
 {
 	Vector2 k(PI * (2 * n_prime - N) / length,
 				PI * (2 * m_prime - N) / length);
@@ -144,15 +144,15 @@ float FFTWater::phillips(int n_prime, int m_prime)
 
 Complex FFTWater::hTilde_0(int n_prime, int m_prime) 
 {
-	Complex r = gaussianRandomVariable();
-	return r * sqrt(phillips(n_prime, m_prime) / 2.0f);
+	Complex r = GaussianRandomVariable();
+	return r * sqrt(Phillips(n_prime, m_prime) / 2.0f);
 }
 
 Complex FFTWater::hTilde(float t, int n_prime, int m_prime) 
 {
 	int index = m_prime * N + n_prime;
 
-	float omegat = dispersion(n_prime, m_prime) * t;
+	float omegat = Dispersion(n_prime, m_prime) * t;
 
 	float cos_ = cos(omegat);
 	float sin_ = sin(omegat);
@@ -165,7 +165,7 @@ Complex FFTWater::hTilde(float t, int n_prime, int m_prime)
 	return res;
 }
 
-void FFTWater::evaluateWavesFFT(float t, bool parallel) 
+void FFTWater::EvaluateWavesFFT(float t, bool parallel) 
 {
 	// Generate H_tilde(K,t) at time t
 	tbb::parallel_for(0, N, 1, [&] (int m_prime)
@@ -200,19 +200,19 @@ void FFTWater::evaluateWavesFFT(float t, bool parallel)
 		// Perform single-threaded fast fourier transform
 		for (int m_prime = 0; m_prime < N; m_prime++) 
 		{
-			fft->iterativeIFFT(h_tilde, h_tilde, 1, m_prime * N);
-			fft->iterativeIFFT(h_tilde_slopex, h_tilde_slopex, 1, m_prime * N);
-			fft->iterativeIFFT(h_tilde_slopez, h_tilde_slopez, 1, m_prime * N);
-			fft->iterativeIFFT(h_tilde_dx, h_tilde_dx, 1, m_prime * N);
-			fft->iterativeIFFT(h_tilde_dy, h_tilde_dy, 1, m_prime * N);
+			fft->IterativeFFT(h_tilde, h_tilde, 1, m_prime * N);
+			fft->IterativeFFT(h_tilde_slopex, h_tilde_slopex, 1, m_prime * N);
+			fft->IterativeFFT(h_tilde_slopez, h_tilde_slopez, 1, m_prime * N);
+			fft->IterativeFFT(h_tilde_dx, h_tilde_dx, 1, m_prime * N);
+			fft->IterativeFFT(h_tilde_dy, h_tilde_dy, 1, m_prime * N);
 		}
 		for (int n_prime = 0; n_prime < N; n_prime++) 
 		{
-			fft->iterativeIFFT(h_tilde, h_tilde, N, n_prime);
-			fft->iterativeIFFT(h_tilde_slopex, h_tilde_slopex, N, n_prime);
-			fft->iterativeIFFT(h_tilde_slopez, h_tilde_slopez, N, n_prime);
-			fft->iterativeIFFT(h_tilde_dx, h_tilde_dx, N, n_prime);
-			fft->iterativeIFFT(h_tilde_dy, h_tilde_dy, N, n_prime);
+			fft->IterativeFFT(h_tilde, h_tilde, N, n_prime);
+			fft->IterativeFFT(h_tilde_slopex, h_tilde_slopex, N, n_prime);
+			fft->IterativeFFT(h_tilde_slopez, h_tilde_slopez, N, n_prime);
+			fft->IterativeFFT(h_tilde_dx, h_tilde_dx, N, n_prime);
+			fft->IterativeFFT(h_tilde_dy, h_tilde_dy, N, n_prime);
 		}
 	}
 	else
@@ -220,19 +220,19 @@ void FFTWater::evaluateWavesFFT(float t, bool parallel)
 		// Perform multithreaded fast fourier transform
 		tbb::parallel_for( 0, N, 1, [&](int m_prime)
 		{
-			fft->parallelfft(m_prime, h_tilde, h_tilde, 1, m_prime * N);
-			fft->parallelfft(m_prime, h_tilde_slopex, h_tilde_slopex, 1, m_prime * N);
-			fft->parallelfft(m_prime, h_tilde_slopez, h_tilde_slopez, 1, m_prime * N);
-			fft->parallelfft(m_prime, h_tilde_dx, h_tilde_dx, 1, m_prime * N);
-			fft->parallelfft(m_prime, h_tilde_dy, h_tilde_dy, 1, m_prime * N);
+			fft->ParallelFFT(m_prime, h_tilde, h_tilde, 1, m_prime * N);
+			fft->ParallelFFT(m_prime, h_tilde_slopex, h_tilde_slopex, 1, m_prime * N);
+			fft->ParallelFFT(m_prime, h_tilde_slopez, h_tilde_slopez, 1, m_prime * N);
+			fft->ParallelFFT(m_prime, h_tilde_dx, h_tilde_dx, 1, m_prime * N);
+			fft->ParallelFFT(m_prime, h_tilde_dy, h_tilde_dy, 1, m_prime * N);
 		});
 		tbb::parallel_for( 0, N, 1, [&](int n_prime)
 		{
-			fft->parallelfft(n_prime, h_tilde, h_tilde, N, n_prime);
-			fft->parallelfft(n_prime, h_tilde_slopex, h_tilde_slopex, N, n_prime);
-			fft->parallelfft(n_prime, h_tilde_slopez, h_tilde_slopez, N, n_prime);
-			fft->parallelfft(n_prime, h_tilde_dx, h_tilde_dx, N, n_prime);
-			fft->parallelfft(n_prime, h_tilde_dy, h_tilde_dy, N, n_prime);
+			fft->ParallelFFT(n_prime, h_tilde, h_tilde, N, n_prime);
+			fft->ParallelFFT(n_prime, h_tilde_slopex, h_tilde_slopex, N, n_prime);
+			fft->ParallelFFT(n_prime, h_tilde_slopez, h_tilde_slopez, N, n_prime);
+			fft->ParallelFFT(n_prime, h_tilde_dx, h_tilde_dx, N, n_prime);
+			fft->ParallelFFT(n_prime, h_tilde_dy, h_tilde_dy, N, n_prime);
 		});
 	}
 
@@ -316,7 +316,7 @@ void FFTWater::evaluateWavesFFT(float t, bool parallel)
 	}
 }
 
-void FFTWater::generateWaterSurface()
+void FFTWater::GenerateWaterSurface()
 {
 	float lambda = -1.5f;
 
@@ -386,10 +386,10 @@ void FFTWater::generateWaterSurface()
 		// Send this vertex data to the GPU
 		// Index buffer remains the same
 		BufferLayout layout;
-		layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		((D3D11GeometryChunk*)m_pMesh->getSubmesh(0)->getGeometryChunk())->updateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.getByteSize()*Ndisplay*Ndisplay, layout.getByteSize() ); 
+		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		((D3D11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 	}
 	else
 	{
@@ -408,18 +408,18 @@ void FFTWater::generateWaterSurface()
 				//vertices[index].Position.z = 0.0f;
 
 				// Position
-				Vector3 cameraPosition = m_pProjectorCamera->getPosition();
+				Vector3 cameraPosition = m_pProjectorCamera->GetPosition();
 				vertices[index].Position.x = positionsBase[index].x + cameraPosition.x;
 				vertices[index].Position.y = positionsBase[index].y + cameraPosition.y;
-				vertices[index].Position.z = sampleBilinear( h_tilde, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re * scale;
+				vertices[index].Position.z = SampleBilinear( h_tilde, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re * scale;
 				
 				// Texture coordinates
 				vertices[index].Tex.x = vertices[index].Position.x;
 				vertices[index].Tex.y = vertices[index].Position.y;
 				
 				// Normal
-				float slopeX = sampleBilinear( h_tilde_slopez, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re;
-				float slopeY = sampleBilinear( h_tilde_slopex, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re;
+				float slopeX = SampleBilinear( h_tilde_slopez, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re;
+				float slopeY = SampleBilinear( h_tilde_slopex, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re;
 				Vector3 normal = Vector3(0.0f - slopeX, 0.0f - slopeY, 0.75f).unit();
 
 				vertices[index].Normal.x =  normal.x;
@@ -427,8 +427,8 @@ void FFTWater::generateWaterSurface()
 				vertices[index].Normal.z =  normal.z;
 				
 				// Horizontal displacement
-				vertices[index].Position.y += sampleBilinear( h_tilde_dx, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re * lambda * scale;
-				vertices[index].Position.x += sampleBilinear( h_tilde_dy, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re * lambda * scale;
+				vertices[index].Position.y += SampleBilinear( h_tilde_dx, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re * lambda * scale;
+				vertices[index].Position.x += SampleBilinear( h_tilde_dy, Vector2(vertices[index].Position.x,vertices[index].Position.y)*scale ).re * lambda * scale;
 				
 			}
 		});
@@ -436,10 +436,10 @@ void FFTWater::generateWaterSurface()
 		// Send this vertex data to the GPU
 		// Index buffer remains the same
 		BufferLayout layout;
-		layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		((D3D11GeometryChunk*)m_pMesh->getSubmesh(0)->getGeometryChunk())->updateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.getByteSize()*Ndisplay*Ndisplay, layout.getByteSize() ); 
+		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		((D3D11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 
 	}
 	/*
@@ -618,12 +618,12 @@ void FFTWater::generateWaterSurface()
 		layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		((D3D11GeometryChunk*)m_pMesh->getSubmesh(0)->getGeometryChunk())->updateVertexBuffer( (float*)&vertices[0], Nplus1*Nplus1, layout.getByteSize()*Nplus1*Nplus1, layout.getByteSize() ); 
+		((D3D11GeometryChunk*)m_pMesh->getSubmesh(0)->GetGeometryChunk())->updateVertexBuffer( (float*)&vertices[0], Nplus1*Nplus1, layout.getByteSize()*Nplus1*Nplus1, layout.getByteSize() ); 
 
 	}*/
 }
 
-void FFTWater::generateWaterSurfaceLod( int lod )
+void FFTWater::GenerateWaterSurfaceLod( int lod )
 {
 	float lambda = -1.5f;
 
@@ -695,14 +695,14 @@ void FFTWater::generateWaterSurfaceLod( int lod )
 		// Send this vertex data to the GPU
 		// Index buffer remains the same
 		BufferLayout layout;
-		layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		((D3D11GeometryChunk*)m_pMesh->getSubmesh(0)->getGeometryChunk())->updateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.getByteSize()*Ndisplay*Ndisplay, layout.getByteSize() ); 
+		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		((D3D11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 	}
 }
 
-Complex FFTWater::sampleBilinear( Complex* buffer, const Vector2 &ij )
+Complex FFTWater::SampleBilinear( Complex* buffer, const Vector2 &ij )
 {
 	float i = ij.x;
 	float j = ij.y;
@@ -735,7 +735,7 @@ Complex FFTWater::sampleBilinear( Complex* buffer, const Vector2 &ij )
 	//return buffer[int(floor(wrappedij.x) * N + floor(wrappedij.y))];
 }
 
-void FFTWater::createGrid( int Xsegments, int Ysegments )
+void FFTWater::CreateGrid( int Xsegments, int Ysegments )
 {
 	// Build vertex buffer at t=0, this is simply a tesselated flat plane
 	Complex htilde0, htilde0mk_conj;
@@ -801,7 +801,7 @@ void FFTWater::createGrid( int Xsegments, int Ysegments )
 	}
 }
 
-void FFTWater::createRadialGrid(int Xsegments, int Ysegments)
+void FFTWater::CreateRadialGrid(int Xsegments, int Ysegments)
 {	
 	float bias = 1.8f;
 	float TAU = PI * 2.0f;
@@ -838,7 +838,7 @@ void FFTWater::createRadialGrid(int Xsegments, int Ysegments)
 			
 }
 
-void FFTWater::createSpectrum( const float A, const Vector2 wind )
+void FFTWater::CreateSpectrum( const float A, const Vector2 wind )
 {
 	// Build hTilde(K,t) at t=0
 	srand(1);
@@ -849,24 +849,24 @@ void FFTWater::createSpectrum( const float A, const Vector2 wind )
 		for (int n_prime = 0; n_prime < N; n_prime++) 
 		{
 			h_tilde0[m_prime * N + n_prime] = hTilde_0( n_prime,  m_prime);
-			h_tilde0mk_conj[m_prime * N + n_prime] = hTilde_0( -n_prime,  -m_prime).conjugate();
+			h_tilde0mk_conj[m_prime * N + n_prime] = hTilde_0( -n_prime,  -m_prime).Conjugate();
 		}
 	}
 }
 
 
-float uniformRandomVariable() 
+float UniformRandomVariable() 
 {
 	return (float)rand()/RAND_MAX;
 }
 
-Complex gaussianRandomVariable() 
+Complex GaussianRandomVariable() 
 {
 	float x1, x2, w;
 	do 
 	{
-	    x1 = 2.f * uniformRandomVariable() - 1.f;
-	    x2 = 2.f * uniformRandomVariable() - 1.f;
+	    x1 = 2.f * UniformRandomVariable() - 1.f;
+	    x2 = 2.f * UniformRandomVariable() - 1.f;
 	    w = x1 * x1 + x2 * x2;
 	} while ( w >= 1.f );
 	w = sqrt((-2.f * log(w)) / w);

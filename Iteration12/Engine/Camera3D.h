@@ -16,44 +16,44 @@
 #define KEYDOWN(vk_code)  ((GetAsyncKeyState(vk_code) & 0x8000) )//? 1 : 0)
 #define KEYUP(vk_code)  ((GetAsyncKeyState(vk_code) & 0x8000) )//? 0 : 1)
 
-// TODO : Use the new matrix & vector classes
+
 class Camera3D
 {
 public:
 	Camera3D();
 
-	virtual void setPosition( const Vector3& pPos );
-	virtual void setLookAt( const Vector3& pLookAt );
-	virtual void setUpVector( const Vector3& pUp );
-	virtual void setView( const Vector3& pPos , const Vector3& pLookAt );
-	virtual void setProjection( float Fov , float Aspect , float NearPlane , float FarPlane );
-	virtual void setOrientation( const Quaternion& quaternion );
-	virtual void setNearPlane( float ZNear )	{ m_ZNear = ZNear; }
-	virtual void setFarPlane( float ZFar )		{ m_ZFar = ZFar; }
+	virtual void SetPosition( const Vector3& Pos );
+	virtual void SetLookAt( const Vector3& LookAt );
+	virtual void SetUpVector( const Vector3& Up );
+	virtual void SetView( const Vector3& Pos , const Vector3& LookAt );
+	virtual void SetProjection( float Fov , float Aspect , float NearPlane , float FarPlane );
+	virtual void SetOrientation( const Quaternion& quat );
+	virtual void SetNearPlane( float ZNear )	{ m_ZNear = ZNear; }
+	virtual void SetFarPlane( float ZFar )		{ m_ZFar = ZFar; }
 
-	virtual void setViewMatrix( const Matrix4x4& mat )				{ m_View = mat; };
-	virtual void setProjectionMatrix( const Matrix4x4& mat )		{ m_Projection = mat; };
-	virtual void setViewProjectionMatrix( const Matrix4x4& mat )	{ m_ViewProjection = mat; };
-	virtual void setFrustum( XNA::Frustum* frustum )				{ m_Frustum = *frustum; };
+	virtual void SetViewMatrix( const Matrix4x4& mat )				{ m_View = mat; };
+	virtual void SetProjectionMatrix( const Matrix4x4& mat )		{ m_Projection = mat; };
+	virtual void SetViewProjectionMatrix( const Matrix4x4& mat )	{ m_ViewProjection = mat; };
+	virtual void SetFrustum( const XNA::Frustum* Frustum )			{ m_Frustum = *Frustum; };
 
-	virtual void update( float DeltaTime );
+	virtual void Update( float DeltaTime );
 
-	virtual Vector3	getPosition()					{return m_Pos;};
-	virtual Vector3	getLookAtPoint()				{return m_LookAt;};
-	virtual Vector3	getUp()							{return m_Up;};
-	virtual float getFov()							{return m_Fov;};
-	virtual float getAspect()						{return m_Aspect;};
-	virtual float getNearPlane()					{return m_ZNear;};
-	virtual float getFarPlane()						{return m_ZFar;};
-	virtual Matrix4x4	getViewMatrix()				{return m_View;};
-	virtual Matrix4x4	getProjectionMatrix()		{return m_Projection;};
-	virtual Matrix4x4	getViewProjectionMatrix()	{return m_ViewProjection;};
-	virtual XNA::Frustum	getFrustum()			{return m_Frustum; };
-	virtual Quaternion	getOrientation()			{return m_Orient; };
-	virtual Vector3	getDirectionVector();
+	virtual Vector3	GetPosition()					{return m_Pos;};
+	virtual Vector3	GetLookAtPoint()				{return m_LookAt;};
+	virtual Vector3	GetUp()							{return m_Up;};
+	virtual float GetFov()							{return m_Fov;};
+	virtual float GetAspect()						{return m_Aspect;};
+	virtual float GetNearPlane()					{return m_ZNear;};
+	virtual float GetFarPlane()						{return m_ZFar;};
+	virtual Matrix4x4	GetViewMatrix()				{return m_View;};
+	virtual Matrix4x4	GetProjectionMatrix()		{return m_Projection;};
+	virtual Matrix4x4	GetViewProjectionMatrix()	{return m_ViewProjection;};
+	virtual XNA::Frustum	GetFrustum()			{return m_Frustum; };
+	virtual Quaternion	GetOrientation()			{return m_Orient; };
+	virtual Vector3	GetDirectionVector();
 
-	virtual void getProjectionParameters( float &Fov , float &Aspect , float &NearPlane , float &FarPlane ) const;
-	Ray Camera3D::getRayFromScreenPosition( Vector2 xy );
+	virtual void GetProjectionParameters( float &Fov , float &Aspect , float &NearPlane , float &FarPlane ) const;
+	Ray Camera3D::GetRayFromScreenPosition( Vector2 xy );
 
 protected:
 	Vector3 m_Pos;
@@ -81,13 +81,13 @@ class CameraFPS : public Camera3D
 public:
 	CameraFPS();
 
-	void setLookAt( const Vector3& pLookAt );
+	void SetLookAt( const Vector3& pLookAt );
 
-	void update( float DeltaTime );
+	void Update( float DeltaTime );
 
-	Vector3	getDirectionVector();
+	Vector3	GetDirectionVector();
 
-	//inline XMFLOAT4 getOrientation()	{ return m_Orient; };
+	inline Quaternion GetOrientation()	{ return m_Orient; };
 
 protected:
 	Vector3 m_Motion;

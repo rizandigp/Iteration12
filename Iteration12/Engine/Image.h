@@ -21,29 +21,29 @@ public:
     }
 
 	// Returns pixel at location (x,y)
-	inline Color getPixel(size_t x, size_t y) const
+	inline Color GetPixel(size_t x, size_t y) const
 	{
 		return m_Data.at(x + y * m_Width);
 	}
 
 	// Copy pixel data from &other, does not change dimensions
-	void copyFrom( Image& other )
+	void CopyFrom( Image& other )
 	{
-		std::copy( other.data(), other.data()+other.dataSize(), m_Data.begin() );
+		std::copy( other.Data(), other.Data()+other.DataSize(), m_Data.begin() );
 	}
 
 	// Returns pointer to raw pixel data. Read-only
-	inline const Color* data() const	{ return &m_Data[0]; };
+	inline const Color* Data() const	{ return &m_Data[0]; };
 	// Returns pointer to raw pixel data. Can modify content.
-	inline Color* dataRaw()				{ return &m_Data[0]; }; 
+	inline Color* DataRaw()				{ return &m_Data[0]; }; 
 
 	// Returns stride. Distance between each element of the array in bytes
-	inline size_t stride()	const	{ return sizeof(Color); };
+	inline size_t Stride()	const	{ return sizeof(Color); };
 	// Returns pitch. The length of an image row in memory (width in pixels * bytes per pixel + padding ) in bytes
-	inline size_t pitch()	const	{ return sizeof(Color)*m_Width; };
-	inline size_t width()	const	{ return m_Width; };
-	inline size_t height()	const	{ return m_Height; };
-	inline size_t dataSize() const	{ return m_Width*m_Height*sizeof(Color); };
+	inline size_t Pitch()	const	{ return sizeof(Color)*m_Width; };
+	inline size_t Width()	const	{ return m_Width; };
+	inline size_t Height()	const	{ return m_Height; };
+	inline size_t DataSize() const	{ return m_Width*m_Height*sizeof(Color); };
 
 private:
 	size_t m_Width, m_Height;

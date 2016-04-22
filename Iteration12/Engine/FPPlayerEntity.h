@@ -9,10 +9,10 @@ class FPPlayerEntity : public Entity
 {
 public:
 	FPPlayerEntity( RenderSystem* pRenderSystem );
-	void onAddToScene( Scene* ptr );
-	void update(float deltaTime);
-	inline Camera3D* getCamera()		{ return m_pCamera; };
-	inline SpotLight* getFlashlight()	{ return m_pSpotlight; };
+	void OnAddToScene( Scene* ptr );
+	void Update(float deltaTime);
+	inline Camera3D* GetCamera()		{ return m_pCamera; };
+	inline SpotLight* GetFlashlight()	{ return m_pSpotlight; };
 
 protected:
 	Camera3D*	m_pCamera;

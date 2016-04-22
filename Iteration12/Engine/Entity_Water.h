@@ -12,10 +12,10 @@ class Entity_Water : public Entity_StaticProp
 public:
 	Entity_Water(RenderSystem* ptr);
 
-	void setGridProjectorCamera( Camera3D* ptr );
-	Camera3D* getGridProjectorCamera();
+	void SetGridProjectorCamera( Camera3D* ptr );
+	Camera3D* GetGridProjectorCamera();
 
-	void update( float deltaTime );
+	void Update( float deltaTime );
 
 protected:
 	FFTWater*	m_pFFTWater;

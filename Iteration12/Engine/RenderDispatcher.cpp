@@ -186,12 +186,12 @@ HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig 
     m_pImmediateContext->RSSetViewports( 1, &vp );
 
 	DX11Texture2D *pBackbufferTexture = new DX11Texture2D();
-	pBackbufferTexture->setDimensions( m_Config.Height, m_Config.Width );
-	pBackbufferTexture->setFormat( R8G8B8A8_UNORM );
-	pBackbufferTexture->setMipLevels( 1 );
-	pBackbufferTexture->setRenderTargetView( m_pRenderTargetView );
-	pBackbufferTexture->setDepthStencilView( m_pDepthStencilView );
-	setBackbufferTexture( pBackbufferTexture );
+	pBackbufferTexture->SetDimensions( m_Config.Height, m_Config.Width );
+	pBackbufferTexture->SetFormat( R8G8B8A8_UNORM );
+	pBackbufferTexture->SetMipLevels( 1 );
+	pBackbufferTexture->SetRenderTargetView( m_pRenderTargetView );
+	pBackbufferTexture->SetDepthStencilView( m_pDepthStencilView );
+	SetBackbufferTexture( pBackbufferTexture );
 
 	// Create default sampler states
 	// Point sampler
@@ -204,7 +204,7 @@ HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig 
     sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    hr = getDevice()->CreateSamplerState( &sampDesc, &m_pPointSampler );
+    hr = GetDevice()->CreateSamplerState( &sampDesc, &m_pPointSampler );
 	if( FAILED( hr ) )
         return hr;
 
@@ -218,7 +218,7 @@ HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig 
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	sampDesc.MaxAnisotropy = creationConfig.MaxAnisotropy;
-    hr = getDevice()->CreateSamplerState( &sampDesc, &m_pLinearSampler );
+    hr = GetDevice()->CreateSamplerState( &sampDesc, &m_pLinearSampler );
 	if( FAILED( hr ) )
         return hr;
 
@@ -231,7 +231,7 @@ HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig 
     sampDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    hr = getDevice()->CreateSamplerState( &sampDesc, &m_pComparisonSampler );
+    hr = GetDevice()->CreateSamplerState( &sampDesc, &m_pComparisonSampler );
 	if( FAILED( hr ) )
         return hr;
 
@@ -244,35 +244,35 @@ HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig 
     sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    hr = getDevice()->CreateSamplerState( &sampDesc, &m_pLinearClampSampler );
+    hr = GetDevice()->CreateSamplerState( &sampDesc, &m_pLinearClampSampler );
 	if( FAILED( hr ) )
         return hr;
 
 	// Set the samplers
-	getImmediateContext()->VSSetSamplers( 0, 1, &m_pPointSampler );
-	getImmediateContext()->GSSetSamplers( 0, 1, &m_pPointSampler );
-	getImmediateContext()->PSSetSamplers( 0, 1, &m_pPointSampler );
+	GetImmediateContext()->VSSetSamplers( 0, 1, &m_pPointSampler );
+	GetImmediateContext()->GSSetSamplers( 0, 1, &m_pPointSampler );
+	GetImmediateContext()->PSSetSamplers( 0, 1, &m_pPointSampler );
 
-	getImmediateContext()->VSSetSamplers( 1, 1, &m_pLinearSampler );
-	getImmediateContext()->GSSetSamplers( 1, 1, &m_pLinearSampler );
-	getImmediateContext()->PSSetSamplers( 1, 1, &m_pLinearSampler );
+	GetImmediateContext()->VSSetSamplers( 1, 1, &m_pLinearSampler );
+	GetImmediateContext()->GSSetSamplers( 1, 1, &m_pLinearSampler );
+	GetImmediateContext()->PSSetSamplers( 1, 1, &m_pLinearSampler );
 
-	getImmediateContext()->VSSetSamplers( 2, 1, &m_pComparisonSampler );
-	getImmediateContext()->GSSetSamplers( 2, 1, &m_pComparisonSampler );
-	getImmediateContext()->PSSetSamplers( 2, 1, &m_pComparisonSampler );
+	GetImmediateContext()->VSSetSamplers( 2, 1, &m_pComparisonSampler );
+	GetImmediateContext()->GSSetSamplers( 2, 1, &m_pComparisonSampler );
+	GetImmediateContext()->PSSetSamplers( 2, 1, &m_pComparisonSampler );
 
-	getImmediateContext()->VSSetSamplers( 3, 1, &m_pLinearClampSampler );
-	getImmediateContext()->GSSetSamplers( 3, 1, &m_pLinearClampSampler );
-	getImmediateContext()->PSSetSamplers( 3, 1, &m_pLinearClampSampler );
+	GetImmediateContext()->VSSetSamplers( 3, 1, &m_pLinearClampSampler );
+	GetImmediateContext()->GSSetSamplers( 3, 1, &m_pLinearClampSampler );
+	GetImmediateContext()->PSSetSamplers( 3, 1, &m_pLinearClampSampler );
 
 	// Default render state
-	getImmediateContext()->RSSetState( NULL );
+	GetImmediateContext()->RSSetState( NULL );
 
 	// All good
 	return S_OK;
 }
 
-void DX11RenderDispatcher::setOutputWindow( HWND hWnd, UINT width, UINT height )
+void DX11RenderDispatcher::SetOutputWindow( HWND hWnd, UINT width, UINT height )
 {
 	HRESULT hr = NULL;
 
@@ -395,15 +395,15 @@ void DX11RenderDispatcher::setOutputWindow( HWND hWnd, UINT width, UINT height )
 
 	// This doesn't actually work yet lol
 	//m_pBackbuffer->release();
-	m_pBackbuffer->setDimensions( height, width );
-	m_pBackbuffer->setFormat( R8G8B8A8_UNORM );
+	m_pBackbuffer->SetDimensions( height, width );
+	m_pBackbuffer->SetFormat( R8G8B8A8_UNORM );
 }
 
-void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
+void DX11RenderDispatcher::BindShaderParams( ShaderParamBlock *pParamBlock )
 {
 		Timer timer;
 		// Get matrix, vector, and scalar type parameters
-		std::map< std::pair< std::string, UINT > , XMFLOAT4X4, std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> > *pMatrixParams = pParamBlock->getMatrixParams();
+		std::map< std::pair< std::string, UINT > , XMFLOAT4X4, std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> > *pMatrixParams = pParamBlock->GetMatrixParams();
 		std::map< std::pair< std::string, UINT > , XMFLOAT4 , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> > *pVectorParams = pParamBlock->getVectorParams();
 		std::map< std::pair< std::string, UINT > , float , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> > *pScalarParams = pParamBlock->getScalarParams();
 
@@ -412,9 +412,9 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 		// Data will be mapped to temporary buffers before mapped to gpu.
 		// First we make sure enough space is allocated for our temporary buffers.
 		UINT size;
-		for (i=0; i<getActiveShaderset()->numVSConstantBuffers;i++)
+		for (i=0; i<GetActiveShaderset()->numVSConstantBuffers;i++)
 		{
-			size = getActiveShaderset()->getVSConstantBufferSize(i);
+			size = GetActiveShaderset()->GetVSConstantBufferSize(i);
 			if (!m_pVSCBDataBuffer[i])
 			{
 				m_pVSCBDataBuffer[i] = new BYTE[size];
@@ -430,9 +430,9 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 			ZeroMemory(m_pVSCBDataBuffer[i], sizeof( BYTE )*size);
 		}
 
-		for (i=0; i<getActiveShaderset()->numPSConstantBuffers;i++)
+		for (i=0; i<GetActiveShaderset()->numPSConstantBuffers;i++)
 		{
-			size = getActiveShaderset()->getPSConstantBufferSize(i);
+			size = GetActiveShaderset()->GetPSConstantBufferSize(i);
 			if (!m_pPSCBDataBuffer[i])
 			{
 				m_pPSCBDataBuffer[i] = new BYTE[size];
@@ -459,7 +459,7 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 				tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> >
 				::const_iterator it=pMatrixParams->begin(); it!=pMatrixParams->end(); ++it )
 			{
-				pvar = getActiveShaderset()->getVSVariable( it->first.first );
+				pvar = GetActiveShaderset()->GetVSVariable( it->first.first );
 				if(pvar)
 				{
 					if ( it->first.second < pvar->Elements )
@@ -479,7 +479,7 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 					}
 				}
 
-				pvar = getActiveShaderset()->getPSVariable( it->first.first );
+				pvar = GetActiveShaderset()->GetPSVariable( it->first.first );
 				if(pvar)
 				{
 					if ( it->first.second < pvar->Elements )
@@ -509,7 +509,7 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 				tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> >
 				::const_iterator it=pVectorParams->begin(); it!=pVectorParams->end(); ++it )
 			{
-				pvar = getActiveShaderset()->getVSVariable( it->first.first );
+				pvar = GetActiveShaderset()->GetVSVariable( it->first.first );
 				if(pvar)
 				{
 					if ( it->first.second < pvar->Elements )
@@ -529,7 +529,7 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 					}
 				}
 
-				pvar = getActiveShaderset()->getPSVariable( it->first.first );
+				pvar = GetActiveShaderset()->GetPSVariable( it->first.first );
 				if(pvar)
 				{
 					if ( it->first.second < pvar->Elements )
@@ -560,7 +560,7 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 				tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> >
 				::const_iterator it=pScalarParams->begin(); it!=pScalarParams->end(); ++it )
 			{
-				pvar = getActiveShaderset()->getVSVariable( it->first.first );
+				pvar = GetActiveShaderset()->GetVSVariable( it->first.first );
 				if(pvar)
 				{
 					if ( it->first.second < pvar->Elements )
@@ -580,7 +580,7 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 					}
 				}
 
-				pvar = getActiveShaderset()->getPSVariable( it->first.first );
+				pvar = GetActiveShaderset()->GetPSVariable( it->first.first );
 				if(pvar)
 				{
 					if ( it->first.second < pvar->Elements )
@@ -624,8 +624,8 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 			}
 		}
 
-		t_1 += timer.getMiliseconds();
-		timer.start();
+		t_1 += timer.GetMiliseconds();
+		timer.Start();
 
 		// Send to GPU
 		// TODO : -only map updated buffers
@@ -633,20 +633,20 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 		D3D11_MAPPED_SUBRESOURCE subresource;
 
 		// Vertex shader
-		for (i=0; i<getActiveShaderset()->numVSConstantBuffers;i++)
+		for (i=0; i<GetActiveShaderset()->numVSConstantBuffers;i++)
 		{
 			// Get constant buffer of the appropriate size
-			InternalCB* pVSCB = getAvailableConstantBuffer( m_pVSCBDataBufferSize[i] );
+			InternalCB* pVSCB = GetAvailableConstantBuffer( m_pVSCBDataBufferSize[i] );
 			if (pVSCB)
 			{
 				// Map data to gpu and bind to pipeline
 				pVSCB->InUse = true;
-				getImmediateContext()->Map( pVSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
+				GetImmediateContext()->Map( pVSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
 				PBYTE cbdata = (PBYTE)subresource.pData;
 				memcpy( cbdata, m_pVSCBDataBuffer[i], pVSCB->ByteSize );
-				getImmediateContext()->Unmap( pVSCB->pBuffer, 0 );
+				GetImmediateContext()->Unmap( pVSCB->pBuffer, 0 );
 
-				getImmediateContext()->VSSetConstantBuffers( i, 1, &pVSCB->pBuffer );
+				GetImmediateContext()->VSSetConstantBuffers( i, 1, &pVSCB->pBuffer );
 			}
 			else
 			{
@@ -663,20 +663,20 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 		}
 
 		// Pixel shader
-		for (i=0; i<getActiveShaderset()->numPSConstantBuffers;i++)
+		for (i=0; i<GetActiveShaderset()->numPSConstantBuffers;i++)
 		{
 			// Get constant buffer of the appropriate size
-			InternalCB* pPSCB = getAvailableConstantBuffer( m_pPSCBDataBufferSize[i] );
+			InternalCB* pPSCB = GetAvailableConstantBuffer( m_pPSCBDataBufferSize[i] );
 			if (pPSCB)
 			{
 				// Map data to gpu and bind to pipeline
 				pPSCB->InUse = true;
-				getImmediateContext()->Map( pPSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
+				GetImmediateContext()->Map( pPSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
 				PBYTE cbdata = (PBYTE)subresource.pData;
 				memcpy( cbdata, m_pPSCBDataBuffer[i], pPSCB->ByteSize );
-				getImmediateContext()->Unmap( pPSCB->pBuffer, 0 );
+				GetImmediateContext()->Unmap( pPSCB->pBuffer, 0 );
 
-				getImmediateContext()->PSSetConstantBuffers( i, 1, &pPSCB->pBuffer );
+				GetImmediateContext()->PSSetConstantBuffers( i, 1, &pPSCB->pBuffer );
 			}
 			else
 			{
@@ -692,10 +692,10 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParamBlock *pParamBlock )
 			}
 		}
 		
-		t_2 += timer.getMiliseconds();
+		t_2 += timer.GetMiliseconds();
 }
 
-DX11RenderDispatcher::InternalCB* DX11RenderDispatcher::getAvailableConstantBuffer( UINT ByteSize )
+DX11RenderDispatcher::InternalCB* DX11RenderDispatcher::GetAvailableConstantBuffer( UINT ByteSize )
 {
 	// Constant buffers are always muliples of 16 bytes
 	UINT CBSize = (UINT)ceil(float(ByteSize/16.0f))*16;
@@ -723,7 +723,7 @@ DX11RenderDispatcher::InternalCB* DX11RenderDispatcher::getAvailableConstantBuff
 	bd.ByteWidth = CBSize;
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	if(FAILED(getDevice()->CreateBuffer( &bd, NULL, &cb->pBuffer )))
+	if(FAILED(GetDevice()->CreateBuffer( &bd, NULL, &cb->pBuffer )))
 	{
 		delete cb;
 		return NULL;
@@ -734,27 +734,27 @@ DX11RenderDispatcher::InternalCB* DX11RenderDispatcher::getAvailableConstantBuff
 	return cb;
 }
 
-void DX11RenderDispatcher::bindConstantBufferVS( UINT i, ConstantBufferData* pData )
+void DX11RenderDispatcher::BindConstantBufferVS( UINT i, ConstantBufferData* pData )
 {
 	D3D11_MAPPED_SUBRESOURCE subresource;
 
 	// Get constant buffer of the appropriate size
-	InternalCB* pVSCB = getAvailableConstantBuffer( pData->getByteSize() );
+	InternalCB* pVSCB = GetAvailableConstantBuffer( pData->GetByteSize() );
 	if (pVSCB)
 	{
 		// Map data to gpu and bind to pipeline
 		pVSCB->InUse = true;
-		getImmediateContext()->Map( pVSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
+		GetImmediateContext()->Map( pVSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
 		PBYTE cbdata = (PBYTE)subresource.pData;
-		memcpy( cbdata, pData->getData(), pData->getByteSize() );
-		getImmediateContext()->Unmap( pVSCB->pBuffer, 0 );
+		memcpy( cbdata, pData->GetData(), pData->GetByteSize() );
+		GetImmediateContext()->Unmap( pVSCB->pBuffer, 0 );
 
-		getImmediateContext()->VSSetConstantBuffers( i, 1, &pVSCB->pBuffer );
+		GetImmediateContext()->VSSetConstantBuffers( i, 1, &pVSCB->pBuffer );
 	}
 	else
 	{
 		char str[10];
-		_itoa_s((UINT)ceil(float(pData->getByteSize()/16.0f))*16,str, 10);
+		_itoa_s((UINT)ceil(float(pData->GetByteSize()/16.0f))*16,str, 10);
 		DEBUG_OUTPUT( __FUNCTION__ );
 		DEBUG_OUTPUT( " : Internal engine error. (Vertex Shader) Could not get Internal Constant Buffer of size " );
 		DEBUG_OUTPUT( str );
@@ -765,27 +765,27 @@ void DX11RenderDispatcher::bindConstantBufferVS( UINT i, ConstantBufferData* pDa
 	}
 }
 
-void DX11RenderDispatcher::bindConstantBufferPS( UINT i, ConstantBufferData* pData )
+void DX11RenderDispatcher::BindConstantBufferPS( UINT i, ConstantBufferData* pData )
 {
 	D3D11_MAPPED_SUBRESOURCE subresource;
 
 	// Get constant buffer of the appropriate size
-	InternalCB* pPSCB = getAvailableConstantBuffer( pData->getByteSize() );
+	InternalCB* pPSCB = GetAvailableConstantBuffer( pData->GetByteSize() );
 	if (pPSCB)
 	{
 		// Map data to gpu and bind to pipeline
 		pPSCB->InUse = true;
-		getImmediateContext()->Map( pPSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
+		GetImmediateContext()->Map( pPSCB->pBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &subresource );
 		PBYTE cbdata = (PBYTE)subresource.pData;
-		memcpy( cbdata, pData->getData(), pData->getByteSize() );
-		getImmediateContext()->Unmap( pPSCB->pBuffer, 0 );
+		memcpy( cbdata, pData->GetData(), pData->GetByteSize() );
+		GetImmediateContext()->Unmap( pPSCB->pBuffer, 0 );
 
-		getImmediateContext()->PSSetConstantBuffers( i, 1, &pPSCB->pBuffer );
+		GetImmediateContext()->PSSetConstantBuffers( i, 1, &pPSCB->pBuffer );
 	}
 	else
 	{
 		char str[10];
-		_itoa_s((UINT)ceil(float(pData->getByteSize()/16.0f))*16,str, 10);
+		_itoa_s((UINT)ceil(float(pData->GetByteSize()/16.0f))*16,str, 10);
 		DEBUG_OUTPUT( __FUNCTION__ );
 		DEBUG_OUTPUT( " : Internal engine error. (Pixel Shader) Could not get Internal Constant Buffer of size " );
 		DEBUG_OUTPUT( str );
@@ -796,7 +796,7 @@ void DX11RenderDispatcher::bindConstantBufferPS( UINT i, ConstantBufferData* pDa
 	}
 }
 
-void DX11RenderDispatcher::bindShaderParams( ShaderParams *pParams )
+void DX11RenderDispatcher::BindShaderParams( ShaderParams *pParams )
 {
 	if (pParams==NULL)
 	{
@@ -818,15 +818,15 @@ void DX11RenderDispatcher::bindShaderParams( ShaderParams *pParams )
 	// Bind
 	for (int i=0; i<pParams->getNumConstantBuffersVS(); i++)
 	{
-		bindConstantBufferVS(i, pParams->getVSConstantBuffer(i));
+		BindConstantBufferVS(i, pParams->getVSConstantBuffer(i));
 	}
 	for (int i=0; i<pParams->getNumConstantBuffersPS(); i++)
 	{
-		bindConstantBufferPS(i, pParams->getPSConstantBuffer(i));
+		BindConstantBufferPS(i, pParams->getPSConstantBuffer(i));
 	}
 }
 
-void DX11RenderDispatcher::setBackbufferAsRenderTarget()
+void DX11RenderDispatcher::SetBackbufferAsRenderTarget()
 {
 	m_pImmediateContext->OMSetRenderTargets( 1, &m_pRenderTargetView, m_pDepthStencilView );
    
@@ -844,7 +844,7 @@ void DX11RenderDispatcher::setBackbufferAsRenderTarget()
 ////////////////////////////
 // Resource creation
 ////////////////////////////
-GeometryChunk*	DX11RenderDispatcher::createGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT* indices, UINT numIndices, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology)
+GeometryChunk*	DX11RenderDispatcher::CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT* indices, UINT numIndices, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology)
 {
 	// Create DX11 buffers
 	D3D11VertexBuffer*	pVertexBuffer = createVertexBuffer( vertices, byteWidth, layout, stride, dynamic );
@@ -868,18 +868,18 @@ GeometryChunk*	DX11RenderDispatcher::createGeometryChunk( float* vertices, UINT 
 	XNA::ComputeBoundingAxisAlignedBoxFromPoints( &AABB, (byteWidth/stride), (XMFLOAT3*)vertices, stride ); 
 	
 	D3D11GeometryChunk*	pChunk = new D3D11GeometryChunk();
-	pChunk->addVertexBuffer( pVertexBuffer );
-	pChunk->setIndexBuffer( pIndexBuffer );
-	pChunk->setPrimitiveTopology( topology );
-	pChunk->setAABB( &AABB );
-	pChunk->setDynamic( dynamic );
+	pChunk->AddVertexBuffer( pVertexBuffer );
+	pChunk->SetIndexBuffer( pIndexBuffer );
+	pChunk->SetPrimitiveTopology( topology );
+	pChunk->SetAABB( &AABB );
+	pChunk->SetDynamic( dynamic );
 
 	return pChunk;
 }
 
 D3D11VertexBuffer* DX11RenderDispatcher::createVertexBuffer( const void* pData, int dataSize, BufferLayout layout, int stride, bool dynamic )
 {
-	ID3D11Device* pDevice = getDevice();
+	ID3D11Device* pDevice = GetDevice();
 
 	// TODO : store this
 	ID3D11Buffer*	pd3d11Buffer = NULL;
@@ -902,14 +902,14 @@ D3D11VertexBuffer* DX11RenderDispatcher::createVertexBuffer( const void* pData, 
 	}
 
 	D3D11VertexBuffer*	pBuffer = new D3D11VertexBuffer( pd3d11Buffer, layout );
-	pBuffer->setStride( stride );
+	pBuffer->SetStride( stride );
 
 	return pBuffer;
 }
 
 D3D11IndexBuffer* DX11RenderDispatcher::createIndexBuffer( UINT* pData, int numOfIndices )
 {
-	ID3D11Device* pDevice = getDevice();
+	ID3D11Device* pDevice = GetDevice();
 
 	// TODO : store this
 	ID3D11Buffer*	pd3d11Buffer = NULL;
@@ -932,11 +932,11 @@ D3D11IndexBuffer* DX11RenderDispatcher::createIndexBuffer( UINT* pData, int numO
 	}
 
 	D3D11IndexBuffer*	pBuffer = new D3D11IndexBuffer( pd3d11Buffer );
-	pBuffer->setNumberOfIndices(numOfIndices);
+	pBuffer->SetNumberOfIndices(numOfIndices);
 	return pBuffer;
 }
 
-Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro> macros, bool debug )
+Shaderset*	DX11RenderDispatcher::CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro> macros, bool debug )
 {
 	HRESULT hr = S_OK;
 	D3D11Shaderset* pShaderset = new D3D11Shaderset();
@@ -950,7 +950,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 	ID3DBlob* pVSBlob, *pPSBlob, *pErrorBlob;
 	std::string shaderProfile;
 
-	if (!getDevice())
+	if (!GetDevice())
 	{
 		DEBUG_OUTPUT( __FUNCTION__ );
 		DEBUG_OUTPUT( " : D3D11 device invalid or uninitialized. Returning NULL.\n" );
@@ -1010,7 +1010,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
     if( pErrorBlob ) pErrorBlob->Release();
     
     // Create the vertex shader object
-    hr = getDevice()->CreateVertexShader( pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &pVertexShader );
+    hr = GetDevice()->CreateVertexShader( pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &pVertexShader );
     if( FAILED( hr ) )
     {    
         pVSBlob->Release();
@@ -1021,13 +1021,13 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
         return NULL;
     }
 
-	pShaderset->setVertexShader( pVertexShader );
+	pShaderset->SetVertexShader( pVertexShader );
 
 	// Create Vertex shader reflection
 	ID3D11ShaderReflection* pShaderReflection = NULL;
 	hr = D3DReflect( pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**) &pShaderReflection );
 	//pVSBlob->Release();
-	pShaderset->setInputSignature( pVSBlob );
+	pShaderset->SetInputSignature( pVSBlob );
 
 	if( FAILED( hr ) )
         return NULL;
@@ -1050,7 +1050,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 	{
 		pShaderReflection->GetResourceBindingDesc( i, &desc2 );
 		// Map resource name to its index
-		if (desc2.Type==D3D_SIT_TEXTURE)	pShaderset->setVSShaderResourceIndex( desc2.Name, desc2.BindPoint );
+		if (desc2.Type==D3D_SIT_TEXTURE)	pShaderset->SetVSShaderResourceIndex( desc2.Name, desc2.BindPoint );
 	}
 
 	int ii=0;
@@ -1070,7 +1070,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 	{
 		pShaderReflectionCB = pShaderReflection->GetConstantBufferByIndex( i );
 		pShaderReflectionCB->GetDesc( &desc3 );
-		pShaderset->setVSConstantBufferSize( i, desc3.Size );
+		pShaderset->SetVSConstantBufferSize( i, desc3.Size );
 		
 		for (ii=0; ii<desc3.Variables; ii++)
 		{
@@ -1086,7 +1086,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 			var.Offset = desc4.StartOffset;
 			var.Elements = ((desc5.Elements>0) ? desc5.Elements : 1);
 
-			pShaderset->setVSVariable( desc4.Name, var );
+			pShaderset->SetVSVariable( desc4.Name, var );
 		}
 	}
 	
@@ -1119,7 +1119,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
     if( pErrorBlob ) pErrorBlob->Release();
 
     // Create the pixel shader object
-    hr = getDevice()->CreatePixelShader( pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &pPixelShader );
+    hr = GetDevice()->CreatePixelShader( pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &pPixelShader );
     if( FAILED( hr ) )
 	{
 		pPixelShader->Release();
@@ -1130,7 +1130,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
         return NULL;
 	}
 
-	pShaderset->setPixelShader( pPixelShader );
+	pShaderset->SetPixelShader( pPixelShader );
 
 	// Create pixel shader reflection
 	pShaderReflection = NULL;
@@ -1153,7 +1153,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 	{
 		pShaderReflection->GetResourceBindingDesc( i, &desc2 );
 		// Map resource name to its index
-		if (desc2.Type==D3D_SIT_TEXTURE)	pShaderset->setPSShaderResourceIndex( desc2.Name, desc2.BindPoint );
+		if (desc2.Type==D3D_SIT_TEXTURE)	pShaderset->SetPSShaderResourceIndex( desc2.Name, desc2.BindPoint );
 	}
 
 	ii=0;
@@ -1172,7 +1172,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 	{
 		pShaderReflectionCB = pShaderReflection->GetConstantBufferByIndex( i );
 		pShaderReflectionCB->GetDesc( &desc3 );
-		pShaderset->setPSConstantBufferSize( i, desc3.Size );
+		pShaderset->SetPSConstantBufferSize( i, desc3.Size );
 		
 		for (ii=0; ii<desc3.Variables; ii++)
 		{
@@ -1190,7 +1190,7 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 			var.Elements = ((desc5.Elements>0) ? desc5.Elements : 1);
 			//var.IsArray = (desc5.Elements>0);
 
-			pShaderset->setPSVariable( desc4.Name, var );
+			pShaderset->SetPSVariable( desc4.Name, var );
 		}
 	}
 
@@ -1200,9 +1200,9 @@ Shaderset*	DX11RenderDispatcher::createShadersetFromFile( std::wstring filename,
 	return pShaderset;
 }
 
-Texture2D*	DX11RenderDispatcher::createTextureFromFile( std::wstring filename )
+Texture2D*	DX11RenderDispatcher::CreateTextureFromFile( std::wstring filename )
 {
-	ID3D11Device *pDevice = getDevice();
+	ID3D11Device *pDevice = GetDevice();
 	ID3D11ShaderResourceView *pSRV = NULL;
 
 	// Load the Texture
@@ -1226,94 +1226,94 @@ Texture2D*	DX11RenderDispatcher::createTextureFromFile( std::wstring filename )
 
 	// Create the texture
 	DX11Texture2D* ptex = new DX11Texture2D();
-	ptex->setShaderResourceView( pSRV );
-	ptex->setResource( (ID3D11Texture2D*)pResource );
-	ptex->setDimensions( desc.Height, desc.Width );
-	ptex->setMipLevels( desc.MipLevels );
-	ptex->setFormat( toNGTextureFormat(desc.Format) );	
+	ptex->SetShaderResourceView( pSRV );
+	ptex->SetResource( (ID3D11Texture2D*)pResource );
+	ptex->SetDimensions( desc.Height, desc.Width );
+	ptex->SetMipLevels( desc.MipLevels );
+	ptex->SetFormat( toNGTextureFormat(desc.Format) );	
 	return ptex;
 }
 
-void DX11RenderDispatcher::clearBackbuffer( float* clearColorRGBA )
+void DX11RenderDispatcher::ClearBackbuffer( float* clearColorRGBA )
 {
 	//
     // Clear the back buffer
     //
-    getImmediateContext()->ClearRenderTargetView( m_pRenderTargetView, clearColorRGBA );
+    GetImmediateContext()->ClearRenderTargetView( m_pRenderTargetView, clearColorRGBA );
 }
 
-void DX11RenderDispatcher::clearDepth( float depth )
+void DX11RenderDispatcher::ClearDepth( float depth )
 {
 	//
     // Clear the depth buffer
     //
-    getImmediateContext()->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH, depth, 0 );
+    GetImmediateContext()->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH, depth, 0 );
 }
 
-void DX11RenderDispatcher::clearStencil( UINT8 stencil )
+void DX11RenderDispatcher::ClearStencil( UINT8 stencil )
 {
 	//
     // Clear the stencil buffer
     //
-    getImmediateContext()->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_STENCIL, 0.0f, stencil );
+    GetImmediateContext()->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_STENCIL, 0.0f, stencil );
 }
 
-void DX11RenderDispatcher::clearDepthStencil( float depth, UINT8 stencil )
+void DX11RenderDispatcher::ClearDepthStencil( float depth, UINT8 stencil )
 {
 	//
     // Clear the depth stencil buffer
     //
-	getImmediateContext()->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, stencil );
+	GetImmediateContext()->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depth, stencil );
 }
 
-void DX11RenderDispatcher::setRenderTarget( Texture2D* pRenderTarget )
+void DX11RenderDispatcher::SetRenderTarget( Texture2D* pRenderTarget )
 {
-	ID3D11RenderTargetView *pRTV = ((DX11Texture2D*)pRenderTarget)->getRenderTargetView();
-	ID3D11DepthStencilView *pDSV = ((DX11Texture2D*)pRenderTarget)->getDepthStencilView();
-	getImmediateContext()->OMSetRenderTargets( 1, &pRTV , pDSV );
+	ID3D11RenderTargetView *pRTV = ((DX11Texture2D*)pRenderTarget)->GetRenderTargetView();
+	ID3D11DepthStencilView *pDSV = ((DX11Texture2D*)pRenderTarget)->GetDepthStencilView();
+	GetImmediateContext()->OMSetRenderTargets( 1, &pRTV , pDSV );
 
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)pRenderTarget->getWidth();
-	vp.Height = (FLOAT)pRenderTarget->getHeight();
+	vp.Width = (FLOAT)pRenderTarget->GetWidth();
+	vp.Height = (FLOAT)pRenderTarget->GetHeight();
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	getImmediateContext()->RSSetViewports( 1, &vp );
+	GetImmediateContext()->RSSetViewports( 1, &vp );
 }
 
-void DX11RenderDispatcher::setMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray )
+void DX11RenderDispatcher::SetMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray )
 {
 	// Get Render Target View pointers into an array
 	ID3D11RenderTargetView *RTVs[8];
 	for (int i=0; i<numRenderTargets; i++ )
 	{
 		Texture2D* tex = pRenderTargetArray[i];
-		RTVs[i] = ((DX11Texture2D*)tex)->getRenderTargetView();
+		RTVs[i] = ((DX11Texture2D*)tex)->GetRenderTargetView();
 	}
 
 	// The Depth Stencil View of the first texture is used
-	ID3D11DepthStencilView *pDSV = ((DX11Texture2D*)pRenderTargetArray[0])->getDepthStencilView();
+	ID3D11DepthStencilView *pDSV = ((DX11Texture2D*)pRenderTargetArray[0])->GetDepthStencilView();
 
-	getImmediateContext()->OMSetRenderTargets( numRenderTargets, RTVs , pDSV );
+	GetImmediateContext()->OMSetRenderTargets( numRenderTargets, RTVs , pDSV );
 
 	// Set default viewport (the whole texture)
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)pRenderTargetArray[0]->getWidth();
-	vp.Height = (FLOAT)pRenderTargetArray[0]->getHeight();
+	vp.Width = (FLOAT)pRenderTargetArray[0]->GetWidth();
+	vp.Height = (FLOAT)pRenderTargetArray[0]->GetHeight();
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	getImmediateContext()->RSSetViewports( 1, &vp );
+	GetImmediateContext()->RSSetViewports( 1, &vp );
 }
 
-void DX11RenderDispatcher::resolveMSAA( Texture2D* pDestination, Texture2D* pSource )
+void DX11RenderDispatcher::ResolveMSAA( Texture2D* pDestination, Texture2D* pSource )
 {
-	m_pImmediateContext->ResolveSubresource( ((DX11Texture2D*)pDestination)->getResource(), D3D11CalcSubresource(0,0,1), ((DX11Texture2D*)pDestination)->getResource(), 0, (DXGI_FORMAT)((DX11Texture2D*)pDestination)->getFormat() );
+	m_pImmediateContext->ResolveSubresource( ((DX11Texture2D*)pDestination)->GetResource(), D3D11CalcSubresource(0,0,1), ((DX11Texture2D*)pDestination)->GetResource(), 0, (DXGI_FORMAT)((DX11Texture2D*)pDestination)->GetFormat() );
 }
 
-void DX11RenderDispatcher::resizeTarget( UINT height, UINT width )
+void DX11RenderDispatcher::ResizeTarget( UINT height, UINT width )
 {
 	DXGI_MODE_DESC desc;
 	desc.Format = DXGI_FORMAT_UNKNOWN;
@@ -1327,7 +1327,7 @@ void DX11RenderDispatcher::resizeTarget( UINT height, UINT width )
 	HRESULT hr = m_pSwapChain->ResizeTarget( &desc );
 }
 
-void DX11RenderDispatcher::resizeBackbuffer( UINT height, UINT width )
+void DX11RenderDispatcher::ResizeBackbuffer( UINT height, UINT width )
 {
 	// TODO : size check
 
@@ -1427,20 +1427,20 @@ void DX11RenderDispatcher::resizeBackbuffer( UINT height, UINT width )
 	}
 
 	DX11Texture2D *pBackbufferTexture = new DX11Texture2D();
-	pBackbufferTexture->setDimensions( m_Height, m_Width );
-	pBackbufferTexture->setFormat( R8G8B8A8_UNORM );
-	pBackbufferTexture->setMipLevels( 1 );
-	pBackbufferTexture->setRenderTargetView( m_pRenderTargetView );
-	pBackbufferTexture->setDepthStencilView( m_pDepthStencilView );
-	setBackbufferTexture( pBackbufferTexture );
+	pBackbufferTexture->SetDimensions( m_Height, m_Width );
+	pBackbufferTexture->SetFormat( R8G8B8A8_UNORM );
+	pBackbufferTexture->SetMipLevels( 1 );
+	pBackbufferTexture->SetRenderTargetView( m_pRenderTargetView );
+	pBackbufferTexture->SetDepthStencilView( m_pDepthStencilView );
+	SetBackbufferTexture( pBackbufferTexture );
 	
 	pBackBuffer->Release();
 
 	// Update render target
-	setBackbufferAsRenderTarget();
+	SetBackbufferAsRenderTarget();
 }
 
-Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data, size_t pitch, size_t dataSize )
+Texture2D* DX11RenderDispatcher::CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format, const void* const data, size_t pitch, size_t dataSize )
 {
 	// D3D resource pointers
 	ID3D11Texture2D* pMap, *pDepthStencil;
@@ -1470,10 +1470,10 @@ Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE
 		initData.pSysMem = data;
 		initData.SysMemPitch = pitch;
 		initData.SysMemSlicePitch = dataSize;
-		hr = this->getDevice()->CreateTexture2D( &texDesc , &initData , &pMap );
+		hr = this->GetDevice()->CreateTexture2D( &texDesc , &initData , &pMap );
 	}
 	else
-		hr = this->getDevice()->CreateTexture2D( &texDesc , NULL , &pMap );
+		hr = this->GetDevice()->CreateTexture2D( &texDesc , NULL , &pMap );
 
 	// Depth-stencil description
 	texDesc.ArraySize = 1;
@@ -1487,7 +1487,7 @@ Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	hr = this->getDevice()->CreateTexture2D( &texDesc , NULL , &pDepthStencil );
+	hr = this->GetDevice()->CreateTexture2D( &texDesc , NULL , &pDepthStencil );
 
 	// Create Depth Stencil View
 	D3D11_DEPTH_STENCIL_VIEW_DESC DSVDesc;
@@ -1496,7 +1496,7 @@ Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE
 	DSVDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	DSVDesc.Texture2D.MipSlice = 0;
 	DSVDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	hr = this->getDevice()->CreateDepthStencilView( pDepthStencil , &DSVDesc , &pDSV );
+	hr = this->GetDevice()->CreateDepthStencilView( pDepthStencil , &DSVDesc , &pDSV );
 	
 	// Create Render Target View
 	D3D11_RENDER_TARGET_VIEW_DESC RTVDesc;
@@ -1504,7 +1504,7 @@ Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE
 	RTVDesc.Format = (DXGI_FORMAT)format;
 	RTVDesc.Texture2D.MipSlice = 0;
 	RTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	hr = this->getDevice()->CreateRenderTargetView( pMap , &RTVDesc , &pRTV );
+	hr = this->GetDevice()->CreateRenderTargetView( pMap , &RTVDesc , &pRTV );
 	
 	// Create Shader Resource View
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
@@ -1513,25 +1513,25 @@ Texture2D* DX11RenderDispatcher::createTexture( UINT height, UINT width, TEXTURE
 	SRVDesc.Texture2D.MipLevels = 1;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	hr = this->getDevice()->CreateShaderResourceView( pMap , &SRVDesc , &pSRV );
+	hr = this->GetDevice()->CreateShaderResourceView( pMap , &SRVDesc , &pSRV );
 
 	// There are log2(N)+1 mips of an image with N as largest dimension.
 	int numMips = log( (double)max(width,height) )/log((double)2.0)+1;
 
 	// Create the object
 	DX11Texture2D* pTex = new DX11Texture2D();
-	pTex->setFormat( format );
-	pTex->setResource( pMap );
-	pTex->setShaderResourceView( pSRV );
-	pTex->setRenderTargetView( pRTV );
-	pTex->setDepthStencilView( pDSV );
-	pTex->setDimensions( height, width );
-	pTex->setMipLevels( numMips );
+	pTex->SetFormat( format );
+	pTex->SetResource( pMap );
+	pTex->SetShaderResourceView( pSRV );
+	pTex->SetRenderTargetView( pRTV );
+	pTex->SetDepthStencilView( pDSV );
+	pTex->SetDimensions( height, width );
+	pTex->SetMipLevels( numMips );
 
 	return pTex;
 }
 
-Texture3D*	DX11RenderDispatcher::createTexture3D( UINT width, UINT height, UINT depth, DXGI_FORMAT format, const void* const data, size_t pitch, size_t slicePitch, size_t dataSize )
+Texture3D*	DX11RenderDispatcher::CreateTexture3D( UINT width, UINT height, UINT depth, DXGI_FORMAT format, const void* const data, size_t pitch, size_t slicePitch, size_t dataSize )
 {
 	ID3D11Texture3D* pMap;
 	ID3D11ShaderResourceView* pSRV;
@@ -1557,7 +1557,7 @@ Texture3D*	DX11RenderDispatcher::createTexture3D( UINT width, UINT height, UINT 
 	initialData.SysMemPitch = pitch;
 	initialData.SysMemSlicePitch = slicePitch;
 
-	hr = this->getDevice()->CreateTexture3D( &texDesc , &initialData , &pMap );
+	hr = this->GetDevice()->CreateTexture3D( &texDesc , &initialData , &pMap );
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
 	ZeroMemory( &SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC) );
@@ -1565,17 +1565,17 @@ Texture3D*	DX11RenderDispatcher::createTexture3D( UINT width, UINT height, UINT 
 	SRVDesc.Texture2D.MipLevels = 1;
 	SRVDesc.Texture2D.MostDetailedMip = 0;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
-	hr = this->getDevice()->CreateShaderResourceView( pMap , &SRVDesc , &pSRV );
+	hr = this->GetDevice()->CreateShaderResourceView( pMap , &SRVDesc , &pSRV );
 
 	DX11Texture3D* tex = new DX11Texture3D();
-	tex->setResource( pMap );
-	tex->setShaderResourceView( pSRV );
-	tex->setDimensions( height, width, depth );
+	tex->SetResource( pMap );
+	tex->SetShaderResourceView( pSRV );
+	tex->SetDimensions( height, width, depth );
 
 	return tex;
 }
 
-TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
+TextureCube* DX11RenderDispatcher::CreateCubemap( Image* const faces[6] )
 {
 	// Using DXGI_FORMAT_R8G8B8A8_UNORM (28) as an example.
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -1585,12 +1585,12 @@ TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
 	ID3D11ShaderResourceView* shaderResourceView = NULL;
 
 	// There are log2(N)+1 mips of an image with max dimension N.
-	int numMips = log( (double)max(faces[0]->width(),faces[0]->height()) )/log((double)2.0)+1;
+	int numMips = log( (double)max(faces[0]->Width(),faces[0]->Height()) )/log((double)2.0)+1;
 
 	// Cube texture description
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width = faces[0]->width();
-	texDesc.Height = faces[0]->height();
+	texDesc.Width = faces[0]->Width();
+	texDesc.Height = faces[0]->Height();
 	texDesc.MipLevels = numMips;
 	texDesc.ArraySize = 6;			// 6 Cubemap faces
 	texDesc.Format = format;
@@ -1617,23 +1617,23 @@ TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
 		for(int miplevel=1; miplevel<numMips; miplevel++)
 		{
 			// Create mip images for all but the bottommost mip
-			mips[face*numMips+miplevel] = new Image( faces[face]->width() >> miplevel, faces[face]->height() >> miplevel );
+			mips[face*numMips+miplevel] = new Image( faces[face]->Width() >> miplevel, faces[face]->Height() >> miplevel );
 
 			// Iterate every pixel
-			for(int i=0; i<mips[face*numMips+miplevel]->width(); i++)
+			for(int i=0; i<mips[face*numMips+miplevel]->Width(); i++)
 			{
-				for(int j=0; j<mips[face*numMips+miplevel]->height(); j++)
+				for(int j=0; j<mips[face*numMips+miplevel]->Height(); j++)
 				{
 					// Average 4 pixels of the lower mip
 					// Convert from gamma to linear space for correct blending
 					Color average;
-					average = mips[face*numMips+miplevel-1]->getPixel(i*2,j*2).toLinear()/4;
-					average += mips[face*numMips+miplevel-1]->getPixel(i*2+1,j*2).toLinear()/4;
-					average += mips[face*numMips+miplevel-1]->getPixel(i*2,j*2+1).toLinear()/4;
-					average += mips[face*numMips+miplevel-1]->getPixel(i*2+1,j*2+1).toLinear()/4;
+					average = mips[face*numMips+miplevel-1]->GetPixel(i*2,j*2).ToLinear()/4;
+					average += mips[face*numMips+miplevel-1]->GetPixel(i*2+1,j*2).ToLinear()/4;
+					average += mips[face*numMips+miplevel-1]->GetPixel(i*2,j*2+1).ToLinear()/4;
+					average += mips[face*numMips+miplevel-1]->GetPixel(i*2+1,j*2+1).ToLinear()/4;
 
 					// then back to gamma as this pixel's value
-					mips[face*numMips+miplevel]->operator()(i,j) = average.toGamma();
+					mips[face*numMips+miplevel]->operator()(i,j) = average.ToGamma();
 				}
 			}
 		}
@@ -1644,15 +1644,15 @@ TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
 	for (int i = 0; i < numMips*6; i++)
 	{
 		// Pointer to the pixel data
-		pData[i].pSysMem = mips[i]->data(); 
+		pData[i].pSysMem = mips[i]->Data(); 
 		// Line width in bytes
-		pData[i].SysMemPitch = mips[i]->stride(); 
+		pData[i].SysMemPitch = mips[i]->Stride(); 
 		// This is only used for 3d textures.
 		pData[i].SysMemSlicePitch = 0;
 	}
 
 	// Create the Texture Resource
-	HRESULT hr = getDevice()->CreateTexture2D(&texDesc, &pData[0], &cubeTexture);
+	HRESULT hr = GetDevice()->CreateTexture2D(&texDesc, &pData[0], &cubeTexture);
 	if (hr != S_OK)
 	{
 		DEBUG_OUTPUT( __FUNCTION__ );
@@ -1661,7 +1661,7 @@ TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
 	}
 
 	// Create the Shader Resource View
-	hr = getDevice()->CreateShaderResourceView(cubeTexture, &SMViewDesc, &shaderResourceView);
+	hr = GetDevice()->CreateShaderResourceView(cubeTexture, &SMViewDesc, &shaderResourceView);
 	if (hr != S_OK)
 	{
 		DEBUG_OUTPUT( __FUNCTION__ );
@@ -1681,12 +1681,12 @@ TextureCube* DX11RenderDispatcher::createCubemap( Image* const faces[6] )
 
 	// Create the object
 	TextureCube* tex = new TextureCube();
-	tex->setFormat( R8G8B8A8_UNORM );
-	tex->setResource( cubeTexture );
-	tex->setShaderResourceView( shaderResourceView );
-	tex->setRenderTargetView( NULL );
-	tex->setDepthStencilView( NULL );
-	tex->setDimensions( faces[0]->height(), faces[0]->width() );
+	tex->SetFormat( R8G8B8A8_UNORM );
+	tex->SetResource( cubeTexture );
+	tex->SetShaderResourceView( shaderResourceView );
+	tex->SetRenderTargetView( NULL );
+	tex->SetDepthStencilView( NULL );
+	tex->SetDimensions( faces[0]->Height(), faces[0]->Width() );
 
 	return tex;
 }

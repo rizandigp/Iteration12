@@ -5,26 +5,26 @@
 #include "Entity_Water.h"
 #include "Camera3D.h"
 
-void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
+void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 {
-	setRenderSystem( pRendering );
-	setPhysicsSystem( pPhysics );
+	SetRenderSystem( pRendering );
+	SetPhysicsSystem( pPhysics );
 
 	// G-buffers
-	RenderSystemConfig config = m_pRenderSystem->getConfig();
-	m_pGBuffer[0] = m_pRenderSystem->createTexture( config.Height, config.Width, R8G8B8A8_UNORM );
-	m_pGBuffer[1] = m_pRenderSystem->createTexture( config.Height, config.Width, R16G16B16A16_FLOAT );
-	m_pGBuffer[2] = m_pRenderSystem->createTexture( config.Height, config.Width, R8G8B8A8_UNORM );
+	RenderSystemConfig config = m_pRenderSystem->GetConfig();
+	m_pGBuffer[0] = m_pRenderSystem->CreateTexture( config.Height, config.Width, R8G8B8A8_UNORM );
+	m_pGBuffer[1] = m_pRenderSystem->CreateTexture( config.Height, config.Width, R32G32B32A32_FLOAT );
+	m_pGBuffer[2] = m_pRenderSystem->CreateTexture( config.Height, config.Width, R8G8B8A8_UNORM );
 
 	// HDR render target
-	m_pHDRRenderTarget = m_pRenderSystem->createTexture( config.Height, config.Width, R16G16B16A16_FLOAT );
+	m_pHDRRenderTarget = m_pRenderSystem->CreateTexture( config.Height, config.Width, R16G16B16A16_FLOAT );
 
 	// Fullscreen passes
 	m_pFullscreenQuad = new FullscreenQuad( pRendering );
-	m_pFullscreenQuad->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/Deferred.hlsl", "VS", "PS", SM_5_0 ) );
-	m_pFullscreenQuad->setTexture( "gbuffer0", m_pGBuffer[0] );
-	m_pFullscreenQuad->setTexture( "gbuffer1", m_pGBuffer[1] );
-	m_pFullscreenQuad->setTexture( "gbuffer2", m_pGBuffer[2] );
+	m_pFullscreenQuad->SetShaderset( m_pRenderSystem->LoadShaderset( L"Shaders/Deferred.hlsl", "VS", "PS", SM_5_0 ) );
+	m_pFullscreenQuad->SetTexture( "gbuffer0", m_pGBuffer[0] );
+	m_pFullscreenQuad->SetTexture( "gbuffer1", m_pGBuffer[1] );
+	m_pFullscreenQuad->SetTexture( "gbuffer2", m_pGBuffer[2] );
 
 	// Create noise texture for the SSAO
 	Array2D<Vector2> noise( 2, 2, Vector2(1.0f, 0.0f));
@@ -41,168 +41,168 @@ void Scene::init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 			noise(i, j) = value;//Vector2(0.0f, 1.0f);
 		}
 	}
-	Texture2D *noiseTexture = m_pRenderSystem->createTexture( &noise, R32G32_FLOAT );
+	Texture2D *noiseTexture = m_pRenderSystem->CreateTexture( &noise, R32G32_FLOAT );
 
 	// Half-res gbuffer[1] (normals and depth)
-	m_pHalfRes = m_pRenderSystem->createTexture( config.Height/4, config.Width/4, R16G16B16A16_FLOAT );
+	m_pHalfRes = m_pRenderSystem->CreateTexture( config.Height/4, config.Width/4, R32G32B32A32_FLOAT );
 
 	// Half-res SSAO buffer
-	m_pSSAOBuffer = m_pRenderSystem->createTexture( config.Height/4, config.Width/4, R16_UNORM );
+	m_pSSAOBuffer = m_pRenderSystem->CreateTexture( config.Height/4, config.Width/4, R16_UNORM );
 
 	m_pSSAOPass = new FullscreenQuad( pRendering );
-	m_pSSAOPass->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/SSAO.hlsl", "VS", "PS", SM_5_0 ) );
-	m_pSSAOPass->setTexture( "gbuffer0", m_pGBuffer[0] );
-	m_pSSAOPass->setTexture( "gbuffer1", m_pHalfRes );
-	m_pSSAOPass->setTexture( "texNoise", noiseTexture );
+	m_pSSAOPass->SetShaderset( m_pRenderSystem->LoadShaderset( L"Shaders/SSAO.hlsl", "VS", "PS", SM_5_0 ) );
+	m_pSSAOPass->SetTexture( "gbuffer0", m_pGBuffer[0] );
+	m_pSSAOPass->SetTexture( "gbuffer1", m_pHalfRes );
+	m_pSSAOPass->SetTexture( "texNoise", noiseTexture );
 
 	m_pSSAOCombinePass = new FullscreenQuad( pRendering );
-	m_pSSAOCombinePass->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/SSAOCombine.hlsl", "VS", "PS", SM_5_0 ) );
-	m_pSSAOCombinePass->setTexture( "gbuffer0", m_pGBuffer[0] );
-	m_pSSAOCombinePass->setTexture( "gbuffer1", m_pGBuffer[1] );
-	m_pSSAOCombinePass->setTexture( "texSSAO", m_pSSAOBuffer );
+	m_pSSAOCombinePass->SetShaderset( m_pRenderSystem->LoadShaderset( L"Shaders/SSAOCombine.hlsl", "VS", "PS", SM_5_0 ) );
+	m_pSSAOCombinePass->SetTexture( "gbuffer0", m_pGBuffer[0] );
+	m_pSSAOCombinePass->SetTexture( "gbuffer1", m_pGBuffer[1] );
+	m_pSSAOCombinePass->SetTexture( "texSSAO", m_pSSAOBuffer );
 
 		// Compile tonemapping shader with diferrent settings
-	m_pTonemappingShaderset[0] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0  );
+	m_pTonemappingShaderset[0] = m_pRenderSystem->LoadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0  );
 
 	std::vector<ShaderMacro> macros;
 	macros.push_back( ShaderMacro("TONEMAPPING_OPERATOR", "1") );
-	m_pTonemappingShaderset[1] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
+	m_pTonemappingShaderset[1] = m_pRenderSystem->LoadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
 
 	macros[0].Name = "TONEMAPPING_OPERATOR";
 	macros[0].Definition = "2";
-	m_pTonemappingShaderset[2] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
+	m_pTonemappingShaderset[2] = m_pRenderSystem->LoadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
 
 	macros[0].Name = "TONEMAPPING_OPERATOR";
 	macros[0].Definition = "3";
-	m_pTonemappingShaderset[3] = m_pRenderSystem->loadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
+	m_pTonemappingShaderset[3] = m_pRenderSystem->LoadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0, &macros, false );
 
 	m_pTonemappingPass = new FullscreenQuad( m_pRenderSystem );
-	m_pTonemappingPass->setShaderset( m_pTonemappingShaderset[0] );
-	m_pTonemappingPass->setTexture( "texSource", m_pHDRRenderTarget );
+	m_pTonemappingPass->SetShaderset( m_pTonemappingShaderset[0] );
+	m_pTonemappingPass->SetTexture( "texSource", m_pHDRRenderTarget );
 	ShaderParamBlock shaderParams;
 	shaderParams.assign( "fExposure", 0, 1.0f );
-	m_pTonemappingPass->setShaderParams(shaderParams);
+	m_pTonemappingPass->SetShaderParams(shaderParams);
 
 	m_pSunlight = new FullscreenQuad( pRendering );
-	m_pSunlight->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/DeferredSunlight.hlsl", "VS", "PS", SM_5_0 ) );
-	m_pSunlight->setTexture( "txGBuffer0", m_pGBuffer[0] );
-	m_pSunlight->setTexture( "txGBuffer1", m_pGBuffer[1] );
-	m_pSunlight->setTexture( "txGBuffer2", m_pGBuffer[2] );
+	m_pSunlight->SetShaderset( m_pRenderSystem->LoadShaderset( L"Shaders/DeferredSunlight.hlsl", "VS", "PS", SM_5_0 ) );
+	m_pSunlight->SetTexture( "txGBuffer0", m_pGBuffer[0] );
+	m_pSunlight->SetTexture( "txGBuffer1", m_pGBuffer[1] );
+	m_pSunlight->SetTexture( "txGBuffer2", m_pGBuffer[2] );
 
 	// Prototype global illumination
 	//m_pGI = new FullscreenQuad( pRendering );
-	//m_pGI->setShaderset( m_pRenderSystem->loadShaderset( L"Shaders/GI.hlsl", "VS", "PS", SM_5_0 ) );
-	//m_pGI->setTexture( "txGBuffer0", m_pGBuffer[0] );
-	//m_pGI->setTexture( "txGBuffer1", m_pGBuffer[1] );
-	//m_pGI->setTexture( "txGBuffer2", m_pGBuffer[2] );
+	//m_pGI->SetShaderset( m_pRenderSystem->LoadShaderset( L"Shaders/GI.hlsl", "VS", "PS", SM_5_0 ) );
+	//m_pGI->SetTexture( "txGBuffer0", m_pGBuffer[0] );
+	//m_pGI->SetTexture( "txGBuffer1", m_pGBuffer[1] );
+	//m_pGI->SetTexture( "txGBuffer2", m_pGBuffer[2] );
 
 	// Shadowmaps
-	m_pShadowmap[0] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT );/*
-	m_pShadowmap[1] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT ); 
-	m_pShadowmap[2] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT );
-	m_pShadowmap[3] = m_pRenderSystem->createTexture( 256*4, 256*4, R32_FLOAT );
-	m_pShadowmap[4] = m_pRenderSystem->createTexture( 256*2, 256*2, R32_FLOAT );
-	m_pShadowmap[5] = m_pRenderSystem->createTexture( 256*2, 256*2, R32_FLOAT );
-	m_pShadowmap[6] = m_pRenderSystem->createTexture( 256*2, 256*2, R32_FLOAT );
-	m_pShadowmap[7] = m_pRenderSystem->createTexture( 256*2, 256*2, R32_FLOAT );*/
+	m_pShadowmap[0] = m_pRenderSystem->CreateTexture( 256*8, 256*8, R32_FLOAT );/*
+	m_pShadowmap[1] = m_pRenderSystem->CreateTexture( 256*4, 256*4, R32_FLOAT ); 
+	m_pShadowmap[2] = m_pRenderSystem->CreateTexture( 256*4, 256*4, R32_FLOAT );
+	m_pShadowmap[3] = m_pRenderSystem->CreateTexture( 256*4, 256*4, R32_FLOAT );
+	m_pShadowmap[4] = m_pRenderSystem->CreateTexture( 256*2, 256*2, R32_FLOAT );
+	m_pShadowmap[5] = m_pRenderSystem->CreateTexture( 256*2, 256*2, R32_FLOAT );
+	m_pShadowmap[6] = m_pRenderSystem->CreateTexture( 256*2, 256*2, R32_FLOAT );
+	m_pShadowmap[7] = m_pRenderSystem->CreateTexture( 256*2, 256*2, R32_FLOAT );*/
 
-	m_pRSMNormal[0] = m_pRenderSystem->createTexture( 256*2, 256*2, R16G16B16A16_FLOAT );
-	m_pRSMColor[0] = m_pRenderSystem->createTexture( 256*2, 256*2, R8G8B8A8_UNORM );
+	m_pRSMNormal[0] = m_pRenderSystem->CreateTexture( 256*2, 256*2, R16G16B16A16_FLOAT );
+	m_pRSMColor[0] = m_pRenderSystem->CreateTexture( 256*2, 256*2, R8G8B8A8_UNORM );
 
-	m_pSMEmpty = m_pRenderSystem->createTexture( 1, 1, R32_FLOAT ); 
+	m_pSMEmpty = m_pRenderSystem->CreateTexture( 1, 1, R32_FLOAT ); 
 	
 	float ClearColor[4] = { D3D11_FLOAT32_MAX, 1.0f, 1.0f, 1.0f };
-	m_pRenderSystem->clearTexture( m_pShadowmap[0], ClearColor );
-	m_pRenderSystem->clearTexture( m_pSMEmpty, ClearColor );
+	m_pRenderSystem->ClearTexture( m_pShadowmap[0], ClearColor );
+	m_pRenderSystem->ClearTexture( m_pSMEmpty, ClearColor );
 
-	//m_pTestTexture = m_pRenderSystem->loadTexture( L"Media/781484020226.jpg" );
+	//m_pTestTexture = m_pRenderSystem->LoadTexture( L"Media/781484020226.jpg" );
 	//m_pGBuffer[0] = m_pTestTexture;
 
 	// Water surface
 	//m_pWater = new Entity_Water( m_pRenderSystem );
 	//m_pWater->setName( L"Water" );
-	//m_pWater->transform()->translate(0.0f,0.0f,0.0f);
-	//addEntity(m_pWater);
+	//m_pWater->transform()->Translate(0.0f,0.0f,0.0f);
+	//AddEntity(m_pWater);
 
 	// Skybox
-	DX11Material_Skybox* mat = new DX11Material_Skybox( m_pRenderSystem );
-	mat->setCubemap( m_pRenderSystem->loadTexture( L"Media/cubemap0.dds" ) );
-	Mesh* mesh = m_pRenderSystem->loadMesh( "Media/Meshes/unit_cube_inverted.obj" );
-	mesh->setMaterial( mat );
+	DX11Material_Skybox* material = new DX11Material_Skybox( m_pRenderSystem );
+	material->SetCubemap( m_pRenderSystem->LoadTexture( L"Media/cubemap0.dds" ) );
+	Mesh* mesh = m_pRenderSystem->LoadMesh( "Media/Meshes/unit_cube_inverted.obj" );
+	mesh->SetMaterial( material );
 	Entity_StaticProp* skybox = new Entity_StaticProp( m_pRenderSystem, mesh );
-	skybox->setName( L"Skybox" );
-	skybox->transform()->setScale( 2000.0f, 2000.0f, 2000.0f );
-	skybox->transform()->setPosition( 0.0f, 0.0f, 0.0f );
-	addEntity( skybox );
+	skybox->SetName( L"Skybox" );
+	skybox->Transformation()->SetScale( 2000.0f, 2000.0f, 2000.0f );
+	skybox->Transformation()->SetPosition( 0.0f, 0.0f, 0.0f );
+	AddEntity( skybox );
 
-	loadMeshes();
-	loadPrefabs();
+	LoadMeshes();
+	LoadPrefabs();
 }
 
-void Scene::setPhysicsSystem( PhysicsSystem* ptr )
+void Scene::SetPhysicsSystem( PhysicsSystem* ptr )
 { 
 	m_pPhysicsSystem = ptr;
 }
 
-void Scene::setRenderSystem( RenderSystem* pRenderSystem )
+void Scene::SetRenderSystem( RenderSystem* pRenderSystem )
 {
 	m_pRenderSystem = pRenderSystem;
 }
 
-void Scene::setCamera( Camera3D* camera )
+void Scene::SetCamera( Camera3D* camera )
 {
 	m_pActiveCamera = camera;
 
 	if (m_pWater)
-		m_pWater->setGridProjectorCamera( camera );
+		m_pWater->SetGridProjectorCamera( camera );
 };
 
-void Scene::addEntity( Entity* ent )
+void Scene::AddEntity( Entity* ent )
 {
-	ent->onAddToScene(this); 
+	ent->OnAddToScene(this); 
 	m_pEntities.push_back(ent);
 }
 
-void Scene::update( float deltaTime )
+// TODO : parallelize?
+void Scene::Update( float deltaTime )
 {
 	// Update everything
-	// TODO : parallelize?
-	setDeltaTime( deltaTime );
+	SetDeltaTime( deltaTime );
 	m_Time += deltaTime;
 
 	// Step physics
 	Timer timer;
 	if (m_pPhysicsSystem)
-		m_pPhysicsSystem->step( deltaTime );
-	t_physics = timer.getMiliseconds();
+		m_pPhysicsSystem->Step( deltaTime );
+	t_physics = timer.GetMiliseconds();
 
 	// Container may dinamically change sizes (an objects's update() spawning/destroying entities, etc)
 	// If we used iterators, they could get invalidated
 	// TODO : handle case where an element in the container gets destroyed
 	for( std::vector<Entity*>::size_type i = 0; i < m_pEntities.size(); ++i )
 	{
-		m_pEntities[i]->update(m_DeltaTime);
+		m_pEntities[i]->Update(m_DeltaTime);
 	}
 	for ( std::vector<PointLight*>::iterator it2 = m_pPointLights.begin(); it2 != m_pPointLights.end(); ++it2 )
 	{
-		(*it2)->update();
-		(*it2)->cull( &m_pActiveCamera->getFrustum() );
+		(*it2)->Update();
+		(*it2)->Cull( &m_pActiveCamera->GetFrustum() );
 	}
 	for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 	{
-		(*it2)->update();
-		(*it2)->cull( &m_pActiveCamera->getFrustum() );
+		(*it2)->Update();
+		(*it2)->Cull( &m_pActiveCamera->GetFrustum() );
 	}
 
 	Timer oceanTimer;
 	//m_pWater->update( m_DeltaTime );
-	t_ocean = oceanTimer.getMiliseconds();
+	t_ocean = oceanTimer.GetMiliseconds();
 }
 
-void Scene::render()
+void Scene::Render()
 {
 	Timer sceneTimer, t;
-	t_cull = 0.0f;
+	t_Cull = 0.0f;
 
 	//
 	// Render shadowmaps
@@ -214,29 +214,29 @@ void Scene::render()
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
-			if ((*it2)->isVisible()&&(*it2)->isEnabled())
+			if ((*it2)->IsVisible()&&(*it2)->IsEnabled())
 			{
-				if ((*it2)->isCastingShadow() && i < 8)
+				if ((*it2)->IsCastingShadow() && i < 8)
 				{
-					m_pRenderSystem->clearTexture( m_pShadowmap[i], clear );
-					m_pRenderSystem->setRenderTarget( m_pShadowmap[i] );
+					m_pRenderSystem->ClearTexture( m_pShadowmap[i], clear );
+					m_pRenderSystem->SetRenderTarget( m_pShadowmap[i] );
 
 					Camera3D shadowCamera;
-					shadowCamera.setViewProjectionMatrix( (*it2)->getProjectionCamera()->getViewProjectionMatrix() );
-					shadowCamera.setFrustum( &(*it2)->getFrustum() );
+					shadowCamera.SetViewProjectionMatrix( (*it2)->GetProjectionCamera()->GetViewProjectionMatrix() );
+					shadowCamera.SetFrustum( &(*it2)->GetFrustum() );
 
 					for( std::vector<Entity*>::iterator it = m_pEntities.begin(); it != m_pEntities.end(); ++it )
 					{
-						sceneTimer.start();
-						(*it)->cull( &(*it2)->getFrustum() );
-						t_cull += sceneTimer.getMiliseconds();
-						(*it)->renderShadowmap(&shadowCamera);
+						sceneTimer.Start();
+						(*it)->Cull( &(*it2)->GetFrustum() );
+						t_Cull += sceneTimer.GetMiliseconds();
+						(*it)->RenderShadowmap(&shadowCamera);
 					}
 
-					(*it2)->setShadowmap( m_pShadowmap[i] );
+					(*it2)->SetShadowmap( m_pShadowmap[i] );
 				}
 				else
-					(*it2)->setShadowmap( m_pSMEmpty );
+					(*it2)->SetShadowmap( m_pSMEmpty );
 
 			}
 			i++;
@@ -246,48 +246,44 @@ void Scene::render()
 	//
 	// Render main scene
 	//
-	m_pRenderSystem->setCamera( m_pActiveCamera );
-	//m_pRenderSystem->setMultipleRenderTargets( 3, m_pGBuffer );
-	m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
-	//m_pRenderSystem->setBackbufferAsRenderTarget();
+	m_pRenderSystem->SetCamera( m_pActiveCamera );
+	//m_pRenderSystem->SetMultipleRenderTargets( 3, m_pGBuffer );
+	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
+	//m_pRenderSystem->SetBackbufferAsRenderTarget();
 
 	for( std::vector<Entity*>::iterator it = m_pEntities.begin(); it != m_pEntities.end(); ++it )
 	{
-		sceneTimer.start();
-		XNA::Frustum frustum = m_pActiveCamera->getFrustum();/*
-		frustum.LeftSlope /= 2;
-		frustum.BottomSlope /= 2;
-		frustum.RightSlope /= 2;
-		frustum.TopSlope /= 2;*/
-		(*it)->clearLights();
-		(*it)->cull( &frustum );
+		sceneTimer.Start();
+		XNA::Frustum frustum = m_pActiveCamera->GetFrustum();
+		(*it)->ClearLights();
+		(*it)->Cull( &frustum );
 		for ( std::vector<PointLight*>::iterator it2 = m_pPointLights.begin(); it2 != m_pPointLights.end(); ++it2 )
 		{
-			if ((*it2)->isEnabled()&&(*it2)->isVisible())
-				(*it)->cullLight( *it2 );
+			if ((*it2)->IsEnabled()&&(*it2)->IsVisible())
+				(*it)->CullLight( *it2 );
 		}
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
-			if ((*it2)->isEnabled()&&(*it2)->isVisible())
-				(*it)->cullLight( *it2 );
+			if ((*it2)->IsEnabled()&&(*it2)->IsVisible())
+				(*it)->CullLight( *it2 );
 		}
-		t_cull += sceneTimer.getMiliseconds();
-		(*it)->render();
+		t_Cull += sceneTimer.GetMiliseconds();
+		(*it)->Render();
 		//(*it)->renderBoundingBox();
 	}
 
 	// Fullscreen pass to backbuffer
-	m_pRenderSystem->setBackbufferAsRenderTarget();
+	m_pRenderSystem->SetBackbufferAsRenderTarget();
 	//m_pFullscreenQuad->render();
-	m_pTonemappingPass->render(false);
+	m_pTonemappingPass->Render(false);
 
-	t_scenerender = t.getMiliseconds();
+	t_scenerender = t.GetMiliseconds();
 }
 
-void Scene::parallelRender()
+void Scene::ParallelRender()
 {
 	Timer sceneTimer, t;
-	t_cull = 0.0f;
+	t_Cull = 0.0f;
 
 	//
 	// Render shadowmaps
@@ -299,30 +295,30 @@ void Scene::parallelRender()
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
-			if ((*it2)->isVisible()&&(*it2)->isEnabled())
+			if ((*it2)->IsVisible()&&(*it2)->IsEnabled())
 			{
-				if ((*it2)->isCastingShadow() && 8)
+				if ((*it2)->IsCastingShadow() && 8)
 				{
-					m_pRenderSystem->clearTexture( m_pShadowmap[i], clear );
-					m_pRenderSystem->setRenderTarget( m_pShadowmap[i] );
+					m_pRenderSystem->ClearTexture( m_pShadowmap[i], clear );
+					m_pRenderSystem->SetRenderTarget( m_pShadowmap[i] );
 
 					Camera3D shadowCamera;
-					shadowCamera.setViewProjectionMatrix( (*it2)->getProjectionCamera()->getViewProjectionMatrix() );
-					shadowCamera.setFrustum( &(*it2)->getFrustum() );
+					shadowCamera.SetViewProjectionMatrix( (*it2)->GetProjectionCamera()->GetViewProjectionMatrix() );
+					shadowCamera.SetFrustum( &(*it2)->GetFrustum() );
 
 					// lambda
 					tbb::parallel_for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 					{
-						sceneTimer.start();
-						ptr->cull( &(*it2)->getFrustum() );
-						t_cull += sceneTimer.getMiliseconds();
-						ptr->renderShadowmap((*it2)->getProjectionCamera());
+						sceneTimer.Start();
+						ptr->Cull( &(*it2)->GetFrustum() );
+						t_Cull += sceneTimer.GetMiliseconds();
+						ptr->RenderShadowmap((*it2)->GetProjectionCamera());
 					});
 
-					(*it2)->setShadowmap( m_pShadowmap[i] );
+					(*it2)->SetShadowmap( m_pShadowmap[i] );
 				}
 				else
-					(*it2)->setShadowmap( m_pSMEmpty );
+					(*it2)->SetShadowmap( m_pSMEmpty );
 
 			}
 			i++;
@@ -333,16 +329,16 @@ void Scene::parallelRender()
 	// Render main scene
 	//
 	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
-	m_pRenderSystem->clearTexture( m_pHDRRenderTarget, clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[0], clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[1], clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[2], clearColor );
+	m_pRenderSystem->ClearTexture( m_pHDRRenderTarget, clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[0], clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[1], clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[2], clearColor );
 
-	m_pRenderSystem->setCamera( m_pActiveCamera );
+	m_pRenderSystem->SetCamera( m_pActiveCamera );
 	Texture2D* MRT[] = { m_pHDRRenderTarget, m_pGBuffer[0], m_pGBuffer[1], m_pGBuffer[2], };
-	m_pRenderSystem->setMultipleRenderTargets( 4, MRT );
-	//m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
-	//m_pRenderSystem->setBackbufferAsRenderTarget();
+	m_pRenderSystem->SetMultipleRenderTargets( 4, MRT );
+	//m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
+	//m_pRenderSystem->SetBackbufferAsRenderTarget();
 
 
 	//for( std::vector<Entity*>::iterator it = m_pEntities.begin(); it != m_pEntities.end(); ++it )
@@ -351,82 +347,82 @@ void Scene::parallelRender()
 	// lambda
 	tbb::parallel_for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 	{
-		XNA::Frustum frustum = m_pActiveCamera->getFrustum();/*
+		XNA::Frustum frustum = m_pActiveCamera->GetFrustum();/*
 		frustum.LeftSlope /= 2;
 		frustum.BottomSlope /= 2;
 		frustum.RightSlope /= 2;
 		frustum.TopSlope /= 2;*/
-		ptr->clearLights();
-		ptr->cull( &frustum );
+		ptr->ClearLights();
+		ptr->Cull( &frustum );
 		for ( std::vector<PointLight*>::iterator it2 = m_pPointLights.begin(); it2 != m_pPointLights.end(); ++it2 )
 		{
-			if ((*it2)->isEnabled()&&(*it2)->isVisible())
-				ptr->cullLight( *it2 );
+			if ((*it2)->IsEnabled()&&(*it2)->IsVisible())
+				ptr->CullLight( *it2 );
 		}
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
-			if ((*it2)->isEnabled()&&(*it2)->isVisible())
-				ptr->cullLight( *it2 );
+			if ((*it2)->IsEnabled()&&(*it2)->IsVisible())
+				ptr->CullLight( *it2 );
 		}
-		//t_cull += sceneTimer.getMiliseconds();
-		ptr->render();
+		//t_Cull += sceneTimer.GetMiliseconds();
+		ptr->Render();
 		//ptr->renderBoundingBox();
 	});
 	
-	m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
+	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	//m_pGBuffer[0] = m_pTestTexture;
 	// Render lights
 	for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 	{
-		if ((*it2)->isEnabled()&&(*it2)->isVisible())
+		if ((*it2)->IsEnabled()&&(*it2)->IsVisible())
 		{
 			LightVolume volume( m_pRenderSystem, *it2 );
 			//volume.setShadowmap( (*it2)->getShadowmap() );
 			//volume.setCookie( (*it2)->getCookie() );
-			volume.setGBuffer( m_pGBuffer );
-			volume.render();
+			volume.SetGBuffer( m_pGBuffer );
+			volume.Render();
 		}
 	}
 
 	// Fullscreen pass to backbuffer
-	m_pRenderSystem->setBackbufferAsRenderTarget();
+	m_pRenderSystem->SetBackbufferAsRenderTarget();
 	//m_pFullscreenQuad->render();
-	m_pTonemappingPass->render(false);
+	m_pTonemappingPass->Render(false);
 
-	t_scenerender = t.getMiliseconds();
+	t_scenerender = t.GetMiliseconds();
 }
 
-void Scene::renderDeferred()
+void Scene::RenderDeferred()
 {
 	Timer sceneTimer, t;
-	t_cull = 0.0f;
+	t_Cull = 0.0f;
 
 	//
 	// Render main scene into gbuffer
 	//
 	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
-	m_pRenderSystem->clearTexture( m_pHDRRenderTarget, clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[0], clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[1], clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[2], clearColor );
+	m_pRenderSystem->ClearTexture( m_pHDRRenderTarget, clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[0], clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[1], clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[2], clearColor );
 
-	m_pRenderSystem->setCamera( m_pActiveCamera );
+	m_pRenderSystem->SetCamera( m_pActiveCamera );
 	Texture2D* MRT[] = { m_pHDRRenderTarget, m_pGBuffer[0], m_pGBuffer[1], m_pGBuffer[2], };
-	m_pRenderSystem->setMultipleRenderTargets( 4, MRT );
-	//m_pRenderSystem->setMultipleRenderTargets( 3, m_pGBuffer );
-	//m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
-	//m_pRenderSystem->setBackbufferAsRenderTarget();
+	m_pRenderSystem->SetMultipleRenderTargets( 4, MRT );
+	//m_pRenderSystem->SetMultipleRenderTargets( 3, m_pGBuffer );
+	//m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
+	//m_pRenderSystem->SetBackbufferAsRenderTarget();
 
 
 	// Render all entities
 	std::for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 	{
-		XNA::Frustum frustum = m_pActiveCamera->getFrustum();
+		XNA::Frustum frustum = m_pActiveCamera->GetFrustum();
 
-		//t_cull += sceneTimer.getMiliseconds();
-		ptr->cull( &frustum );
-		//ptr->setCulled( false );
-		ptr->render();
+		//t_Cull += sceneTimer.GetMiliseconds();
+		ptr->Cull( &frustum );
+		//ptr->SetCulled( false );
+		ptr->Render();
 		//ptr->renderBoundingBox();
 	});
 
@@ -443,63 +439,63 @@ void Scene::renderDeferred()
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
-			if ((*it2)->isVisible()&&(*it2)->isEnabled())
+			if ((*it2)->IsVisible()&&(*it2)->IsEnabled())
 			{
 				// Render shadowmap/RSM
-				if ((*it2)->isCastingShadow())
+				if ((*it2)->IsCastingShadow())
 				{
-					if ((*it2)->isRSMEnabled())
+					if ((*it2)->IsRSMEnabled())
 					{
 						// Render Reflective Shadow Maps
-						m_pRenderSystem->clearTexture( m_pShadowmap[0], clear0 );
-						m_pRenderSystem->clearTexture( m_pRSMNormal[0], clear1 );
-						m_pRenderSystem->clearTexture( m_pRSMColor[0], clear1 );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
+						m_pRenderSystem->ClearTexture( m_pRSMNormal[0], clear1 );
+						m_pRenderSystem->ClearTexture( m_pRSMColor[0], clear1 );
 						Texture2D* MRT[] = { m_pShadowmap[0], m_pRSMNormal[0], m_pRSMColor[0], };
-						m_pRenderSystem->setMultipleRenderTargets( 3, MRT );
+						m_pRenderSystem->SetMultipleRenderTargets( 3, MRT );
 					}
 					else
 					{
 						// Render just the shadowmap
-						m_pRenderSystem->clearTexture( m_pShadowmap[0], clear0 );
-						m_pRenderSystem->setRenderTarget( m_pShadowmap[0] );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
+						m_pRenderSystem->SetRenderTarget( m_pShadowmap[0] );
 					}
 
 					// Cull and render each scene entity into RSM/shadowmap
 					std::for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 					{
-						sceneTimer.start();
-						ptr->cull( &(*it2)->getFrustum() );
-						t_cull += sceneTimer.getMiliseconds();
-						if ((*it2)->isRSMEnabled())
-							ptr->renderRSM((*it2)->getProjectionCamera(), (*it2) );
+						sceneTimer.Start();
+						ptr->Cull( &(*it2)->GetFrustum() );
+						t_Cull += sceneTimer.GetMiliseconds();
+						if ((*it2)->IsRSMEnabled())
+							ptr->RenderRSM((*it2)->GetProjectionCamera(), (*it2) );
 						else
-							ptr->renderShadowmap((*it2)->getProjectionCamera());
+							ptr->RenderShadowmap((*it2)->GetProjectionCamera());
 					});
 
-					if ((*it2)->isRSMEnabled())
+					if ((*it2)->IsRSMEnabled())
 					{
-						(*it2)->setShadowmap( m_pShadowmap[0] );
-						(*it2)->setRSMNormal( m_pRSMNormal[0] );
-						(*it2)->setRSMColor( m_pRSMColor[0] );
-						m_pGI->setTexture( "txShadowmap", m_pShadowmap[0] );
-						m_pGI->setTexture( "txRSMNormal", m_pRSMNormal[0] );
-						m_pGI->setTexture( "txRSMColor", m_pRSMColor[0] );
+						(*it2)->SetShadowmap( m_pShadowmap[0] );
+						(*it2)->SetRSMNormal( m_pRSMNormal[0] );
+						(*it2)->SetRSMColor( m_pRSMColor[0] );
+						m_pGI->SetTexture( "txShadowmap", m_pShadowmap[0] );
+						m_pGI->SetTexture( "txRSMNormal", m_pRSMNormal[0] );
+						m_pGI->SetTexture( "txRSMColor", m_pRSMColor[0] );
 					}
 					else
 					{
-						(*it2)->setShadowmap( m_pShadowmap[0] );
+						(*it2)->SetShadowmap( m_pShadowmap[0] );
 					}
 				}
 				else
 				{
-					(*it2)->setShadowmap( m_pSMEmpty );
+					(*it2)->SetShadowmap( m_pSMEmpty );
 				}
 
 				// Render light volume
-				m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
+				m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 				LightVolume volume( m_pRenderSystem, *it2 );
-				volume.setGBuffer( m_pGBuffer );
-				volume.render();
+				volume.SetGBuffer( m_pGBuffer );
+				volume.Render();
 				
 				// Render GI!
 				//if ((*it2)->isRSMEnabled())
@@ -508,77 +504,77 @@ void Scene::renderDeferred()
 		}
 	}
 	
-	m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
+	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	
 	/*ShaderParamBlock shaderParams;
 	shaderParams.assign( "vLightVector", 0, &Vector4( Vector3(-0.8f, 0.0f, 1.0f).normalisedCopy() ) );
 	shaderParams.assign( "vColor", 0, &Vector4( 1.0f, 1.0f, 0.75f, 1.0f ) );
-	shaderParams.assign( "vEyePos", 0, &XMFLOAT4(m_pActiveCamera->getPosition().x, m_pActiveCamera->getPosition().y, m_pActiveCamera->getPosition().z, 1.0f) );
-	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->getCamera()->getViewProjectionMatrix().inverse().transpose() );
-	m_pSunlight->setShaderParams( shaderParams );
+	shaderParams.assign( "vEyePos", 0, &XMFLOAT4(m_pActiveCamera->GetPosition().x, m_pActiveCamera->GetPosition().y, m_pActiveCamera->GetPosition().z, 1.0f) );
+	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->GetCamera()->getViewProjectionMatrix().inverse().transpose() );
+	m_pSunlight->SetShaderParams( shaderParams );
 	m_pSunlight->render( true );
 	*/
 	
-	m_pRenderSystem->downsampleTexture( m_pHalfRes, m_pGBuffer[1] );
-	m_pRenderSystem->clearTexture( m_pSSAOBuffer, clearColor );
-	m_pRenderSystem->setRenderTarget( m_pSSAOBuffer );
+	m_pRenderSystem->DownsampleTexture( m_pHalfRes, m_pGBuffer[1] );
+	m_pRenderSystem->ClearTexture( m_pSSAOBuffer, clearColor );
+	m_pRenderSystem->SetRenderTarget( m_pSSAOBuffer );
 
 	// TODO : make it easier to get basic stuff like resolution
-	RenderSystemConfig config = m_pRenderSystem->getConfig();
+	RenderSystemConfig config = m_pRenderSystem->GetConfig();
 	ShaderParamBlock shaderParams;
 	shaderParams.assign( "NoiseScale", 0, &Vector4( config.Width/2.0, config.Height/2.0, 0.0f, 0.0f ) );
 	//shaderParams.assign( "ScreenDimensions", 0, &Vector4( config.Width/10.0f, config.Height/10.0f, 0.0f, 0.0f ) );
-	shaderParams.assign( "View", 0, &m_pActiveCamera->getViewMatrix() );
-	shaderParams.assign( "Projection", 0, &m_pActiveCamera->getProjectionMatrix() );
-	shaderParams.assign( "InvProjection", 0, &m_pActiveCamera->getProjectionMatrix().inverse() );
-	shaderParams.assign( "fFarPlane", 0, m_pActiveCamera->getFarPlane() );
-	shaderParams.assign( "FovAndAspect", 0, &Vector4( m_pActiveCamera->getFov(), m_pActiveCamera->getAspect(), 0.0f, 0.0f ) );
-	m_pSSAOPass->setShaderParams(shaderParams);
-	m_pSSAOPass->render( false );
+	shaderParams.assign( "View", 0, &m_pActiveCamera->GetViewMatrix() );
+	shaderParams.assign( "Projection", 0, &m_pActiveCamera->GetProjectionMatrix() );
+	shaderParams.assign( "InvProjection", 0, &m_pActiveCamera->GetProjectionMatrix().inverse() );
+	shaderParams.assign( "fFarPlane", 0, m_pActiveCamera->GetFarPlane() );
+	shaderParams.assign( "FovAndAspect", 0, &Vector4( m_pActiveCamera->GetFov(), m_pActiveCamera->GetAspect(), 0.0f, 0.0f ) );
+	m_pSSAOPass->SetShaderParams(shaderParams);
+	m_pSSAOPass->Render( false );
 
-	m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
+	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	//ShaderParamBlock shaderParams2;
 	//shaderParams2.assign( "ScreenDimensions", 0, &Vector4( config.Width/4.0f, config.Height/4.0f, 0.0f, 0.0f ) );
-	//m_pSSAOCombinePass->setShaderParams(shaderParams2);
-	m_pSSAOCombinePass->render( true );
+	//m_pSSAOCombinePass->SetShaderParams(shaderParams2);
+	m_pSSAOCombinePass->Render( true );
 	
 	// Fullscreen pass to backbuffer
-	m_pRenderSystem->setBackbufferAsRenderTarget();
-	m_pTonemappingPass->render( false );
+	m_pRenderSystem->SetBackbufferAsRenderTarget();
+	m_pTonemappingPass->Render( false );
 
-	t_scenerender = t.getMiliseconds();
+	t_scenerender = t.GetMiliseconds();
 }
 
-void Scene::parallelRenderDeferred()
+void Scene::ParallelRenderDeferred()
 {
 	Timer sceneTimer, t;
-	t_cull = 0.0f;
+	t_Cull = 0.0f;
 
 	//
 	// Render main scene into gbuffer
 	//
 	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
-	m_pRenderSystem->clearTexture( m_pHDRRenderTarget, clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[0], clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[1], clearColor );
-	m_pRenderSystem->clearTexture( m_pGBuffer[2], clearColor );
+	m_pRenderSystem->ClearTexture( m_pHDRRenderTarget, clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[0], clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[1], clearColor );
+	m_pRenderSystem->ClearTexture( m_pGBuffer[2], clearColor );
 
-	m_pRenderSystem->setCamera( m_pActiveCamera );
+	m_pRenderSystem->SetCamera( m_pActiveCamera );
 	Texture2D* MRT[] = { m_pHDRRenderTarget, m_pGBuffer[0], m_pGBuffer[1], m_pGBuffer[2], };
-	m_pRenderSystem->setMultipleRenderTargets( 4, MRT );
-	//m_pRenderSystem->setMultipleRenderTargets( 3, m_pGBuffer );
-	//m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
-	//m_pRenderSystem->setBackbufferAsRenderTarget();
+	m_pRenderSystem->SetMultipleRenderTargets( 4, MRT );
+	//m_pRenderSystem->SetMultipleRenderTargets( 3, m_pGBuffer );
+	//m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
+	//m_pRenderSystem->SetBackbufferAsRenderTarget();
 
 
 	// Render all entities
 	tbb::parallel_for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 	{
-		XNA::Frustum frustum = m_pActiveCamera->getFrustum();
+		XNA::Frustum frustum = m_pActiveCamera->GetFrustum();
 
-		//t_cull += sceneTimer.getMiliseconds();
-		ptr->cull( &frustum );
-		ptr->render();
+		//t_Cull += sceneTimer.GetMiliseconds();
+		ptr->Cull( &frustum );
+		ptr->Render();
 		//ptr->renderBoundingBox();
 	});
 
@@ -595,63 +591,63 @@ void Scene::parallelRenderDeferred()
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
-			if ((*it2)->isVisible()&&(*it2)->isEnabled())
+			if ((*it2)->IsVisible()&&(*it2)->IsEnabled())
 			{
 				// Render shadowmap/RSM
-				if ((*it2)->isCastingShadow())
+				if ((*it2)->IsCastingShadow())
 				{
-					if ((*it2)->isRSMEnabled())
+					if ((*it2)->IsRSMEnabled())
 					{
 						// Render Reflective Shadow Maps
-						m_pRenderSystem->clearTexture( m_pShadowmap[0], clear0 );
-						m_pRenderSystem->clearTexture( m_pRSMNormal[0], clear1 );
-						m_pRenderSystem->clearTexture( m_pRSMColor[0], clear1 );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
+						m_pRenderSystem->ClearTexture( m_pRSMNormal[0], clear1 );
+						m_pRenderSystem->ClearTexture( m_pRSMColor[0], clear1 );
 						Texture2D* MRT[] = { m_pShadowmap[0], m_pRSMNormal[0], m_pRSMColor[0], };
-						m_pRenderSystem->setMultipleRenderTargets( 3, MRT );
+						m_pRenderSystem->SetMultipleRenderTargets( 3, MRT );
 					}
 					else
 					{
 						// Render just the shadowmap
-						m_pRenderSystem->clearTexture( m_pShadowmap[0], clear0 );
-						m_pRenderSystem->setRenderTarget( m_pShadowmap[0] );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
+						m_pRenderSystem->SetRenderTarget( m_pShadowmap[0] );
 					}
 
 					// Cull and render each scene entity into RSM/shadowmap
 					tbb::parallel_for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 					{
-						sceneTimer.start();
-						ptr->cull( &(*it2)->getFrustum() );
-						t_cull += sceneTimer.getMiliseconds();
-						if ((*it2)->isRSMEnabled())
-							ptr->renderRSM((*it2)->getProjectionCamera(), (*it2) );
+						sceneTimer.Start();
+						ptr->Cull( &(*it2)->GetFrustum() );
+						t_Cull += sceneTimer.GetMiliseconds();
+						if ((*it2)->IsRSMEnabled())
+							ptr->RenderRSM((*it2)->GetProjectionCamera(), (*it2) );
 						else
-							ptr->renderShadowmap((*it2)->getProjectionCamera());
+							ptr->RenderShadowmap((*it2)->GetProjectionCamera());
 					});
 
-					if ((*it2)->isRSMEnabled())
+					if ((*it2)->IsRSMEnabled())
 					{
-						(*it2)->setShadowmap( m_pShadowmap[0] );
-						(*it2)->setRSMNormal( m_pRSMNormal[0] );
-						(*it2)->setRSMColor( m_pRSMColor[0] );
-						m_pGI->setTexture( "txShadowmap", m_pShadowmap[0] );
-						m_pGI->setTexture( "txRSMNormal", m_pRSMNormal[0] );
-						m_pGI->setTexture( "txRSMColor", m_pRSMColor[0] );
+						(*it2)->SetShadowmap( m_pShadowmap[0] );
+						(*it2)->SetRSMNormal( m_pRSMNormal[0] );
+						(*it2)->SetRSMColor( m_pRSMColor[0] );
+						m_pGI->SetTexture( "txShadowmap", m_pShadowmap[0] );
+						m_pGI->SetTexture( "txRSMNormal", m_pRSMNormal[0] );
+						m_pGI->SetTexture( "txRSMColor", m_pRSMColor[0] );
 					}
 					else
 					{
-						(*it2)->setShadowmap( m_pShadowmap[0] );
+						(*it2)->SetShadowmap( m_pShadowmap[0] );
 					}
 				}
 				else
 				{
-					(*it2)->setShadowmap( m_pSMEmpty );
+					(*it2)->SetShadowmap( m_pSMEmpty );
 				}
 
 				// Render light volume
-				m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
+				m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 				LightVolume volume( m_pRenderSystem, *it2 );
-				volume.setGBuffer( m_pGBuffer );
-				volume.render();
+				volume.SetGBuffer( m_pGBuffer );
+				volume.Render();
 				
 				// Render GI!
 				//if ((*it2)->isRSMEnabled())
@@ -660,59 +656,59 @@ void Scene::parallelRenderDeferred()
 		}
 	}
 	
-	m_pRenderSystem->setRenderTarget( m_pHDRRenderTarget );
+	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	
 	/*ShaderParamBlock shaderParams;
 	shaderParams.assign( "vLightVector", 0, &Vector4( Vector3(-0.8f, 0.0f, 1.0f).normalisedCopy() ) );
 	shaderParams.assign( "vColor", 0, &Vector4( 1.0f, 1.0f, 0.75f, 1.0f ) );
-	shaderParams.assign( "vEyePos", 0, &XMFLOAT4(m_pActiveCamera->getPosition().x, m_pActiveCamera->getPosition().y, m_pActiveCamera->getPosition().z, 1.0f) );
-	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->getCamera()->getViewProjectionMatrix().inverse().transpose().intoXMFLOAT4X4() );
-	m_pSunlight->setShaderParams( shaderParams );
+	shaderParams.assign( "vEyePos", 0, &XMFLOAT4(m_pActiveCamera->GetPosition().x, m_pActiveCamera->GetPosition().y, m_pActiveCamera->GetPosition().z, 1.0f) );
+	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->GetCamera()->getViewProjectionMatrix().inverse().transpose().intoXMFLOAT4X4() );
+	m_pSunlight->SetShaderParams( shaderParams );
 	m_pSunlight->render( true );*/
 	
 
 	//m_pSSAOPass->render( true );
 
 	// Fullscreen pass to backbuffer
-	m_pRenderSystem->setBackbufferAsRenderTarget();
-	m_pTonemappingPass->render(false);
+	m_pRenderSystem->SetBackbufferAsRenderTarget();
+	m_pTonemappingPass->Render(false);
 
-	t_scenerender = t.getMiliseconds();
+	t_scenerender = t.GetMiliseconds();
 }
 
-void Scene::loadCustomObjects()
+void Scene::LoadCustomObjects()
 {
 	// DDO Helmet
 	Entity_StaticProp* helmet = new Entity_StaticProp( m_pRenderSystem, m_pMeshes[L"mesh_ddo_helmet"] );
-	helmet->setName( L"DDO Helmet" );
-	helmet->transform()->setScale( 0.015f, 0.015f, 0.015f );
-	helmet->transform()->setPosition( -10.0, 6.0f, 1.0f );
-	helmet->transform()->setOrientation( Quaternion( PI/2.0f, Vector3(1.0f,0.0f,0.0f ) ) );
-	helmet->transform()->rotate( Quaternion( PI/2.0f, Vector3(0.0f,1.0f,0.0f) ) );
-	addEntity( helmet );
+	helmet->SetName( L"DDO Helmet" );
+	helmet->Transformation()->SetScale( 0.015f, 0.015f, 0.015f );
+	helmet->Transformation()->SetPosition( -10.0, 6.0f, 1.0f );
+	helmet->Transformation()->SetOrientation( Quaternion( PI/2.0f, Vector3(1.0f,0.0f,0.0f ) ) );
+	helmet->Transformation()->Rotate( Quaternion( PI/2.0f, Vector3(0.0f,1.0f,0.0f) ) );
+	AddEntity( helmet );
 
 	// DDO AKS74U
 	Entity_StaticProp* aks = new Entity_StaticProp( m_pRenderSystem, m_pMeshes[L"mesh_ddo_aks"] );
-	aks->setName( L"DDO AKS74U" );
-	aks->transform()->setScale( 0.15f, 0.15f, 0.15f );
-	aks->transform()->setPosition( -10.0, 4.0f, 1.0f );
-	aks->transform()->setOrientation( Quaternion( PI/2.0f, Vector3(1.0f,0.0f,0.0f ) ) );
-	aks->transform()->rotate( Quaternion( PI/2.0f, Vector3(0.0f,1.0f,0.0f) ) );
-	addEntity( aks );
+	aks->SetName( L"DDO AKS74U" );
+	aks->Transformation()->SetScale( 0.15f, 0.15f, 0.15f );
+	aks->Transformation()->SetPosition( -10.0, 4.0f, 1.0f );
+	aks->Transformation()->SetOrientation( Quaternion( PI/2.0f, Vector3(1.0f,0.0f,0.0f ) ) );
+	aks->Transformation()->Rotate( Quaternion( PI/2.0f, Vector3(0.0f,1.0f,0.0f) ) );
+	AddEntity( aks );
 
 	// Sphere
 	Entity_StaticProp* sphere = new Entity_StaticProp( m_pRenderSystem, m_pMeshes[L"mesh_sphere"] );
-	sphere->setName( L"Sphere" );
-	sphere->transform()->setPosition( -10.0, 2.0f, 1.0f );
-	addEntity( sphere );
+	sphere->SetName( L"Sphere" );
+	sphere->Transformation()->SetPosition( -10.0, 2.0f, 1.0f );
+	AddEntity( sphere );
 
 	// Water
 	//Entity_Water* water = new Entity_Water( m_pRenderSystem );
-	//water->transform()->setPosition( 0.0f, -20.0f, 0.0f );
-	//addEntity( water );
+	//water->Transformation()->SetPosition( 0.0f, -20.0f, 0.0f );
+	//AddEntity( water );
 }
 
-void Scene::loadFromFile( std::wstring filename )
+void Scene::GetPhysicsSystem( std::wstring filename )
 {
 	const int MAX_LINES = 2048;
 	const int MAX_CHARS_PER_LINE = 512;
@@ -731,7 +727,7 @@ void Scene::loadFromFile( std::wstring filename )
 	}
 
 	if (m_pPhysicsSystem)
-		m_pPhysicsSystem->getWorld()->lock();
+		m_pPhysicsSystem->GetWorld()->lock();
 
 	Entity* ent = NULL;
 	Transform* transform = NULL;
@@ -768,9 +764,9 @@ void Scene::loadFromFile( std::wstring filename )
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
 				ent = new Entity_StaticProp(m_pRenderSystem, m_pMeshes[L"mesh_metro_tumba01"]);
-				ent->setName(str);
-				addEntity(ent);
-				transform = ent->transform();
+				ent->SetName(str);
+				AddEntity(ent);
+				transform = ent->Transformation();
 				rigidBody = NULL;
 			}
 			else if (class_string==L"ent_Lantai")
@@ -779,32 +775,32 @@ void Scene::loadFromFile( std::wstring filename )
 				currentPointLight = NULL;
 				//DX11Material_BlinnPhong* mat = new DX11Material_BlinnPhong( m_pRenderSystem );
 				DX11Material_Deferred* mat = new DX11Material_Deferred( m_pRenderSystem );
-				mat->setDiffusemap( m_pRenderSystem->loadTexture( L"Media/tile34_revol_floor2.1024c.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->loadTexture( L"Media/tile34_revol_floor_normal.1024c.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->loadTexture( L"Media/tile34_revol_floor_gloss.1024c.bmp" ) );/*
-				mat->setSpecularMap( m_pRenderSystem->loadTexture( L"Media/grey.bmp" ) );
-				mat->setDiffusemap( m_pRenderSystem->createTextureFromFile( L"Media/wood34_wallconstr_01.2048.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->createTextureFromFile( L"Media/wood34_wallconstr_01_normal.2048.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->createTextureFromFile( L"Media/wood34_wallconstr_01_bump.2048.bmp" ) );/*
-				mat->setDiffusemap( m_pRenderSystem->createTextureFromFile( L"Media/metal_locker.2048.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->createTextureFromFile( L"Media/metal_locker_normal.2048.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->createTextureFromFile( L"Media/metal_locker_bump.2048.bmp" ) );
-				mat->setDiffusemap( m_pRenderSystem->createTextureFromFile( L"Media/Concrete/Metro_0047.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->createTextureFromFile( L"Media/Concrete/Metro_0047n.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->createTextureFromFile( L"Media/Concrete/Metro_0047s.bmp" ) );
-				mat->setDiffusemap( m_pRenderSystem->createTextureFromFile( L"Media/Concrete/Metro_0039.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->createTextureFromFile( L"Media/Concrete/Metro_0039n.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->createTextureFromFile( L"Media/Concrete/Metro_0039s.bmp" ) );*/
+				mat->SetDiffusemap( m_pRenderSystem->LoadTexture( L"Media/tile34_revol_floor2.1024c.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->LoadTexture( L"Media/tile34_revol_floor_normal.1024c.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->LoadTexture( L"Media/tile34_revol_floor_gloss.1024c.bmp" ) );/*
+				mat->SetSpecularMap( m_pRenderSystem->LoadTexture( L"Media/grey.bmp" ) );
+				mat->SetDiffusemap( m_pRenderSystem->CreateTextureFromFile( L"Media/wood34_wallconstr_01.2048.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->CreateTextureFromFile( L"Media/wood34_wallconstr_01_normal.2048.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->CreateTextureFromFile( L"Media/wood34_wallconstr_01_bump.2048.bmp" ) );/*
+				mat->SetDiffusemap( m_pRenderSystem->CreateTextureFromFile( L"Media/metal_locker.2048.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->CreateTextureFromFile( L"Media/metal_locker_normal.2048.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->CreateTextureFromFile( L"Media/metal_locker_bump.2048.bmp" ) );
+				mat->SetDiffusemap( m_pRenderSystem->CreateTextureFromFile( L"Media/Concrete/Metro_0047.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->CreateTextureFromFile( L"Media/Concrete/Metro_0047n.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->CreateTextureFromFile( L"Media/Concrete/Metro_0047s.bmp" ) );
+				mat->SetDiffusemap( m_pRenderSystem->CreateTextureFromFile( L"Media/Concrete/Metro_0039.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->CreateTextureFromFile( L"Media/Concrete/Metro_0039n.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->CreateTextureFromFile( L"Media/Concrete/Metro_0039s.bmp" ) );*/
 
-				Mesh* mesh = m_pRenderSystem->createPlaneMesh( XMFLOAT2(10.0f,10.0f), XMFLOAT2(4.0f,4.0f) );
-				mesh->setMaterial(mat);
-				hkpRigidBody* rb = createBoxRigidBody( Vector3(5.0f,5.0f,0.5f), 0 );
+				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( XMFLOAT2(10.0f,10.0f), XMFLOAT2(4.0f,4.0f) );
+				mesh->SetMaterial(mat);
+				hkpRigidBody* rb = CreateBoxRigidBody( Vector3(5.0f,5.0f,0.5f), 0 );
 				Transform rigidBodyRelative;
-				rigidBodyRelative.setPosition(0.0f,0.0f,-0.5f);
+				rigidBodyRelative.SetPosition(0.0f,0.0f,-0.5f);
 				ent = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb, rigidBodyRelative);
-				ent->setName(str);
-				addEntity(ent);
-				transform = ent->transform();
+				ent->SetName(str);
+				AddEntity(ent);
+				transform = ent->Transformation();
 				rigidBody = rb;
 			}
 			else if (class_string==L"ent_Langitlangit")
@@ -813,14 +809,14 @@ void Scene::loadFromFile( std::wstring filename )
 				currentPointLight = NULL;
 				//DX11Material_BlinnPhong* mat = new DX11Material_BlinnPhong( m_pRenderSystem );
 				DX11Material_Deferred* mat = new DX11Material_Deferred( m_pRenderSystem );
-				mat->setDiffusemap( m_pRenderSystem->loadTexture( L"Media/concrete_opalubka_3.1024.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->loadTexture( L"Media/concrete_opalubka_3_normal.1024.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->loadTexture( L"Media/concrete_opalubka_3_bump.1024.bmp" ) );
+				mat->SetDiffusemap( m_pRenderSystem->LoadTexture( L"Media/concrete_opalubka_3.1024.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->LoadTexture( L"Media/concrete_opalubka_3_normal.1024.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->LoadTexture( L"Media/concrete_opalubka_3_bump.1024.bmp" ) );
 				
 				ent = new Entity_Plane(m_pRenderSystem,mat,XMFLOAT2(10.0f,10.0f),XMFLOAT2(3.33f,3.33f));
-				ent->setName(str);
-				addEntity(ent);
-				transform = ent->transform();
+				ent->SetName(str);
+				AddEntity(ent);
+				transform = ent->Transformation();
 				rigidBody = NULL;
 			}
 			else if (class_string==L"ent_Tembok")
@@ -829,34 +825,34 @@ void Scene::loadFromFile( std::wstring filename )
 				currentPointLight = NULL;
 				//DX11Material_BlinnPhong* mat = new DX11Material_BlinnPhong( m_pRenderSystem );
 				DX11Material_Deferred* mat = new DX11Material_Deferred( m_pRenderSystem );
-				mat->setDiffusemap( m_pRenderSystem->loadTexture( L"Media/wall_stucaturka_stena1.1024c.bmp" ) );
-				mat->setNormalmap( m_pRenderSystem->loadTexture( L"Media/wall_stucaturka_stena1_normal.2048.bmp" ) );
-				mat->setSpecularMap( m_pRenderSystem->loadTexture( L"Media/wall_stucaturka_stena1_bump.2048.bmp" ) );
+				mat->SetDiffusemap( m_pRenderSystem->LoadTexture( L"Media/wall_stucaturka_stena1.1024c.bmp" ) );
+				mat->SetNormalmap( m_pRenderSystem->LoadTexture( L"Media/wall_stucaturka_stena1_normal.2048.bmp" ) );
+				mat->SetSpecularMap( m_pRenderSystem->LoadTexture( L"Media/wall_stucaturka_stena1_bump.2048.bmp" ) );
 
 				//ent = new Entity_Plane( m_pRenderSystem, mat, XMFLOAT2(10.0f,3.0f),XMFLOAT2(-3.33f,-1.0f) );
-				Mesh* mesh = m_pRenderSystem->createPlaneMesh( XMFLOAT2(10.0f,3.0f),XMFLOAT2(-3.33f,-1.0f) );
-				mesh->setMaterial(mat);
-				hkpRigidBody* rb = createBoxRigidBody( Vector3(5.0f,1.5f,0.1f), 0 );
+				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( XMFLOAT2(10.0f,3.0f),XMFLOAT2(-3.33f,-1.0f) );
+				mesh->SetMaterial(mat);
+				hkpRigidBody* rb = CreateBoxRigidBody( Vector3(5.0f,1.5f,0.1f), 0 );
 				ent = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb);
-				ent->setName(str);
-				addEntity(ent);
-				transform = ent->transform();
+				ent->SetName(str);
+				AddEntity(ent);
+				transform = ent->Transformation();
 				rigidBody = rb;
 			}
 			else if (class_string==L"SpotLight")
 			{
 				currentPointLight = NULL;
 				currentSpotLight = new SpotLight();
-				transform = currentSpotLight->transform();
-				addSpotLight( currentSpotLight );
+				transform = currentSpotLight->Transformation();
+				AddSpotLight( currentSpotLight );
 				rigidBody = NULL;
 			}
 			else if (class_string==L"PointLight")
 			{
 				currentSpotLight = NULL;
 				currentPointLight = new PointLight();
-				transform = currentPointLight->transform();
-				addPointLight( currentPointLight );
+				transform = currentPointLight->Transformation();
+				AddPointLight( currentPointLight );
 				rigidBody = NULL;
 			}
 			else if (m_pMeshes.find(class_string)!=m_pMeshes.end())
@@ -865,9 +861,9 @@ void Scene::loadFromFile( std::wstring filename )
 				currentPointLight = NULL;
 				Mesh* mesh = m_pMeshes[class_string];
 				ent = new Entity_StaticProp( m_pRenderSystem, mesh );
-				ent->setName(str);
-				addEntity(ent);
-				transform = ent->transform();
+				ent->SetName(str);
+				AddEntity(ent);
+				transform = ent->Transformation();
 				rigidBody = NULL;
 			}
 			else if (m_pPrefabs.find(class_string)!=m_pPrefabs.end())
@@ -875,9 +871,9 @@ void Scene::loadFromFile( std::wstring filename )
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
 				Entity_Prop* entity = new Entity_Prop(*m_pPrefabs[class_string]);	// Copy constructor
-				entity->setName(str);
-				addEntity(entity);
-				transform = entity->transform();
+				entity->SetName(str);
+				AddEntity(entity);
+				transform = entity->Transformation();
 				rigidBody = entity->m_pRigidBody;
 			}
 			else
@@ -889,27 +885,27 @@ void Scene::loadFromFile( std::wstring filename )
 		else if (swscanf(line.c_str(),L"rotation = (quat %f %f %f %f)",&x,&y,&z,&w)==4)
 		{
 			if (transform)
-				transform->setOrientation(w,x,y,z);
+				transform->SetOrientation(w,x,y,z);
 			if (rigidBody)
 				rigidBody->setRotation(hkQuaternion(x,y,z,w));
 		}
 		else if (swscanf(line.c_str(),L"position = [%f,%f,%f]",&x,&y,&z)==3)
 		{
 			if (transform)
-				transform->setPosition(x,y,z);
+				transform->SetPosition(x,y,z);
 			if (rigidBody)
 				rigidBody->setPosition(hkVector4(x,y,z));
 		}
 		else if (swscanf(line.c_str(),L"scale = [%f,%f,%f]",&x,&y,&z)==3)
 		{
 			if (transform)
-				transform->setScale(x,y,z);
+				transform->SetScale(x,y,z);
 			if (rigidBody)
 			{
-				transform->setScale(1.0f,1.0f,1.0f);
+				transform->SetScale(1.0f,1.0f,1.0f);
 				/*
 				hkArray<hkpShapeScalingUtility::ShapePair> shapes;
-				// Scale havok's shape representation
+				// Scale havok's shape rePresentation
 				hkpShape* originalShape = (hkpShape*)rigidBody->getCollidable()->getShape();
 				hkpShape* scaledShape = hkpShapeScalingUtility::scaleShape( originalShape, x, &shapes );
 				rigidBody->setShape( scaledShape );
@@ -929,28 +925,28 @@ void Scene::loadFromFile( std::wstring filename )
 		else if (swscanf(line.c_str(),L"target = [%f,%f,%f]",&x,&y,&z)==3)
 		{
 			if (currentSpotLight)
-				currentSpotLight->pointTo( Vector3(x,y,z), 0.0f );
+				currentSpotLight->PointTo( Vector3(x,y,z), 0.0f );
 		}
 		else if (swscanf(line.c_str(),L"color = (color %i %i %i)",&r,&g,&b)==3)
 		{
 			if (currentSpotLight)
-				currentSpotLight->setColor( Vector3(r/255.0f,g/255.0f,b/255.0f) );
+				currentSpotLight->SetColor( Vector3(r/255.0f,g/255.0f,b/255.0f) );
 			else if (currentPointLight)
-				currentPointLight->setColor( Vector3(r/255.0f,g/255.0f,b/255.0f) );
+				currentPointLight->SetColor( Vector3(r/255.0f,g/255.0f,b/255.0f) );
 		}
 		else if (swscanf(line.c_str(),L"radius = %f",&x)==1)
 		{
 			if (currentSpotLight)
-				currentSpotLight->setRadius(x);
+				currentSpotLight->SetRadius(x);
 			else if (currentPointLight)
-				currentPointLight->setRadius(x);
+				currentPointLight->SetRadius(x);
 		}
 		else if (swscanf(line.c_str(),L"intensity = %f",&x)==1)
 		{
 			if (currentSpotLight)
-				currentSpotLight->setIntensity(x*15.0f);
+				currentSpotLight->SetIntensity(x*15.0f);
 			else if (currentPointLight)
-				currentPointLight->setIntensity(x*15.0f);
+				currentPointLight->SetIntensity(x*15.0f);
 		}
 		else if (swscanf(line.c_str(),L"falloff = %f",&x)==1)
 		{
@@ -959,28 +955,28 @@ void Scene::loadFromFile( std::wstring filename )
 		else if (swscanf(line.c_str(),L"aspect = %f",&x)==1)
 		{
 			if (currentSpotLight)
-				currentSpotLight->setCone(Vector2((falloff*x)*D3DX_PI/180.0f,(falloff/x)*D3DX_PI/180.0f));
+				currentSpotLight->SetCone(Vector2((falloff*x)*D3DX_PI/180.0f,(falloff/x)*D3DX_PI/180.0f));
 		}
 		else if (swscanf(line.c_str(),L"cookie = %s",&cookie_str)==1)
 		{
 			cookie_string = cookie_str;
 			if (currentSpotLight)
 			{
-				Texture2D* tex = m_pRenderSystem->loadTexture( cookie_string );
+				Texture2D* tex = m_pRenderSystem->LoadTexture( cookie_string );
 				if (tex)
-					currentSpotLight->setCookie( tex );
+					currentSpotLight->SetCookie( tex );
 				else
-					currentSpotLight->setCookie( m_pRenderSystem->loadTexture( L"Media/notexture.bmp" ) );
+					currentSpotLight->SetCookie( m_pRenderSystem->LoadTexture( L"Media/notexture.bmp" ) );
 			}
 		}
 	}
 	
 	if (m_pPhysicsSystem)
-		m_pPhysicsSystem->getWorld()->unlock();
+		m_pPhysicsSystem->GetWorld()->unlock();
 	stream.close();
 }
 
-void Scene::loadMeshes()
+void Scene::LoadMeshes()
 {
 	
 	RenderSystem *ptr = m_pRenderSystem;
@@ -990,16 +986,16 @@ void Scene::loadMeshes()
 	//D:/Metro Last Light/content/textures/props/props_bibl_stul.512
 
 	DX11Material_DiffuseDetailbump* mat0 = new DX11Material_DiffuseDetailbump(ptr);
-	mat0->setDiffusemap( ptr->loadTexture( L"Media/props_bibl_stul.512.bmp" ) );
-	mat0->setNormalmap( ptr->loadTexture( L"Media/props_bibl_stul_normal.1024.bmp" ) );
-	mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-	mat0->setDetailNormalStrength( 2.0f );
-	mat0->setDetailTiling( 10.0f );
-	mat0->setSpecularIntensity( 0.34f );
-	mat0->setSpecularPower( 32.0f );
+	mat0->SetDiffusemap( ptr->LoadTexture( L"Media/props_bibl_stul.512.bmp" ) );
+	mat0->SetNormalmap( ptr->LoadTexture( L"Media/props_bibl_stul_normal.1024.bmp" ) );
+	mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+	mat0->SetDetailNormalStrength( 2.0f );
+	mat0->SetDetailTiling( 10.0f );
+	mat0->SetSpecularIntensity( 0.34f );
+	mat0->SetSpecularPower( 32.0f );
 
-	Mesh* pMesh = ptr->loadMesh( "Media/Meshes/props_bibl_stul.obj" );
-	pMesh->setMaterial( mat0 );
+	Mesh* pMesh = ptr->LoadMesh( "Media/Meshes/props_bibl_stul.obj" );
+	pMesh->SetMaterial( mat0 );
 	m_pMeshes[L"props_bibl_stul"] = pMesh;
 
 
@@ -1008,48 +1004,48 @@ void Scene::loadMeshes()
 	//D:/Metro Last Light/content/textures/props/props_chair_01.512
 
 	mat0 = new DX11Material_DiffuseDetailbump(ptr);
-	mat0->setDiffusemap( ptr->loadTexture( L"Media/props_chair_01.512.bmp" ) );
-	mat0->setNormalmap( ptr->loadTexture( L"Media/props_chair_01_normal.512.bmp" ) );
-	mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-	mat0->setDetailNormalStrength( 3.0f );
-	mat0->setDetailTiling( 8.0f );
-	mat0->setSpecularIntensity( 0.14f );
-	mat0->setSpecularPower( 8.0f );
+	mat0->SetDiffusemap( ptr->LoadTexture( L"Media/props_chair_01.512.bmp" ) );
+	mat0->SetNormalmap( ptr->LoadTexture( L"Media/props_chair_01_normal.512.bmp" ) );
+	mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+	mat0->SetDetailNormalStrength( 3.0f );
+	mat0->SetDetailTiling( 8.0f );
+	mat0->SetSpecularIntensity( 0.14f );
+	mat0->SetSpecularPower( 8.0f );
 
-	pMesh = ptr->loadMesh( "Media/Meshes/props_chair_01.obj" );
-	pMesh->setMaterial( mat0 );
+	pMesh = ptr->LoadMesh( "Media/Meshes/props_chair_01.obj" );
+	pMesh->SetMaterial( mat0 );
 	m_pMeshes[L"props_chair_01"] = pMesh;
 
 	//props_chair_school_a
 	//D:/Metro Last Light/content/textures/props/props_chair_school.512
 
 	mat0 = new DX11Material_DiffuseDetailbump(ptr);
-	mat0->setDiffusemap( ptr->loadTexture( L"Media/props_chair_school.512.bmp" ) );
-	mat0->setNormalmap( ptr->loadTexture( L"Media/props_chair_school_normal.1024.bmp" ) );
-	mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-	mat0->setDetailNormalStrength( 2.0f );
-	mat0->setDetailTiling( 10.0f );
-	mat0->setSpecularIntensity( 0.34f );
-	mat0->setSpecularPower( 32.0f );
+	mat0->SetDiffusemap( ptr->LoadTexture( L"Media/props_chair_school.512.bmp" ) );
+	mat0->SetNormalmap( ptr->LoadTexture( L"Media/props_chair_school_normal.1024.bmp" ) );
+	mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+	mat0->SetDetailNormalStrength( 2.0f );
+	mat0->SetDetailTiling( 10.0f );
+	mat0->SetSpecularIntensity( 0.34f );
+	mat0->SetSpecularPower( 32.0f );
 
-	pMesh = ptr->loadMesh( "Media/Meshes/props_chair_school_a.obj" );
-	pMesh->setMaterial( mat0 );
+	pMesh = ptr->LoadMesh( "Media/Meshes/props_chair_school_a.obj" );
+	pMesh->SetMaterial( mat0 );
 	m_pMeshes[L"props_chair_school_a"] = pMesh;
 
 
 	//props_chair_school_b
 	//D:/Metro Last Light/content/textures/props/props_chair_school.512
 	mat0 = new DX11Material_DiffuseDetailbump(ptr);
-	mat0->setDiffusemap( ptr->loadTexture( L"Media/props_chair_school.512.bmp" ) );
-	mat0->setNormalmap( ptr->loadTexture( L"Media/props_chair_school_normal.1024.bmp" ) );
-	mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-	mat0->setDetailNormalStrength( 2.0f );
-	mat0->setDetailTiling( 10.0f );
-	mat0->setSpecularIntensity( 0.34f );
-	mat0->setSpecularPower( 32.0f );
+	mat0->SetDiffusemap( ptr->LoadTexture( L"Media/props_chair_school.512.bmp" ) );
+	mat0->SetNormalmap( ptr->LoadTexture( L"Media/props_chair_school_normal.1024.bmp" ) );
+	mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+	mat0->SetDetailNormalStrength( 2.0f );
+	mat0->SetDetailTiling( 10.0f );
+	mat0->SetSpecularIntensity( 0.34f );
+	mat0->SetSpecularPower( 32.0f );
 
-	pMesh = ptr->loadMesh( "Media/Meshes/props_chair_school_b.obj" );
-	pMesh->setMaterial( mat0 );
+	pMesh = ptr->LoadMesh( "Media/Meshes/props_chair_school_b.obj" );
+	pMesh->SetMaterial( mat0 );
 	m_pMeshes[L"props_chair_school_b"] = pMesh;
 
 	//--metro_lockers
@@ -1057,40 +1053,40 @@ void Scene::loadMeshes()
 	//D:/Metro Last Light/content/textures/metal/metal_locker.512
 	DX11Material_Deferred *mat0b = new DX11Material_Deferred(ptr);
 	//DX11Material_BlinnPhong *mat0b = new DX11Material_BlinnPhong(ptr);
-	mat0b->setDiffusemap( ptr->loadTexture( L"Media/metal_locker.2048.bmp" ) );
-	mat0b->setNormalmap( ptr->loadTexture( L"Media/metal_locker_normal.2048.bmp" ) );
-	mat0b->setSpecularMap( ptr->loadTexture( L"Media/metal_locker_bump.2048.bmp" ) );
-	//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-	//mat0->setDetailNormalStrength( 2.0f );
-	//mat0->setDetailTiling( 10.0f );
-	//mat0->setSpecularIntensity( 0.34f );
-	//mat0->setSpecularPower( 32.0f );
-	mat0b->setSpecularIntensity( 0.5f );
-	//mat0b->setSpecularPower( 1024.0f );
-	mat0b->setGlossiness( 1024.0f );
+	mat0b->SetDiffusemap( ptr->LoadTexture( L"Media/metal_locker.2048.bmp" ) );
+	mat0b->SetNormalmap( ptr->LoadTexture( L"Media/metal_locker_normal.2048.bmp" ) );
+	mat0b->SetSpecularMap( ptr->LoadTexture( L"Media/metal_locker_bump.2048.bmp" ) );
+	//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+	//mat0->SetDetailNormalStrength( 2.0f );
+	//mat0->SetDetailTiling( 10.0f );
+	//mat0->SetSpecularIntensity( 0.34f );
+	//mat0->SetSpecularPower( 32.0f );
+	mat0b->SetSpecularIntensity( 0.5f );
+	//mat0b->SetSpecularPower( 1024.0f );
+	mat0b->SetGlossiness( 1024.0f );
 
-	pMesh = ptr->loadMesh( "Media/Meshes/metro_locker_a.obj" );
-	pMesh->setMaterial( mat0b );
+	pMesh = ptr->LoadMesh( "Media/Meshes/metro_locker_a.obj" );
+	pMesh->SetMaterial( mat0b );
 	m_pMeshes[L"metro_locker_a"] = pMesh;
 
-	pMesh = ptr->loadMesh( "Media/Meshes/metro_locker_b.obj" );
-	pMesh->setMaterial( mat0b );
+	pMesh = ptr->LoadMesh( "Media/Meshes/metro_locker_b.obj" );
+	pMesh->SetMaterial( mat0b );
 	m_pMeshes[L"metro_locker_b"] = pMesh;
 
-	pMesh = ptr->loadMesh( "Media/Meshes/metro_locker_c.obj" );
-	pMesh->setMaterial( mat0b );
+	pMesh = ptr->LoadMesh( "Media/Meshes/metro_locker_c.obj" );
+	pMesh->SetMaterial( mat0b );
 	m_pMeshes[L"metro_locker_c"] = pMesh;
 
-	pMesh = ptr->loadMesh( "Media/Meshes/metro_locker_d.obj" );
-	pMesh->setMaterial( mat0b );
+	pMesh = ptr->LoadMesh( "Media/Meshes/metro_locker_d.obj" );
+	pMesh->SetMaterial( mat0b );
 	m_pMeshes[L"metro_locker_d"] = pMesh;
 
-	pMesh = ptr->loadMesh( "Media/Meshes/metro_locker_e.obj" );
-	pMesh->setMaterial( mat0b );
+	pMesh = ptr->LoadMesh( "Media/Meshes/metro_locker_e.obj" );
+	pMesh->SetMaterial( mat0b );
 	m_pMeshes[L"metro_locker_e"] = pMesh;
 
-	pMesh = ptr->loadMesh( "Media/Meshes/metro_locker_f.obj" );
-	pMesh->setMaterial( mat0b );
+	pMesh = ptr->LoadMesh( "Media/Meshes/metro_locker_f.obj" );
+	pMesh->SetMaterial( mat0b );
 	m_pMeshes[L"metro_locker_f"] = pMesh;
 
 
@@ -1099,32 +1095,32 @@ void Scene::loadMeshes()
 	//Tex_0013_1.dds
 	{
 		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
-		mat0->setDiffusemap( ptr->loadTexture( L"Media/Prop_Pack_V1/Clutter_paper_cardboard/Tex_0013_1.dds" ) );
-		mat0->setNormalmap( ptr->loadTexture( L"Media/Prop_Pack_V1/Clutter_paper_cardboard/normal.bmp" ) );
-		//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat0->setDetailTiling( 6.0f );
-		//mat0->setDetailNormalStrength( 3.0f );
-		mat0->setSpecularIntensity( 0.1f );
-		//mat0->setSpecularPower( 12.0f );
+		mat0->SetDiffusemap( ptr->LoadTexture( L"Media/Prop_Pack_V1/Clutter_paper_cardboard/Tex_0013_1.dds" ) );
+		mat0->SetNormalmap( ptr->LoadTexture( L"Media/Prop_Pack_V1/Clutter_paper_cardboard/normal.bmp" ) );
+		//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat0->SetDetailTiling( 6.0f );
+		//mat0->SetDetailNormalStrength( 3.0f );
+		mat0->SetSpecularIntensity( 0.1f );
+		//mat0->SetSpecularPower( 12.0f );
 
-		pMesh = ptr->loadMesh( "Media/Meshes/Clutter_paper_cardboard_a.obj" );
-		pMesh->setMaterial( mat0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/Clutter_paper_cardboard_a.obj" );
+		pMesh->SetMaterial( mat0 );
 		m_pMeshes[L"Clutter_paper_cardboard_a"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/Clutter_paper_cardboard_b.obj" );
-		pMesh->setMaterial( mat0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/Clutter_paper_cardboard_b.obj" );
+		pMesh->SetMaterial( mat0 );
 		m_pMeshes[L"Clutter_paper_cardboard_b"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/Clutter_paper_cardboard_c.obj" );
-		pMesh->setMaterial( mat0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/Clutter_paper_cardboard_c.obj" );
+		pMesh->SetMaterial( mat0 );
 		m_pMeshes[L"Clutter_paper_cardboard_c"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/Clutter_paper_cardboard_d.obj" );
-		pMesh->setMaterial( mat0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/Clutter_paper_cardboard_d.obj" );
+		pMesh->SetMaterial( mat0 );
 		m_pMeshes[L"Clutter_paper_cardboard_d"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/Clutter_paper_cardboard_e.obj" );
-		pMesh->setMaterial( mat0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/Clutter_paper_cardboard_e.obj" );
+		pMesh->SetMaterial( mat0 );
 		m_pMeshes[L"Clutter_paper_cardboard_e"] = pMesh;
 	}
 
@@ -1133,16 +1129,16 @@ void Scene::loadMeshes()
 	//Tex_0030_1.dds
 	{
 		DX11Material_Deferred *mat = new DX11Material_Deferred(ptr);
-		mat->setDiffusemap( ptr->loadTexture( L"Media/Prop_Pack_V1/Pallet_Single/Tex_0030_1.dds" ) );
-		mat->setNormalmap( ptr->loadTexture( L"Media/flat.bmp" ) );
-		//mat->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat->setDetailTiling( 6.0f );
-		//mat->setDetailNormalStrength( 3.0f );
-		mat->setSpecularIntensity( 0.1f );
-		//mat->setSpecularPower( 12.0f );
+		mat->SetDiffusemap( ptr->LoadTexture( L"Media/Prop_Pack_V1/Pallet_Single/Tex_0030_1.dds" ) );
+		mat->SetNormalmap( ptr->LoadTexture( L"Media/flat.bmp" ) );
+		//mat->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat->SetDetailTiling( 6.0f );
+		//mat->SetDetailNormalStrength( 3.0f );
+		mat->SetSpecularIntensity( 0.1f );
+		//mat->SetSpecularPower( 12.0f );
 
-		pMesh = ptr->loadMesh( "Media/Meshes/Pallet_Single.obj" );
-		pMesh->setMaterial( mat0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/Pallet_Single.obj" );
+		pMesh->SetMaterial( mat0 );
 		m_pMeshes[L"Pallet_Single"] = pMesh;
 	}
 
@@ -1156,33 +1152,33 @@ void Scene::loadMeshes()
 	{
 		DX11Material_Deferred *mat_b0 = new DX11Material_Deferred(ptr);
 		//mat0 = new Material_DiffuseDetailbump(ptr);
-		mat_b0->setDiffusemap( ptr->loadTexture( L"Media/props_m_scaf01.512.bmp" ) );
-		mat_b0->setNormalmap( ptr->loadTexture( L"Media/props_m_scaf01_normal.512.bmp" ) );
-		mat_b0->setSpecularMap( ptr->loadTexture( L"Media/props_m_scaf01_bump.512.bmp" ) );
-		//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat0->setDetailNormalStrength( 2.0f );
-		//mat0->setDetailTiling( 10.0f );
-		mat_b0->setSpecularIntensity( 0.7f );
-		//mat_b0->setSpecularPower( 512.0f );
+		mat_b0->SetDiffusemap( ptr->LoadTexture( L"Media/props_m_scaf01.512.bmp" ) );
+		mat_b0->SetNormalmap( ptr->LoadTexture( L"Media/props_m_scaf01_normal.512.bmp" ) );
+		mat_b0->SetSpecularMap( ptr->LoadTexture( L"Media/props_m_scaf01_bump.512.bmp" ) );
+		//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat0->SetDetailNormalStrength( 2.0f );
+		//mat0->SetDetailTiling( 10.0f );
+		mat_b0->SetSpecularIntensity( 0.7f );
+		//mat_b0->SetSpecularPower( 512.0f );
 
 		DX11Material_Deferred* mat_b1 = new DX11Material_Deferred(ptr);
-		mat_b1->setDiffusemap( ptr->loadTexture( L"Media/props_m_scaf02.512.bmp" ) );
-		mat_b1->setNormalmap( ptr->loadTexture( L"Media/props_m_scaf02_normal.1024.bmp" ) );
-		mat_b1->setSpecularMap( ptr->loadTexture( L"Media/props_m_scaf02_bump.1024.bmp" ) );
-		//mat1->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat1->setDetailNormalStrength( 2.0f );
-		//mat1->setDetailTiling( 10.0f );
-		mat_b1->setSpecularIntensity( 0.7f );
-		//mat_b1->setSpecularPower( 512.0f );
+		mat_b1->SetDiffusemap( ptr->LoadTexture( L"Media/props_m_scaf02.512.bmp" ) );
+		mat_b1->SetNormalmap( ptr->LoadTexture( L"Media/props_m_scaf02_normal.1024.bmp" ) );
+		mat_b1->SetSpecularMap( ptr->LoadTexture( L"Media/props_m_scaf02_bump.1024.bmp" ) );
+		//mat1->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat1->SetDetailNormalStrength( 2.0f );
+		//mat1->SetDetailTiling( 10.0f );
+		mat_b1->SetSpecularIntensity( 0.7f );
+		//mat_b1->SetSpecularPower( 512.0f );
 
-		pMesh = ptr->loadMesh( "Media/Meshes/props_m_scaf_a.obj" );
-		pMesh->setMaterial( mat_b0 );
-		pMesh->getSubmesh(1)->setMaterial( mat_b1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/props_m_scaf_a.obj" );
+		pMesh->SetMaterial( mat_b0 );
+		pMesh->GetSubmesh(1)->SetMaterial( mat_b1 );
 		m_pMeshes[L"props_m_scaf_a"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/props_m_scaf_b.obj" );
-		pMesh->setMaterial( mat_b0 );
-		pMesh->getSubmesh(1)->setMaterial( mat_b1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/props_m_scaf_b.obj" );
+		pMesh->SetMaterial( mat_b0 );
+		pMesh->GetSubmesh(1)->SetMaterial( mat_b1 );
 		m_pMeshes[L"props_m_scaf_b"] = pMesh;
 	}
 
@@ -1203,48 +1199,48 @@ void Scene::loadMeshes()
 	//D:/Metro Last Light/content/textures/wood/wood_box.512
 	{
 		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
-		mat0->setDiffusemap( ptr->loadTexture( L"Media/props_books_01.512.bmp" ) );
-		mat0->setNormalmap( ptr->loadTexture( L"Media/props_books_01_normal.512.bmp" ) );
-		//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat0->setDetailNormalStrength( 2.0f );
-		//mat0->setDetailTiling( 10.0f );
-		mat0->setSpecularIntensity( 0.34f );
-		mat0->setGlossiness( 32.0f );
-		//mat0->setSpecularPower( 32.0f );
+		mat0->SetDiffusemap( ptr->LoadTexture( L"Media/props_books_01.512.bmp" ) );
+		mat0->SetNormalmap( ptr->LoadTexture( L"Media/props_books_01_normal.512.bmp" ) );
+		//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat0->SetDetailNormalStrength( 2.0f );
+		//mat0->SetDetailTiling( 10.0f );
+		mat0->SetSpecularIntensity( 0.34f );
+		mat0->SetGlossiness( 32.0f );
+		//mat0->SetSpecularPower( 32.0f );
 
 		//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
-		mat1->setDiffusemap( ptr->loadTexture( L"Media/wood_box_2.1024.bmp" ) );
-		mat1->setNormalmap( ptr->loadTexture( L"Media/wood_box_2_normal.1024.bmp" ) );
-		//mat1->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat1->setDetailNormalStrength( 2.0f );
-		//mat1->setDetailTiling( 10.0f );
-		mat1->setSpecularIntensity( 0.34f );
-		mat1->setGlossiness( 32.0f );
-		//mat1->setSpecularPower( 32.0f );
+		mat1->SetDiffusemap( ptr->LoadTexture( L"Media/wood_box_2.1024.bmp" ) );
+		mat1->SetNormalmap( ptr->LoadTexture( L"Media/wood_box_2_normal.1024.bmp" ) );
+		//mat1->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat1->SetDetailNormalStrength( 2.0f );
+		//mat1->SetDetailTiling( 10.0f );
+		mat1->SetSpecularIntensity( 0.34f );
+		mat1->SetGlossiness( 32.0f );
+		//mat1->SetSpecularPower( 32.0f );
 
-		pMesh = ptr->loadMesh( "Media/Meshes/wood_box_a.obj" );
-		pMesh->setMaterial( mat0 );
-		pMesh->getSubmesh(0)->setMaterial( mat1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/wood_box_a.obj" );
+		pMesh->SetMaterial( mat0 );
+		pMesh->GetSubmesh(0)->SetMaterial( mat1 );
 		m_pMeshes[L"wood_box_a"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/wood_box_b.obj" );
-		pMesh->setMaterial( mat1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/wood_box_b.obj" );
+		pMesh->SetMaterial( mat1 );
 		m_pMeshes[L"wood_box_b"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/wood_box_c.obj" );
-		pMesh->setMaterial( mat0 );
-		pMesh->getSubmesh(1)->setMaterial( mat1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/wood_box_c.obj" );
+		pMesh->SetMaterial( mat0 );
+		pMesh->GetSubmesh(1)->SetMaterial( mat1 );
 		m_pMeshes[L"wood_box_c"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/wood_box_d.obj" );
-		pMesh->setMaterial( mat0 );
-		pMesh->getSubmesh(1)->setMaterial( mat1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/wood_box_d.obj" );
+		pMesh->SetMaterial( mat0 );
+		pMesh->GetSubmesh(1)->SetMaterial( mat1 );
 		m_pMeshes[L"wood_box_d"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/wood_box_e.obj" );
-		pMesh->setMaterial( mat0 );
-		pMesh->getSubmesh(1)->setMaterial( mat1 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/wood_box_e.obj" );
+		pMesh->SetMaterial( mat0 );
+		pMesh->GetSubmesh(1)->SetMaterial( mat1 );
 		m_pMeshes[L"wood_box_e"] = pMesh;
 	}
 
@@ -1254,29 +1250,29 @@ void Scene::loadMeshes()
 	//D:/Metro Last Light/content/textures/props/props_met_skaff.512
 	{
 		DX11Material_Deferred *matb0 = new DX11Material_Deferred(ptr);
-		matb0->setDiffusemap( ptr->loadTexture( L"Media/props_met_skaff.1024.bmp" ) );
-		matb0->setNormalmap( ptr->loadTexture( L"Media/props_met_skaff_normal.1024.bmp" ) );
-		matb0->setSpecularMap( ptr->loadTexture( L"Media/props_met_skaff_bump.1024.bmp" ) );
-		//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat0->setDetailNormalStrength( 2.0f );
-		//mat0->setDetailTiling( 10.0f );
-		matb0->setSpecularIntensity( 0.7f );
-		//matb0->setSpecularPower( 2048.0f );
+		matb0->SetDiffusemap( ptr->LoadTexture( L"Media/props_met_skaff.1024.bmp" ) );
+		matb0->SetNormalmap( ptr->LoadTexture( L"Media/props_met_skaff_normal.1024.bmp" ) );
+		matb0->SetSpecularMap( ptr->LoadTexture( L"Media/props_met_skaff_bump.1024.bmp" ) );
+		//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat0->SetDetailNormalStrength( 2.0f );
+		//mat0->SetDetailTiling( 10.0f );
+		matb0->SetSpecularIntensity( 0.7f );
+		//matb0->SetSpecularPower( 2048.0f );
 
-		pMesh = ptr->loadMesh( "Media/Meshes/props_met_skaff_a.obj" );
-		pMesh->setMaterial( matb0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/props_met_skaff_a.obj" );
+		pMesh->SetMaterial( matb0 );
 		m_pMeshes[L"props_met_skaff_a"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/props_met_skaff_b.obj" );
-		pMesh->setMaterial( matb0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/props_met_skaff_b.obj" );
+		pMesh->SetMaterial( matb0 );
 		m_pMeshes[L"props_met_skaff_b"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/props_met_skaff_c.obj" );
-		pMesh->setMaterial( matb0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/props_met_skaff_c.obj" );
+		pMesh->SetMaterial( matb0 );
 		m_pMeshes[L"props_met_skaff_c"] = pMesh;
 
-		pMesh = ptr->loadMesh( "Media/Meshes/props_met_skaff_d.obj" );
-		pMesh->setMaterial( matb0 );
+		pMesh = ptr->LoadMesh( "Media/Meshes/props_met_skaff_d.obj" );
+		pMesh->SetMaterial( matb0 );
 		m_pMeshes[L"props_met_skaff_d"] = pMesh;
 	}
 
@@ -1285,64 +1281,64 @@ void Scene::loadMeshes()
 	{
 		//DX11Material_DiffuseDetailbump* mat = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat = new DX11Material_Deferred(ptr);
-		mat->setDiffusemap( ptr->loadTexture( L"Media/props_korobka.1024.bmp" ) );
-		mat->setNormalmap( ptr->loadTexture( L"Media/props_korobka_normal.1024.bmp" ) );
-		mat->setSpecularMap( ptr->loadTexture( L"Media/grey.bmp" ) );
-		//mat->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat->setDetailNormalStrength( 2.0f );
-		//mat->setDetailTiling( 5.0f );
-		mat->setSpecularIntensity( 0.24f );
-		mat->setGlossiness( 1024.0f );
-		//mat->setSpecularPower( 16.0f );
+		mat->SetDiffusemap( ptr->LoadTexture( L"Media/props_korobka.1024.bmp" ) );
+		mat->SetNormalmap( ptr->LoadTexture( L"Media/props_korobka_normal.1024.bmp" ) );
+		mat->SetSpecularMap( ptr->LoadTexture( L"Media/grey.bmp" ) );
+		//mat->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat->SetDetailNormalStrength( 2.0f );
+		//mat->SetDetailTiling( 5.0f );
+		mat->SetSpecularIntensity( 0.24f );
+		mat->SetGlossiness( 1024.0f );
+		//mat->SetSpecularPower( 16.0f );
 
-		Mesh* mesh = ptr->loadMesh( "Media/Meshes/kardus_a.obj" );
-		mesh->setMaterial( mat );
+		Mesh* mesh = ptr->LoadMesh( "Media/Meshes/kardus_a.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_a"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_b.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_b.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_b"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_c.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_c.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_c"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_d.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_d.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_d"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_e.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_e.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_e"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_f.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_f.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_f"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_g.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_g.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_g"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_h.obj" );
-		mesh->setMaterial( mat );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_h.obj" );
+		mesh->SetMaterial( mat );
 		m_pMeshes[L"kardus_h"] = mesh;
 
 		//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
-		mat1->setDiffusemap( ptr->loadTexture( L"Media/wood_box_2.1024.bmp" ) );
-		mat1->setNormalmap( ptr->loadTexture( L"Media/wood_box_2_normal.1024.bmp" ) );
-		//mat1->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat1->setDetailNormalStrength( 3.0f );
-		//mat1->setDetailTiling( 20.0f );
-		mat1->setSpecularIntensity( 0.14f );
-		//mat1->setSpecularPower( 16.0f );
+		mat1->SetDiffusemap( ptr->LoadTexture( L"Media/wood_box_2.1024.bmp" ) );
+		mat1->SetNormalmap( ptr->LoadTexture( L"Media/wood_box_2_normal.1024.bmp" ) );
+		//mat1->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat1->SetDetailNormalStrength( 3.0f );
+		//mat1->SetDetailTiling( 20.0f );
+		mat1->SetSpecularIntensity( 0.14f );
+		//mat1->SetSpecularPower( 16.0f );
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_i.obj" );
-		mesh->setMaterial( mat1 );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_i.obj" );
+		mesh->SetMaterial( mat1 );
 		m_pMeshes[L"kardus_i"] = mesh;
 
-		mesh = ptr->loadMesh( "Media/Meshes/kardus_j.obj" );
-		mesh->setMaterial( mat1 );
+		mesh = ptr->LoadMesh( "Media/Meshes/kardus_j.obj" );
+		mesh->SetMaterial( mat1 );
 		m_pMeshes[L"kardus_j"] = mesh;
 	}
 
@@ -1351,52 +1347,52 @@ void Scene::loadMeshes()
 	{
 		//DX11Material_DiffuseDetailbump* mat0 = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
-		mat0->setDiffusemap( ptr->loadTexture( L"Media/metal34_props_01.1024.dds" ) );
-		mat0->setNormalmap( ptr->loadTexture( L"Media/metal34_props_01_normal.2048.bmp" ) );
-		//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat0->setDetailNormalStrength( 5.0f );
-		//mat0->setDetailTiling( 12.0f );
-		mat0->setSpecularIntensity( 0.3f );
-		mat0->setGlossiness( 32.0f );
-		//mat0->setSpecularPower( 32.0f );
+		mat0->SetDiffusemap( ptr->LoadTexture( L"Media/metal34_props_01.1024.dds" ) );
+		mat0->SetNormalmap( ptr->LoadTexture( L"Media/metal34_props_01_normal.2048.bmp" ) );
+		//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat0->SetDetailNormalStrength( 5.0f );
+		//mat0->SetDetailTiling( 12.0f );
+		mat0->SetSpecularIntensity( 0.3f );
+		mat0->SetGlossiness( 32.0f );
+		//mat0->SetSpecularPower( 32.0f );
 
 		//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
-		mat1->setDiffusemap( ptr->loadTexture( L"Media/props34_san_kol.2048.crn.bmp" ) );
-		mat1->setNormalmap( ptr->loadTexture( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
-		//mat1->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat1->setDetailNormalStrength( 5.0f );
-		//mat1->setDetailTiling( 12.0f );
-		mat1->setSpecularIntensity( 0.3f );
-		mat1->setGlossiness( 32.0f );
-		//mat1->setSpecularPower( 32.0f );
+		mat1->SetDiffusemap( ptr->LoadTexture( L"Media/props34_san_kol.2048.crn.bmp" ) );
+		mat1->SetNormalmap( ptr->LoadTexture( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
+		//mat1->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat1->SetDetailNormalStrength( 5.0f );
+		//mat1->SetDetailTiling( 12.0f );
+		mat1->SetSpecularIntensity( 0.3f );
+		mat1->SetGlossiness( 32.0f );
+		//mat1->SetSpecularPower( 32.0f );
 
 		//DX11Material_DiffuseDetailbump* mat2 = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat2 = new DX11Material_Deferred(ptr);
-		mat2->setDiffusemap( ptr->loadTexture( L"Media/props_mattress.512.dds" ) );
-		mat2->setNormalmap( ptr->loadTexture( L"Media/props_mattress_normal.512.bmp" ) );
-		//mat2->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat2->setDetailNormalStrength( 2.0f );
-		//mat2->setDetailTiling( 8.0f );
-		mat2->setSpecularIntensity( 0.15f );
-		mat2->setGlossiness( 16.0f );
-		//mat2->setSpecularPower( 16.0f );
+		mat2->SetDiffusemap( ptr->LoadTexture( L"Media/props_mattress.512.dds" ) );
+		mat2->SetNormalmap( ptr->LoadTexture( L"Media/props_mattress_normal.512.bmp" ) );
+		//mat2->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat2->SetDetailNormalStrength( 2.0f );
+		//mat2->SetDetailTiling( 8.0f );
+		mat2->SetSpecularIntensity( 0.15f );
+		mat2->SetGlossiness( 16.0f );
+		//mat2->SetSpecularPower( 16.0f );
 
 		//DX11Material_DiffuseDetailbump* mat3 = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat3 = new DX11Material_Deferred(ptr);
-		mat3->setDiffusemap( ptr->loadTexture( L"Media/props_fabric.2048.dds" ) );
-		mat3->setNormalmap( ptr->loadTexture( L"Media/props_fabric_normal.2048.bmp" ) );
-		//mat3->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat3->setDetailNormalStrength( 1.0f );
-		//mat3->setDetailTiling( 12.0f );
-		mat3->setSpecularIntensity( 0.15f );
-		mat3->setGlossiness( 16.0f );
-		//mat3->setSpecularPower( 16.0f );
+		mat3->SetDiffusemap( ptr->LoadTexture( L"Media/props_fabric.2048.dds" ) );
+		mat3->SetNormalmap( ptr->LoadTexture( L"Media/props_fabric_normal.2048.bmp" ) );
+		//mat3->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat3->SetDetailNormalStrength( 1.0f );
+		//mat3->SetDetailTiling( 12.0f );
+		mat3->SetSpecularIntensity( 0.15f );
+		mat3->SetGlossiness( 16.0f );
+		//mat3->SetSpecularPower( 16.0f );
 
-		Mesh* mesh = ptr->loadMesh( "Media/metro_kasur.obj" );
-		mesh->setMaterial( mat2 );
-		mesh->getSubmesh(2)->setMaterial( mat3 );
-		mesh->getSubmesh(3)->setMaterial( mat0 );
+		Mesh* mesh = ptr->LoadMesh( "Media/metro_kasur.obj" );
+		mesh->SetMaterial( mat2 );
+		mesh->GetSubmesh(2)->SetMaterial( mat3 );
+		mesh->GetSubmesh(3)->SetMaterial( mat0 );
 		m_pMeshes[L"metro_kasur"] = mesh;
 	}
 
@@ -1405,17 +1401,17 @@ void Scene::loadMeshes()
 	{
 		//DX11Material_DiffuseDetailbump* pMaterial = new DX11Material_DiffuseDetailbump(ptr);
 		DX11Material_Deferred* mat = new DX11Material_Deferred(ptr);
-		mat->setDiffusemap( ptr->loadTexture( L"Media/props34_san_kol.2048.crn.bmp" ) );
-		mat->setNormalmap( ptr->loadTexture( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
-		//mat->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat->setDetailNormalStrength( 3.0f );
-		//mat->setDetailTiling( 12.0f );
-		mat->setSpecularIntensity( 0.22f );
-		mat->setGlossiness( 12.0f );
-		//mat->setSpecularPower( 12.0f );
+		mat->SetDiffusemap( ptr->LoadTexture( L"Media/props34_san_kol.2048.crn.bmp" ) );
+		mat->SetNormalmap( ptr->LoadTexture( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
+		//mat->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat->SetDetailNormalStrength( 3.0f );
+		//mat->SetDetailTiling( 12.0f );
+		mat->SetSpecularIntensity( 0.22f );
+		mat->SetGlossiness( 12.0f );
+		//mat->SetSpecularPower( 12.0f );
 
-		Mesh* mesh = ptr->loadMesh( "Media/metro_kursiroda.3DS" );
-		mesh->setMaterial( mat );
+		Mesh* mesh = ptr->LoadMesh( "Media/metro_kursiroda.3DS" );
+		mesh->SetMaterial( mat );
 
 		m_pMeshes[L"metro_kursiroda"] = mesh;
 	}
@@ -1424,26 +1420,26 @@ void Scene::loadMeshes()
 	// Mesh : mesh_metro_tumba01
 	{
 		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
-		mat0->setDiffusemap( ptr->loadTexture( L"Media/props_shkaf_01.1024.bmp" ) );
-		mat0->setNormalmap( ptr->loadTexture( L"Media/props_shkaf_01_normal.1024.bmp" ) );
-		//mat0->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat0->setDetailNormalStrength( 2.0f );
-		//mat0->setDetailTiling( 10.0f );
-		//mat0->setSpecularIntensity( 0.34f );
-		//mat0->setSpecularPower( 32.0f );
+		mat0->SetDiffusemap( ptr->LoadTexture( L"Media/props_shkaf_01.1024.bmp" ) );
+		mat0->SetNormalmap( ptr->LoadTexture( L"Media/props_shkaf_01_normal.1024.bmp" ) );
+		//mat0->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat0->SetDetailNormalStrength( 2.0f );
+		//mat0->SetDetailTiling( 10.0f );
+		//mat0->SetSpecularIntensity( 0.34f );
+		//mat0->SetSpecularPower( 32.0f );
 
 		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
-		mat1->setDiffusemap( ptr->loadTexture( L"Media/props_shkaf_01.1024.bmp" ) );
-		mat1->setNormalmap( ptr->loadTexture( L"Media/props_shkaf_01_normal.1024.bmp" ) );
-		//mat1->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat1->setDetailNormalStrength( 2.0f );
-		//mat1->setDetailTiling( 10.0f );
-		//mat1->setSpecularIntensity( 0.34f );
-		//mat1->setSpecularPower( 32.0f );
+		mat1->SetDiffusemap( ptr->LoadTexture( L"Media/props_shkaf_01.1024.bmp" ) );
+		mat1->SetNormalmap( ptr->LoadTexture( L"Media/props_shkaf_01_normal.1024.bmp" ) );
+		//mat1->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat1->SetDetailNormalStrength( 2.0f );
+		//mat1->SetDetailTiling( 10.0f );
+		//mat1->SetSpecularIntensity( 0.34f );
+		//mat1->SetSpecularPower( 32.0f );
 
-		Mesh* mesh = ptr->loadMesh( "Media/metro_tumba01.obj" );
-		mesh->setMaterial( mat0 );
-		mesh->getSubmesh(1)->setMaterial( mat1 );
+		Mesh* mesh = ptr->LoadMesh( "Media/metro_tumba01.obj" );
+		mesh->SetMaterial( mat0 );
+		mesh->GetSubmesh(1)->SetMaterial( mat1 );
 
 		m_pMeshes[L"mesh_metro_tumba01"] = mesh;
 	}
@@ -1452,18 +1448,18 @@ void Scene::loadMeshes()
 	// Mesh : mesh_ddo_helmet
 	{
 		DX11Material_DeferredIBL* mat = new DX11Material_DeferredIBL(ptr);
-		mat->setDiffusemap( ptr->loadTexture( L"Media/DDO_SDK_Helmet/albedo.jpg" ) );
-		//mat->setDiffusemap( ptr->loadTexture( L"Media/grey.bmp" ) );
-		mat->setNormalmap( ptr->loadTexture( L"Media/DDO_SDK_Helmet/normal.jpg" ) );
-		mat->setSpecularMap( ptr->loadTexture( L"Media/DDO_SDK_Helmet/specular.jpg" ) );
-		mat->setAOMap( ptr->loadTexture( L"Media/DDO_SDK_Helmet/ao.jpg" ) );
-		//mat->setSpecularMap( ptr->loadTexture( L"Media/test_specular1.bmp" ) );
-		//mat->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat->setDetailNormalStrength( 3.0f );
-		//mat->setDetailTiling( 12.0f );
-		mat->setSpecularIntensity( 1.0f );
-		mat->setGlossiness( 2048.0f );
-		//mat->setSpecularPower( 12.0f );
+		mat->SetDiffusemap( ptr->LoadTexture( L"Media/DDO_SDK_Helmet/albedo.jpg" ) );
+		//mat->SetDiffusemap( ptr->LoadTexture( L"Media/grey.bmp" ) );
+		mat->SetNormalmap( ptr->LoadTexture( L"Media/DDO_SDK_Helmet/normal.jpg" ) );
+		mat->SetSpecularMap( ptr->LoadTexture( L"Media/DDO_SDK_Helmet/specular.jpg" ) );
+		mat->SetAOMap( ptr->LoadTexture( L"Media/DDO_SDK_Helmet/ao.jpg" ) );
+		//mat->SetSpecularMap( ptr->LoadTexture( L"Media/test_specular1.bmp" ) );
+		//mat->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat->SetDetailNormalStrength( 3.0f );
+		//mat->SetDetailTiling( 12.0f );
+		mat->SetSpecularIntensity( 1.0f );
+		mat->SetGlossiness( 2048.0f );
+		//mat->SetSpecularPower( 12.0f );
 
 		Image* faces[6];
 		int size = 256;
@@ -1521,11 +1517,11 @@ void Scene::loadMeshes()
 				//faces[5]->operator()(i,j) = 0;//getSkyColor( Vector3(i/(float)size,j/(float)size,-1.0f).normalisedCopy() );
 			}
 		}
-		//mat->setIBL( ptr->createCubemap( faces ) );
-		mat->setIBL( ptr->loadTexture( L"Media/cubemap0.dds" ) );
+		//mat->SetIBL( ptr->CreateCubemap( faces ) );
+		mat->SetIBL( ptr->LoadTexture( L"Media/cubemap0.dds" ) );
 
-		Mesh* mesh = ptr->loadMesh( "Media/DDO_SDK_Helmet/HelmetMeshTriCentered.obj" );
-		mesh->setMaterial( mat );
+		Mesh* mesh = ptr->LoadMesh( "Media/DDO_SDK_Helmet/HelmetMeshTriCentered.obj" );
+		mesh->SetMaterial( mat );
 
 		m_pMeshes[L"mesh_ddo_helmet"] = mesh;
 	}
@@ -1534,22 +1530,22 @@ void Scene::loadMeshes()
 	// Mesh : mesh_ddo_ks
 	{
 		DX11Material_DeferredIBL* mat = new DX11Material_DeferredIBL(ptr);
-		mat->setDiffusemap( ptr->loadTexture( L"Media/DDO_SDK_AKS/_polySurface42_d.jpg" ) );
-		//mat->setDiffusemap( ptr->loadTexture( L"Media/grey.bmp" ) );
-		mat->setNormalmap( ptr->loadTexture( L"Media/DDO_SDK_AKS/_polySurface42_n.jpg" ) );
-		mat->setSpecularMap( ptr->loadTexture( L"Media/DDO_SDK_AKS/_polySurface42_g.jpg" ) );
-		mat->setAOMap( ptr->loadTexture( L"Media/DDO_SDK_AKS/_polySurface42_o.jpg" ) );
-		//mat->setSpecularMap( ptr->loadTexture( L"Media/test_specular1.bmp" ) );
-		//mat->setDetailNormalmap( ptr->loadTexture( L"Media/Tex_0010_5.dds" ) );
-		//mat->setDetailNormalStrength( 3.0f );
-		//mat->setDetailTiling( 12.0f );
-		mat->setSpecularIntensity( 1.0f );
-		mat->setGlossiness( 2048.0f );
+		mat->SetDiffusemap( ptr->LoadTexture( L"Media/DDO_SDK_AKS/_polySurface42_d.jpg" ) );
+		//mat->SetDiffusemap( ptr->LoadTexture( L"Media/grey.bmp" ) );
+		mat->SetNormalmap( ptr->LoadTexture( L"Media/DDO_SDK_AKS/_polySurface42_n.jpg" ) );
+		mat->SetSpecularMap( ptr->LoadTexture( L"Media/DDO_SDK_AKS/_polySurface42_g.jpg" ) );
+		mat->SetAOMap( ptr->LoadTexture( L"Media/DDO_SDK_AKS/_polySurface42_o.jpg" ) );
+		//mat->SetSpecularMap( ptr->LoadTexture( L"Media/test_specular1.bmp" ) );
+		//mat->SetDetailNormalmap( ptr->LoadTexture( L"Media/Tex_0010_5.dds" ) );
+		//mat->SetDetailNormalStrength( 3.0f );
+		//mat->SetDetailTiling( 12.0f );
+		mat->SetSpecularIntensity( 1.0f );
+		mat->SetGlossiness( 2048.0f );
 
-		mat->setIBL( ptr->loadTexture( L"Media/cubemap0.dds" ) );
+		mat->SetIBL( ptr->LoadTexture( L"Media/cubemap0.dds" ) );
 
-		Mesh* mesh = ptr->loadMesh( "Media/DDO_SDK_AKS/Low.obj" );
-		mesh->setMaterial( mat );
+		Mesh* mesh = ptr->LoadMesh( "Media/DDO_SDK_AKS/Low.obj" );
+		mesh->SetMaterial( mat );
 
 		m_pMeshes[L"mesh_ddo_aks"] = mesh;
 	}
@@ -1559,73 +1555,73 @@ void Scene::loadMeshes()
 	// Mesh : mesh_sphere
 	{
 		DX11Material_DeferredIBL* mat = new DX11Material_DeferredIBL(ptr);
-		//mat->setDiffusemap( ptr->loadTexture( L"Media/DDO_SDK_Helmet/albedo.jpg" ) );
-		mat->setDiffusemap( ptr->loadTexture( L"Media/redplastic.bmp" ) );
-		mat->setNormalmap( ptr->loadTexture( L"Media/flat.bmp" ) );
-		mat->setSpecularMap( ptr->loadTexture( L"Media/test_specular2.bmp" ) );
-		mat->setAOMap( ptr->loadTexture( L"Media/white.bmp" ) );
-		mat->setSpecularIntensity( 1.0f );
-		mat->setGlossiness( 2048.0f );
-		mat->setIBL( ptr->loadTexture( L"Media/cubemap0.dds" ) );
+		//mat->SetDiffusemap( ptr->LoadTexture( L"Media/DDO_SDK_Helmet/albedo.jpg" ) );
+		mat->SetDiffusemap( ptr->LoadTexture( L"Media/redplastic.bmp" ) );
+		mat->SetNormalmap( ptr->LoadTexture( L"Media/flat.bmp" ) );
+		mat->SetSpecularMap( ptr->LoadTexture( L"Media/test_specular2.bmp" ) );
+		mat->SetAOMap( ptr->LoadTexture( L"Media/white.bmp" ) );
+		mat->SetSpecularIntensity( 1.0f );
+		mat->SetGlossiness( 2048.0f );
+		mat->SetIBL( ptr->LoadTexture( L"Media/cubemap0.dds" ) );
 
-		Mesh* mesh = ptr->loadMesh( "Media/Meshes/sphere64.obj" );
-		mesh->setMaterial( mat );
+		Mesh* mesh = ptr->LoadMesh( "Media/Meshes/sphere64.obj" );
+		mesh->SetMaterial( mat );
 
 		m_pMeshes[L"mesh_sphere"] = mesh;
 	}
 }
 
-void Scene::loadPrefabs()
+void Scene::LoadPrefabs()
 {
 	//////////////////
 	// Kardus
 	//////////////////
-	hkpRigidBody* rigidBody = createBoxRigidBody( Vector3(0.3307f, 0.3313f, 0.3064f), 1.0f );
+	hkpRigidBody* rigidBody = CreateBoxRigidBody( Vector3(0.3307f, 0.3313f, 0.3064f), 1.0f );
 	Mesh* mesh = m_pMeshes[L"kardus_a"];
 	Entity_Prop* prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_a"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.3110f, 0.3796f, 0.2614f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.3110f, 0.3796f, 0.2614f), 1.0f );
 	mesh = m_pMeshes[L"kardus_b"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_b"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.4516f, 0.3906f, 0.3237f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.4516f, 0.3906f, 0.3237f), 1.0f );
 	mesh = m_pMeshes[L"kardus_c"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_c"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.2784f, 0.3841f, 0.2129f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.2784f, 0.3841f, 0.2129f), 1.0f );
 	mesh = m_pMeshes[L"kardus_d"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_d"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.3469f, 0.3995f, 0.2017f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.3469f, 0.3995f, 0.2017f), 1.0f );
 	mesh = m_pMeshes[L"kardus_e"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_e"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.4792f, 0.4000f, 0.2221f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.4792f, 0.4000f, 0.2221f), 1.0f );
 	mesh = m_pMeshes[L"kardus_f"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_f"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.2772f, 0.4186f, 0.1188f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.2772f, 0.4186f, 0.1188f), 1.0f );
 	mesh = m_pMeshes[L"kardus_g"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_g"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.2765f, 0.4182f, 0.1187f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.2765f, 0.4182f, 0.1187f), 1.0f );
 	mesh = m_pMeshes[L"kardus_h"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_h"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.3509f, 0.3646f, 0.2085f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.3509f, 0.3646f, 0.2085f), 1.0f );
 	mesh = m_pMeshes[L"kardus_i"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_i"] = prefab;
 
-	rigidBody = createBoxRigidBody( Vector3(0.3172f, 0.3165f, 0.1623f), 1.0f );
+	rigidBody = CreateBoxRigidBody( Vector3(0.3172f, 0.3165f, 0.1623f), 1.0f );
 	mesh = m_pMeshes[L"kardus_j"];
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody );
 	m_pPrefabs[L"prop_kardus_j"] = prefab;
@@ -1648,7 +1644,7 @@ void Scene::loadPrefabs()
 
 	mesh = m_pMeshes[L"metro_kasur"];
 	Transform transform;
-	transform.setPosition(0.0f,0.0f,0.336f);
+	transform.SetPosition(0.0f,0.0f,0.336f);
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody, transform );
 	m_pPrefabs[L"prop_metro_kasur"] = prefab;
 	}
@@ -1670,17 +1666,17 @@ void Scene::loadPrefabs()
 
 	mesh = m_pMeshes[L"metro_kursiroda"];
 	Transform transform;
-	transform.setPosition(0.0f,0.0f,0.0f);
+	transform.SetPosition(0.0f,0.0f,0.0f);
 	prefab = new Entity_Prop( m_pRenderSystem, m_pPhysicsSystem, mesh, rigidBody, transform );
 	m_pPrefabs[L"prop_metro_kursiroda"] = prefab;
 	}
 }
 
-hkpRigidBody* Scene::createBoxRigidBody( Vector3 halfExtents, float mass )
+hkpRigidBody* Scene::CreateBoxRigidBody( Vector3 halfExtents, float mass )
 {
 	if (m_pPhysicsSystem)
 	{
-		return m_pPhysicsSystem->createBoxRigidBody( halfExtents, mass );
+		return m_pPhysicsSystem->CreateBoxRigidBody( halfExtents, mass );
 	}
 	return NULL;
 }

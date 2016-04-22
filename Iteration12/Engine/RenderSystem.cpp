@@ -5,7 +5,7 @@
 #include "Array3D.h"
 #include "FullscreenQuad.h"
 
-HRESULT RenderSystem::initialize( RenderSystemConfig creationConfig )
+HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
 {
 	m_Config = creationConfig;
 	m_Multithreaded = creationConfig.Multithreaded;
@@ -26,108 +26,108 @@ HRESULT RenderSystem::initialize( RenderSystemConfig creationConfig )
 	m_pDispatcher->initialize( rdConfig );
 	m_pDispatcher->m_pRenderSystem = this;
 
-	m_RenderCommandAllocator.initialize( 2048 );
+	m_RenderCommandAllocator.Initialize( 2048 );
 
 	return S_OK;
 };
 
-void RenderSystem::setOutputWindow( HWND hWnd, UINT width, UINT height )
+void RenderSystem::SetOutputWindow( HWND hWnd, UINT width, UINT height )
 {
-	m_pDispatcher->setOutputWindow( hWnd, width, height );
+	m_pDispatcher->SetOutputWindow( hWnd, width, height );
 }
 
-GeometryChunk*	 RenderSystem::createGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology )
+GeometryChunk*	 RenderSystem::CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology )
 {
-	GeometryChunk* pGeom = m_pDispatcher->createGeometryChunk( vertices, stride, byteWidth, layout, indices, numIndices, dynamic, topology );
+	GeometryChunk* pGeom = m_pDispatcher->CreateGeometryChunk( vertices, stride, byteWidth, layout, indices, numIndices, dynamic, topology );
 	if (pGeom)
-		pGeom->setRenderSystem( this );
+		pGeom->SetRenderSystem( this );
 
 	return pGeom;
 }
 
-Shaderset*	 RenderSystem::createShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug )
+Shaderset*	 RenderSystem::CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug )
 {
 	// Empty vector
 	std::vector<ShaderMacro> shaderMacros;
 	if (macros!=NULL)
 		shaderMacros = *macros;
 
-	return m_pDispatcher->createShadersetFromFile( filename, vertexShader, pixelShader, sm, shaderMacros, debug );
+	return m_pDispatcher->CreateShadersetFromFile( filename, vertexShader, pixelShader, sm, shaderMacros, debug );
 }
 
-Texture2D*	 RenderSystem::createTextureFromFile( std::wstring filename )
+Texture2D*	 RenderSystem::CreateTextureFromFile( std::wstring filename )
 {
-	return m_pDispatcher->createTextureFromFile( filename );
+	return m_pDispatcher->CreateTextureFromFile( filename );
 }
 
-Texture2D*	 RenderSystem::createTexture( UINT height, UINT width, TEXTURE_FORMAT format )
+Texture2D*	 RenderSystem::CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format )
 {
-	Texture2D* tex = m_pDispatcher->createTexture( height, width, format );
+	Texture2D* tex = m_pDispatcher->CreateTexture( height, width, format );
 
 	if (tex)
-		tex->setRenderSystem(this);
+		tex->SetRenderSystem(this);
 	
 	return tex;
 }
 
-Texture2D*	 RenderSystem::createTexture( const Image* const initialData )
+Texture2D*	 RenderSystem::CreateTexture( const Image* const initialData )
 {
 	Texture2D* tex;
 	if ( initialData != NULL)
-		tex = m_pDispatcher->createTexture( initialData->height(), 
-											initialData->width(), 
+		tex = m_pDispatcher->CreateTexture( initialData->Height(), 
+											initialData->Width(), 
 											R8G8B8A8_UNORM, 
-											initialData->data(), 
-											initialData->pitch(), 
-											initialData->dataSize() );
+											initialData->Data(), 
+											initialData->Pitch(), 
+											initialData->DataSize() );
 
 	if (tex)
-		tex->setRenderSystem(this);
+		tex->SetRenderSystem(this);
 	
 	return tex;
 }
 
-TextureCube* RenderSystem::createCubemap( Image* faces[6] )
+TextureCube* RenderSystem::CreateCubemap( Image* faces[6] )
 {
 	// Check that all faces are of equal dimensions
-	UINT width = faces[0]->width();
-	UINT height = faces[0]->height();
+	UINT width = faces[0]->Width();
+	UINT height = faces[0]->Height();
 	for (int i=1; i<6; i++)
 	{
-		if ((faces[i]->width() != width)||(faces[i]->height() != height))
+		if ((faces[i]->Width() != width)||(faces[i]->Height() != height))
 		{
 			NGWARNING( "Texture creation failed, all faces of a cubemap must be of equal dimensions. Returning NULL." );
 			return NULL;
 		}
 	}
 
-	TextureCube* tex = m_pDispatcher->createCubemap( faces );
+	TextureCube* tex = m_pDispatcher->CreateCubemap( faces );
 	if (tex)
-		tex->setRenderSystem(this);
+		tex->SetRenderSystem(this);
 	
 	return tex;
 }
 
-void RenderSystem::setCamera( Camera3D* pCamera )
+void RenderSystem::SetCamera( Camera3D* pCamera )
 {
 	m_pCamera = pCamera;
 };
 
-Camera3D* RenderSystem::getCamera()
+Camera3D* RenderSystem::GetCamera()
 {
 	return m_pCamera;
 }
 
-RenderDispatcher* RenderSystem::getRenderDispatcher()
+RenderDispatcher* RenderSystem::GetRenderDispatcher()
 {
 	return m_pDispatcher;
 }
 
-void RenderSystem::consumeRenderQueue( bool returnAfterFrameFinished )
+void RenderSystem::ConsumeRenderQueue( bool returnAfterFrameFinished )
 {
 	RenderCommand* rc;
 	bool notEmpty = true;
-	this->getRenderDispatcher()->frameFinished = false;
+	this->GetRenderDispatcher()->frameFinished = false;
 	if (returnAfterFrameFinished)
 	{
 		Timer looptimer;
@@ -137,25 +137,25 @@ void RenderSystem::consumeRenderQueue( bool returnAfterFrameFinished )
 		do
 		{
 			//looptimer.start();
-			popTimer.start();
+			popTimer.Start();
 			notEmpty = m_RenderQueue.pop( rc );
 			if(notEmpty)
 			{
-				t_queuepop += popTimer.getMicroseconds();
-				rcTimer.start();
-				rc->execute( this->m_pDispatcher );
-				t_commands += rcTimer.getMiliseconds();
+				t_queuepop += popTimer.GetMicroseconds();
+				rcTimer.Start();
+				rc->Execute( this->m_pDispatcher );
+				t_commands += rcTimer.GetMiliseconds();
 
-				deallocTimer.start();
-				m_RenderCommandAllocator.deallocate(rc);
+				deallocTimer.Start();
+				m_RenderCommandAllocator.Deallocate(rc);
 				//delete rc;
-				t_dealloc += deallocTimer.getMiliseconds();
+				t_dealloc += deallocTimer.GetMiliseconds();
 			}
 			else
-				t_renderstarve += popTimer.getMiliseconds();
-			//getRenderDispatcher()->t_renderloop += looptimer.getMiliseconds();
+				t_renderstarve += popTimer.GetMiliseconds();
+			//GetRenderDispatcher()->t_renderloop += looptimer.GetMiliseconds();
 		}
-		while (!this->getRenderDispatcher()->frameFinished);
+		while (!this->GetRenderDispatcher()->frameFinished);
 		return;
 	}
 	else
@@ -167,69 +167,72 @@ void RenderSystem::consumeRenderQueue( bool returnAfterFrameFinished )
 		while (1)
 		{
 			//looptimer.start();
-			popTimer.start();
+			popTimer.Start();
 			notEmpty = m_RenderQueue.pop( rc );
 			if(notEmpty)
 			{
-				t_queuepop += popTimer.getMicroseconds();
-				rcTimer.start();
-				rc->execute( this->m_pDispatcher );
-				t_commands += rcTimer.getMiliseconds();
+				t_queuepop += popTimer.GetMicroseconds();
+				rcTimer.Start();
+				rc->Execute( this->m_pDispatcher );
+				t_commands += rcTimer.GetMiliseconds();
 
-				deallocTimer.start();
-				m_RenderCommandAllocator.deallocate(rc);
+				deallocTimer.Start();
+				m_RenderCommandAllocator.Deallocate(rc);
 				//delete rc;
-				t_dealloc += deallocTimer.getMiliseconds();
+				t_dealloc += deallocTimer.GetMiliseconds();
 			}
 			else
-				t_renderstarve += popTimer.getMiliseconds();
-			//getRenderDispatcher()->t_renderloop += looptimer.getMiliseconds();
+				t_renderstarve += popTimer.GetMiliseconds();
+			//GetRenderDispatcher()->t_renderloop += looptimer.GetMiliseconds();
 		}
 	}
 	
 	return;
 }
 
-void RenderSystem::signalFrameFinished()
+void RenderSystem::SignalFrameFinished()
 {
 	frameFinishedSemaphore.post();
 }
 
-void RenderSystem::waitForFrameToFinish()
+void RenderSystem::WaitForFrameToFinish()
 {
 	frameFinishedSemaphore.wait();
 }
 
-void RenderSystem::submit( RenderCommand* pRenderCommand )
+void RenderSystem::Submit( RenderCommand* pRenderCommand )
 {
 	if (m_Multithreaded)
+	{
 		// If multithreading is enabled, push this render command to the render queue 
-		// to be rendered on a dedicated thread
-		submitThreaded( pRenderCommand );
-
+		// to be executed on a dedicated render thread
+		SubmitThreaded( pRenderCommand );
+	}
 	else
 	{
-		// Single-threaded, render directly
+		// We're running single-threaded, render directly
 		Timer timer;
-		pRenderCommand->execute( m_pDispatcher );
-		t_commands += timer.getMiliseconds();
+		pRenderCommand->Execute( m_pDispatcher );
+		t_commands += timer.GetMiliseconds();
 	}
 }
 
-void RenderSystem::submitThreaded( RenderCommand* pRenderCommand )
+void RenderSystem::SubmitThreaded( RenderCommand* pRenderCommand )
 {
-	//submit( pRenderCommand );
+	//Submit( pRenderCommand );
 	
 	// Allocate
 	Timer allocTimer;
 	RenderCommand* ptr;
-	do {
-		ptr = m_RenderCommandAllocator.allocate();// (RenderCommand*) new RenderCommandBlock();//
-	} while (ptr==NULL);
+	do 
+	{
+		ptr = m_RenderCommandAllocator.Allocate();// (RenderCommand*) new RenderCommandBlock();//
+	} 
+	while (ptr==NULL);
 
 	//memcpy(ptr, pRenderCommand, sizeof(RenderCommandBlock));
-	pRenderCommand->clone( ptr );
-	t_alloc += allocTimer.getMiliseconds();
+	pRenderCommand->Clone( ptr );
+	t_alloc += allocTimer.GetMiliseconds();
 	//ptr->m_InUse = true;
 
 	// Push into render queue
@@ -238,29 +241,30 @@ void RenderSystem::submitThreaded( RenderCommand* pRenderCommand )
 	do
 	{
 		pushed = m_RenderQueue.push( ptr );
-	} while (!pushed);
+	} 
+	while (!pushed);
 	
 	//m_RenderQueue.push( ptr );
-	t_queuepush += pushTimer.getMicroseconds();
+	t_queuepush += pushTimer.GetMicroseconds();
 }
 
-void RenderSystem::setRenderTarget( Texture2D* pRenderTarget )
+void RenderSystem::SetRenderTarget( Texture2D* pRenderTarget )
 {
 	m_pRenderTarget = pRenderTarget;
 	D3D11RenderCommand_RenderTarget rc;
-	rc.setRenderTargetTexture( (DX11Texture2D*)pRenderTarget );
+	rc.SetRenderTargetTexture( (DX11Texture2D*)pRenderTarget );
 
-	submit( &rc );
+	Submit( &rc );
 }
 
-void RenderSystem::setMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray )
+void RenderSystem::SetMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray )
 {
 	// Check that all render targets have the same dimensions
-	UINT width = pRenderTargetArray[0]->getWidth();
-	UINT height = pRenderTargetArray[0]->getHeight();
+	UINT width = pRenderTargetArray[0]->GetWidth();
+	UINT height = pRenderTargetArray[0]->GetHeight();
 	for (int i=1; i<numRenderTargets; i++)
 	{
-		if((pRenderTargetArray[i]->getWidth() != width)||(pRenderTargetArray[0]->getHeight() != height))
+		if((pRenderTargetArray[i]->GetWidth() != width)||(pRenderTargetArray[0]->GetHeight() != height))
 		{
 			NGWARNING( "Failed : Multiple Render Targets (MRTs) must have the same dimensions. Render target unchanged." );
 			return;
@@ -269,64 +273,64 @@ void RenderSystem::setMultipleRenderTargets( UINT numRenderTargets, Texture2D** 
 
 	// Create command and submit
 	D3D11RenderCommand_MRT rc;
-	rc.setRenderTargetTextures( numRenderTargets, (DX11Texture2D**)pRenderTargetArray );
+	rc.SetRenderTargetTextures( numRenderTargets, (DX11Texture2D**)pRenderTargetArray );
 
-	submit( &rc );
+	Submit( &rc );
 }
 
-void RenderSystem::setBackbufferAsRenderTarget()
+void RenderSystem::SetBackbufferAsRenderTarget()
 {
 	// A NULL render target automatically sets it to the backbuffer
 	D3D11RenderCommand_RenderTarget rc;
-	rc.setRenderTargetTexture( NULL );
+	rc.SetRenderTargetTexture( NULL );
 	
-	submit( &rc );
+	Submit( &rc );
 }
 
-void RenderSystem::resolveMSAA( Texture2D* pDestination, Texture2D* pSource )
+void RenderSystem::ResolveMSAA( Texture2D* pDestination, Texture2D* pSource )
 {
 	D3D11RenderCommand_ResolveMSAA rc;
-	rc.setDestination( pDestination );
-	rc.setSource( pSource );
+	rc.SetDestination( pDestination );
+	rc.SetSource( pSource );
 
-	submit( &rc );
+	Submit( &rc );
 }
 
-void RenderSystem::clearTexture( Texture2D* pTexture, float* clearColorRGBA )
+void RenderSystem::ClearTexture( Texture2D* pTexture, float* clearColorRGBA )
 {
 	D3D11RenderCommand_ClearTexture rc;
-	rc.setClearColor( clearColorRGBA );
-	rc.setTexture( (DX11Texture2D*)pTexture );
+	rc.SetClearColor( clearColorRGBA );
+	rc.SetTexture( (DX11Texture2D*)pTexture );
 	
-	submit( &rc );
+	Submit( &rc );
 }
 
-void RenderSystem::downsampleTexture( Texture2D* target, Texture2D* source )
+void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
 {
 	// TODO : put up a warning if the target resolution isn't right
 
 	// Get our current bound render target so we can revert back to it later
-	Texture2D* renderTarget = this->getRenderTarget();
+	Texture2D* renderTarget = this->GetRenderTarget();
 
 	// Set target texture as render target
-	this->setRenderTarget( target );
+	this->SetRenderTarget( target );
 	float clearColor[4] = { 0.5f, 0.125f, 0.3f, 1.0f };
-	this->clearTexture( target, clearColor );
+	this->ClearTexture( target, clearColor );
 
 	// Fullscreen pass
 	FullscreenQuad* quad = new FullscreenQuad( this );
-	quad->setShaderset( this->loadShaderset( L"Shaders/Downsample.hlsl", "VS", "PS", SM_AUTO ) );
-	quad->setTexture( "texSource", source );
+	quad->SetShaderset( this->LoadShaderset( L"Shaders/Downsample.hlsl", "VS", "PS", SM_AUTO ) );
+	quad->SetTexture( "texSource", source );
 	ShaderParamBlock params;
-	params.assign( "TargetDimensions", 0,  &Vector4( target->getWidth(), target->getHeight(), 0.0f, 0.0f ) );
-	quad->setShaderParams( params );
-	quad->render(false);
+	params.assign( "TargetDimensions", 0,  &Vector4( target->GetWidth(), target->GetHeight(), 0.0f, 0.0f ) );
+	quad->SetShaderParams( params );
+	quad->Render(false);
 
 	// Revert back to original render target
-	this->setRenderTarget( renderTarget );
+	this->SetRenderTarget( renderTarget );
 }
 
-void RenderSystem::beginFrame( float* clearColorRGBA, float depthClear, UINT8 stencilClear )
+void RenderSystem::BeginFrame( float* clearColorRGBA, float depthClear, UINT8 stencilClear )
 {
 	drawcalls = 0;
 	t_commands = 0.0f;
@@ -338,32 +342,32 @@ void RenderSystem::beginFrame( float* clearColorRGBA, float depthClear, UINT8 st
 	t_renderstarve = 0.0f;
 	t_shaderparams = 0.0f;
 	m_pDispatcher->frameFinished = false;
-	getRenderDispatcher()->timer2.start();
+	GetRenderDispatcher()->timer2.Start();
 	D3D11RenderCommand_BeginFrame rc;
 
-	rc.setClearColor( clearColorRGBA );
-	rc.setDepthStencilClear( depthClear, stencilClear );
+	rc.SetClearColor( clearColorRGBA );
+	rc.SetDepthStencilClear( depthClear, stencilClear );
 
-	submit( &rc );
+	Submit( &rc );
 }
 
-void RenderSystem::beginFrame()
+void RenderSystem::BeginFrame()
 {
 	float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
-	beginFrame( ClearColor, 1.0f, 0 );
+	BeginFrame( ClearColor, 1.0f, 0 );
 }
 
-void RenderSystem::endFrame()
+void RenderSystem::EndFrame()
 {
 	D3D11RenderCommand_EndFrame  rc;
 	
-	submit( &rc );
+	Submit( &rc );
 }
 
 
-void RenderSystem::present( UINT SyncInterval )
+void RenderSystem::Present( UINT SyncInterval )
 {
-	m_pDispatcher->present( SyncInterval );
+	m_pDispatcher->Present( SyncInterval );
 }
 
 void present( RenderOutput* pOutput, UINT SyncInterval )
@@ -371,17 +375,17 @@ void present( RenderOutput* pOutput, UINT SyncInterval )
 
 }
 
-void RenderSystem::clearBackbuffer( float* clearColorRGBA )
+void RenderSystem::ClearBackbuffer( float* clearColorRGBA )
 {
-	m_pDispatcher->clearBackbuffer( clearColorRGBA );
+	m_pDispatcher->ClearBackbuffer( clearColorRGBA );
 }
 
-void RenderSystem::clearDepthStencil( float depth, UINT8 stencil )
+void RenderSystem::ClearDepthStencil( float depth, UINT8 stencil )
 {
-	m_pDispatcher->clearDepthStencil( depth, stencil );
+	m_pDispatcher->ClearDepthStencil( depth, stencil );
 }
 
-Mesh* RenderSystem::loadMesh( std::string filename, bool cache )
+Mesh* RenderSystem::LoadMesh( std::string filename, bool cache )
 {
 	if (cache)
 	{
@@ -395,7 +399,7 @@ Mesh* RenderSystem::loadMesh( std::string filename, bool cache )
 			DEBUG_OUTPUT( filename.c_str() );
 			DEBUG_OUTPUT( "\n" );
 			// If not found, create and cache it
-			Mesh* mesh = MeshLoader::fromFile( (DX11RenderDispatcher*)m_pDispatcher, filename.c_str() );
+			Mesh* mesh = MeshLoader::FromFile( (DX11RenderDispatcher*)m_pDispatcher, filename.c_str() );
 			m_pMeshes[filename] = mesh;
 			return mesh;
 		}
@@ -405,11 +409,11 @@ Mesh* RenderSystem::loadMesh( std::string filename, bool cache )
 		DEBUG_OUTPUT( "Loading " );
 		DEBUG_OUTPUT( filename.c_str() );
 		DEBUG_OUTPUT( "\n" );
-		return MeshLoader::fromFile( (DX11RenderDispatcher*)m_pDispatcher, filename.c_str() );
+		return MeshLoader::FromFile( (DX11RenderDispatcher*)m_pDispatcher, filename.c_str() );
 	}
 }
 
-Texture2D*	RenderSystem::loadTexture( std::wstring filename, bool cache )
+Texture2D*	RenderSystem::LoadTexture( std::wstring filename, bool cache )
 {
 	if (cache)
 	{
@@ -423,9 +427,9 @@ Texture2D*	RenderSystem::loadTexture( std::wstring filename, bool cache )
 			DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
 			DEBUG_OUTPUT( "\n" );
 			// If not found, create and cache it
-			Texture2D* tex = createTextureFromFile( filename );
+			Texture2D* tex = CreateTextureFromFile( filename );
 			if (tex)
-				tex->setRenderSystem(this);
+				tex->SetRenderSystem(this);
 			m_pTextures[filename] = tex;
 			return tex;
 		}
@@ -435,15 +439,15 @@ Texture2D*	RenderSystem::loadTexture( std::wstring filename, bool cache )
 		DEBUG_OUTPUT( "Loading " );
 		DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
 		DEBUG_OUTPUT( "\n" );
-		Texture2D* tex = createTextureFromFile( filename );
+		Texture2D* tex = CreateTextureFromFile( filename );
 		if (tex)
-			tex->setRenderSystem(this);
+			tex->SetRenderSystem(this);
 		return tex;
 	}
 }
 
 
-Shaderset* RenderSystem::loadShaderset( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm,  std::vector<ShaderMacro>* macros, bool debug, bool cache )
+Shaderset* RenderSystem::LoadShaderset( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm,  std::vector<ShaderMacro>* macros, bool debug, bool cache )
 {
 	if (cache)
 	{
@@ -468,7 +472,7 @@ Shaderset* RenderSystem::loadShaderset( std::wstring filename, std::string verte
 			DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
 			DEBUG_OUTPUT( "\n" );
 			// If not found, create and cache it
-			Shaderset* ret = createShadersetFromFile( filename, vertexShader, pixelShader, sm, macros, debug );
+			Shaderset* ret = CreateShadersetFromFile( filename, vertexShader, pixelShader, sm, macros, debug );
 			m_pShadersets.push_back( std::make_pair( desc, ret ) );
 			return ret;
 		}
@@ -478,12 +482,12 @@ Shaderset* RenderSystem::loadShaderset( std::wstring filename, std::string verte
 		DEBUG_OUTPUT( "Loading " );
 		DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
 		DEBUG_OUTPUT( "\n" );
-		return createShadersetFromFile( filename, vertexShader, pixelShader, sm, macros, debug );
+		return CreateShadersetFromFile( filename, vertexShader, pixelShader, sm, macros, debug );
 	}
 }
 
 
-Mesh* RenderSystem::createBoxWireframeMesh(XMFLOAT3 dimensions)
+Mesh* RenderSystem::CreateBoxWireframeMesh(XMFLOAT3 dimensions)
 {
 	// Find box mesh with matching dimensions
 	std::vector< std::pair<XMFLOAT3, Mesh*> >::iterator it = std::find_if( m_pBoxWireframeMeshes.begin(),  m_pBoxWireframeMeshes.end(), FindFirst<XMFLOAT3, Mesh*>( dimensions ) );
@@ -545,28 +549,28 @@ Mesh* RenderSystem::createBoxWireframeMesh(XMFLOAT3 dimensions)
 
 		// Define vertex layout of the Vertex Buffer
 		BufferLayout bufflayout;
-		bufflayout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		bufflayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		bufflayout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
 
 		// Create the object
 		Submesh* submesh = new Submesh();
-		submesh->setGeometryChunk( this->createGeometryChunk( (float*)&verts, 
-			bufflayout.getByteSize(), 
-			bufflayout.getByteSize() * 8, 
+		submesh->SetGeometryChunk( this->CreateGeometryChunk( (float*)&verts, 
+			bufflayout.GetByteSize(), 
+			bufflayout.GetByteSize() * 8, 
 			bufflayout, (UINT*)&indices, 
 			24, 
 			false, 
 			D3D_PRIMITIVE_TOPOLOGY_LINELIST ) );
 		Mesh* mesh = new Mesh();
-		mesh->setName("Box Wireframe Mesh");
-		mesh->addSubmesh( submesh );
+		mesh->SetName("Box Wireframe Mesh");
+		mesh->AddSubmesh( submesh );
 
 		m_pBoxWireframeMeshes.push_back( std::make_pair(dimensions,mesh) );
 		return mesh;
 	}
 }
 
-Mesh* RenderSystem::createPlaneMesh(XMFLOAT2 dimensions, XMFLOAT2 uvscale)
+Mesh* RenderSystem::CreatePlaneMesh(XMFLOAT2 dimensions, XMFLOAT2 uvscale)
 {
 	// Find box mesh with matching dimensions
 	std::vector< std::pair< std::pair<XMFLOAT2,XMFLOAT2> , Mesh* > >::iterator it = std::find_if(  m_pPlaneMeshes.begin(),  m_pPlaneMeshes.end(), FindFirst<std::pair<XMFLOAT2,XMFLOAT2>, Mesh*>( std::make_pair(dimensions,uvscale) ) );
@@ -599,36 +603,36 @@ Mesh* RenderSystem::createPlaneMesh(XMFLOAT2 dimensions, XMFLOAT2 uvscale)
 		};
 
 		BufferLayout bufflayout;
-		bufflayout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		bufflayout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.addElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.addElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		bufflayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		bufflayout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		bufflayout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		bufflayout.AddElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		bufflayout.AddElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 
 		Submesh* submesh = new Submesh();
-		submesh->setGeometryChunk( this->createGeometryChunk( (float*)&verts, 
-									bufflayout.getByteSize(), 
-									bufflayout.getByteSize() * 4, 
+		submesh->SetGeometryChunk( this->CreateGeometryChunk( (float*)&verts, 
+									bufflayout.GetByteSize(), 
+									bufflayout.GetByteSize() * 4, 
 									bufflayout, 
 									(UINT*)&indices, 
 									6) );
 		Mesh* mesh = new Mesh();
-		mesh->setName("Plane Mesh");
-		mesh->addSubmesh( submesh );
+		mesh->SetName("Plane Mesh");
+		mesh->AddSubmesh( submesh );
 
 		m_pPlaneMeshes.push_back( std::make_pair(std::make_pair(dimensions,uvscale),mesh) );
 		return mesh;
 	}
 }
 
-Mesh* RenderSystem::createMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology )
+Mesh* RenderSystem::CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology )
 {
 	// TODO : store mesh
 
 	Submesh* submesh = new Submesh();
-	submesh->setGeometryChunk( this->createGeometryChunk( vertices, 
-								vertexLayout.getByteSize(), 
-								vertexLayout.getByteSize() * numVertices, 
+	submesh->SetGeometryChunk( this->CreateGeometryChunk( vertices, 
+								vertexLayout.GetByteSize(), 
+								vertexLayout.GetByteSize() * numVertices, 
 								vertexLayout, 
 								indices, 
 								numIndices, 
@@ -637,26 +641,26 @@ Mesh* RenderSystem::createMesh( float* vertices, UINT numVertices, UINT* indices
 
 	Mesh* mesh = new Mesh();
 	if (dynamic)
-		mesh->setName("Dynamic mesh created with RenderSystem::createMesh()");
+		mesh->SetName("Dynamic mesh created with RenderSystem::CreateMesh()");
 	else
-		mesh->setName("Static mesh created with RenderSystem::createMesh()");
-	mesh->addSubmesh( submesh );
+		mesh->SetName("Static mesh created with RenderSystem::CreateMesh()");
+	mesh->AddSubmesh( submesh );
 
 	return mesh;
 }
 
-Renderer* RenderSystem::createRenderer()
+Renderer* RenderSystem::CreateRenderer()
 {
 	/*if (m_CreationInfo.api==GRAPHICS_API_DX11)
 	{
 		Renderer* ptr = new DX11Renderer();
-		ptr->setRenderSystem(this);
+		ptr->SetRenderSystem(this);
 		return ptr;
 	}
 	else
 	{*/
 		Renderer* ptr = new Renderer();
-		ptr->setRenderSystem(this);
+		ptr->SetRenderSystem(this);
 		return ptr;
 	//}
 }
