@@ -321,14 +321,13 @@ HRESULT InitDevice()
 	// Create and initialize physics system
 	pPhysicsSystem = new PhysicsSystem();
 	pPhysicsSystem->InitHavok();
-	//pPhysicsSystem = NULL;
 
 	// Create fps camera
 	pCamera = new CameraFPS();
 	pCamera->SetPosition( Vector3( 0.0f, 5.0f, 2.0f ) );
 	pCamera->SetLookAt( Vector3( 0.0f, 1.0f, 0.0f ) );
 	pCamera->SetUpVector( Vector3( 0.0f, 0.0f, 1.0f ) );
-	pCamera->SetProjection( XM_PI*0.35f, width / (FLOAT)height, 0.1f, 5000.0f );
+	pCamera->SetProjection( XM_PI*0.35f, width / (float)height, 0.1f, 5000.0f );
 	pCamera->Update( 0.0f );
 
 	// Create controllable player entity
@@ -340,7 +339,7 @@ HRESULT InitDevice()
 
 	// Set up the scene
 	scene.Init( pRenderSystem, pPhysicsSystem );
-	scene.GetPhysicsSystem( L"Levels/physics_testlevel09.txt" );
+	scene.LoadFromFile( L"Levels/physics_testlevel09.txt" );
 	//scene.LoadCustomObjects();
 	scene.AddEntity(pFPPlayer);
 

@@ -60,3 +60,22 @@ protected:
 	void*	m_pData;
 	UINT	m_DataSize;
 };
+
+class DX11RenderCommand_CopySubresourceRegion : public RenderCommand
+{
+public:
+	DX11RenderCommand_CopySubresourceRegion() : m_pSource(NULL), m_pDestination(NULL), m_SourceSubresourceIndex(0), m_DestinationSubresourceIndex(0) {};
+
+	void SetSource( ID3D11Resource*	source, UINT subresourceIndex )				{ m_pSource = source; m_SourceSubresourceIndex = subresourceIndex; };
+	void SetDestination( ID3D11Resource* destination, UINT subresourceIndex )	{ m_pDestination = destination; m_DestinationSubresourceIndex = subresourceIndex; };
+
+	void Execute( RenderDispatcher* pDispatcher );
+
+	void Clone( RenderCommand* ptr );
+
+protected:
+	ID3D11Resource*		m_pSource;
+	UINT				m_SourceSubresourceIndex;
+	ID3D11Resource*		m_pDestination;
+	UINT				m_DestinationSubresourceIndex;
+};

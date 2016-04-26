@@ -3,7 +3,7 @@
 //--------------------------------------------------------------------------------------
 #include "LightingCommon.hlsl"
 
-TextureCube txSource;
+TextureCube texSource;
 
 cbuffer cbPerFrame
 {
@@ -102,7 +102,7 @@ float4 PS( PS_INPUT input) : SV_Target
 			float3 local = mul( sample, makeRotationDir( direction, float3(0.0f, 1.0f, 0.0f) ) );
 			float3 world = mul( local, (float3x3)World );
 
-			result += txSource.SampleLevel( samLinear, world, 0.0f ) * D_GGX( fRoughness, cos(phi_theta.y) ) * cos(phi_theta.y); // cos(phi_theta.y) equals NdotL
+			result += texSource.SampleLevel( samLinear, world, 0.0f ) * D_GGX( fRoughness, cos(phi_theta.y) ) * cos(phi_theta.y); // cos(phi_theta.y) equals NdotL
 			p += D_GGX( fRoughness, cos(phi_theta.y) );
 		}
 	}
@@ -110,7 +110,7 @@ float4 PS( PS_INPUT input) : SV_Target
 	// Center sample
 	float3 direction = normalize(float3(ScreenCoord.x, ScreenCoord.y, 1.0f));
 	float3 world = mul( direction, (float3x3)World );
-	result += txSource.SampleLevel( samLinear, world, 0.0f )*D_GGX( fRoughness, 1.0f );
+	result += texSource.SampleLevel( samLinear, world, 0.0f )*D_GGX( fRoughness, 1.0f );
 	p += D_GGX( fRoughness, 1.0f );
 	
 	return result/(p);

@@ -79,19 +79,23 @@ PS_INPUT VS( VS_INPUT input )
 //--------------------------------------------------------------------------------------
 PSOut PS( PS_INPUT input) : SV_Target
 {
+	// Some models have screwed up/unnormalized tangent spaces
 	input.Tangent.xyz = normalize(input.Tangent.xyz);
 	input.Bitangent.xyz = normalize(input.Bitangent.xyz);
 	input.Normal.xyz = normalize(input.Normal.xyz);
+	
 	matrix < float,3,3 > matTBN = {	input.Tangent.x,	input.Tangent.y,	input.Tangent.z,		
-					input.Bitangent.x,	input.Bitangent.y,	input.Bitangent.z,		
-					input.Normal.x,		input.Normal.y,		input.Normal.z,			
-					}; 
-	float3 normalmap = ( txNormal.Sample( samLinear, input.Tex )*2.0f - float3( 1.0f, 1.0f, 1.0f ) );
-	normalmap = normalize( normalmap );		// somewhat helps with compression artefacts
+									input.Bitangent.x,	input.Bitangent.y,	input.Bitangent.z,		
+									input.Normal.x,		input.Normal.y,		input.Normal.z,			
+									};
+									
+	float3 Normalmap = ( txNormal.Sample( samLinear, input.Tex )*2.0f - float3( 1.0f, 1.0f, 1.0f ) );
+	Normalmap = normalize( Normalmap );		// somewhat helps with compression artefacts
+	
 	float specular = txSpecular.Sample( samLinear, input.Tex ).g;//*SpecularParams.x;
 	float gloss = txSpecular.Sample( samLinear, input.Tex ).r*0.95f;
 	float ao = pow(txAO.Sample( samLinear, input.Tex ).r,GAMMATOLINEAR*1.5f);
-	float3 normals = mul( normalmap , matTBN );
+	float3 normals = mul( Normalmap , matTBN );
 	float3 viewvector = normalize(vEyePos.xyz - input.WSPos.xyz);
 	float3 reflectionvector = reflect( -viewvector, normals ).xzy;
 	float fresnel = pow( 1.0f - saturate( dot( viewvector, normals ) ), 5.0f );
@@ -99,8 +103,12 @@ PSOut PS( PS_INPUT input) : SV_Target
     fresnel += specular;
 
 	PSOut output;
-	output.backbuffer = (1.0/PI)*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*ao*txIBL.SampleLevel( samLinear, normals.xzy, 6.5f );
-	output.backbuffer += (1.0/PI)*ao*fresnel*txIBL.SampleLevel( samLinear, reflectionvector, (1.0f-gloss)*9.0f );
+	// Diffuse part of the environment lighting
+	output.backbuffer = ao*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*txIBL.SampleLevel( samLinear, normals.xzy, 7.5f );
+	// Specular part of the environment lighting
+	output.backbuffer += (1.0/PI)*ao*fresnel*txIBL.SampleLevel( samLinear, reflectionvector, (1.0f-gloss)*10.0f );
+	
+	// G-Buffer outputs
 	output.gbuffer0.xyz = txDiffuse.Sample( samLinear, input.Tex ).xyz;	// Gamma-space albedo
 	output.gbuffer1.xyz = normals.xyz;	// World space normals
 	output.gbuffer1.w = -input.VSPos.z/fFarPlane; // View space linear depth

@@ -13,7 +13,7 @@ public:
 	void SetTexture( std::string const &name, Texture2D *pTexture );
 	void SetShaderParams( ShaderParamBlock params );
 	void ClearTextures();
-	void Render( bool renderAdditive );
+	void Render( bool renderAdditive = false );
 
 protected:
 	RenderSystem* m_pRenderSystem;

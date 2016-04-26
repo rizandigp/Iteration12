@@ -38,7 +38,7 @@ public:
 	RenderSystem* GetRenderSystem()		{ return m_pRenderSystem; };
 	PhysicsSystem* GetPhysicsSystem()	{ return m_pPhysicsSystem; };
 
-	void GetPhysicsSystem( std::wstring filename );
+	void LoadFromFile( std::wstring filename );
 	void LoadCustomObjects();	// Programmatically create objects
 
 	double	t_Cull, t_scenerender, t_physics, t_ocean;

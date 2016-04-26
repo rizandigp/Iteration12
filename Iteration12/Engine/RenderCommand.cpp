@@ -245,4 +245,3 @@ void D3D11RenderCommand_ResolveMSAA::Clone( RenderCommand* ptr )
 {
 	new (ptr) D3D11RenderCommand_ResolveMSAA(*this);
 }
-

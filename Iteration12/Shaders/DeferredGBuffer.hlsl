@@ -91,12 +91,12 @@ PSOut PS( PS_INPUT input) : SV_Target
 	float3 ViewVector = normalize(vEyePos.xyz - input.WSPos.xyz);
 
 	PSOut output;
-	output.backbuffer = 0.0f;//0.65f*txDiffuse.Sample( samLinear, input.Tex )*pow( 1.0f - saturate( dot(ViewVector, Normal ) ), 5.0f );
+	output.backbuffer = 0;//0.05f*float4(0.2f,0.4f,1.0f,1.0f)*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*pow( 1.0f - saturate( dot(ViewVector, Normal ) ), 2.0f );
 	output.gbuffer0.xyz = txDiffuse.Sample( samLinear, input.Tex ).xyz;
 	output.gbuffer1.xyz = Normal;//input.Normal.xyz;
 	output.gbuffer1.w = -input.VSPos.z/fFarPlane; // View space linear depth
 	output.gbuffer2.xyz = txSpecular.Sample( samLinear, input.Tex ).g*SpecularParams.x;
-	output.gbuffer2.w = pow(txSpecular.Sample( samLinear, input.Tex ).r,0.7f)*0.95f;
+	output.gbuffer2.w = pow(txSpecular.Sample( samLinear, input.Tex ).r,0.8f)*0.95f;
 
 	return output;
 }

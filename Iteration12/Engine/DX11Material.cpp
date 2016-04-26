@@ -533,11 +533,11 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);*/
 
-	command->SetTexture( "txGBuffer0", (DX11Texture2D*)m_pGbuffer[0] );
-	command->SetTexture( "txGBuffer1", (DX11Texture2D*)m_pGbuffer[1] );
-	command->SetTexture( "txGBuffer2", (DX11Texture2D*)m_pGbuffer[2] );
-	command->SetTexture( "txShadowmap", (DX11Texture2D*)m_pShadowmap );
-	command->SetTexture( "txCookie", (DX11Texture2D*)m_pCookie );
+	command->SetTexture( "texGBuffer0", (DX11Texture2D*)m_pGbuffer[0] );
+	command->SetTexture( "texGBuffer1", (DX11Texture2D*)m_pGbuffer[1] );
+	command->SetTexture( "texGBuffer2", (DX11Texture2D*)m_pGbuffer[2] );
+	command->SetTexture( "texShadowmap", (DX11Texture2D*)m_pShadowmap );
+	command->SetTexture( "texCookie", (DX11Texture2D*)m_pCookie );
 
 	Timer paraminit;
 	// Set common shader parameters

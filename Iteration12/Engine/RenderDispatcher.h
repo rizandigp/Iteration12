@@ -71,16 +71,14 @@ class RenderDispatcher
 public:
 	RenderDispatcher() : frameFinished(false) {};
 
-	static RenderDispatcher* create( RenderDispatcherConfig creationInfo );
+	static RenderDispatcher* Create( RenderDispatcherConfig creationInfo );
 
-	virtual HRESULT initialize( RenderDispatcherConfig creationInfo )=0;
+	virtual HRESULT Initialize( RenderDispatcherConfig creationInfo )=0;
 
 	// Consume a render queue.
 	void ConsumeRenderQueue( std::queue<RenderCommand> *pRenderQueue );
 	// Executes a RenderCommand. Called by RenderSystem.
 	//void ExecuteRenderCommand( RenderCommand *pRenderCommand );
-
-	//virtual void addRenderAgent( IRenderAgent* pRenderAgent );
 
 	// Bind shader parameters for drawing via the old ShaderParamBlock.
 	virtual void BindShaderParams( ShaderParamBlock *pParamBlock )=0;
@@ -160,7 +158,7 @@ class DX11RenderDispatcher : public RenderDispatcher
 public:
 	DX11RenderDispatcher();
 
-	HRESULT initialize( RenderDispatcherConfig creationConfig );
+	HRESULT Initialize( RenderDispatcherConfig creationConfig );
 
 	void BindShaderParams( ShaderParamBlock *pParamBlock );
 	void BindShaderParams( ShaderParams *pParams );

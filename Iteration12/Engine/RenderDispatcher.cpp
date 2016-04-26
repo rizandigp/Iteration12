@@ -27,7 +27,7 @@ DX11RenderDispatcher::DX11RenderDispatcher() : RenderDispatcher()
 	}
 }
 
-HRESULT DX11RenderDispatcher::initialize( RenderDispatcherConfig creationConfig )
+HRESULT DX11RenderDispatcher::Initialize( RenderDispatcherConfig creationConfig )
 {
 	m_Config = creationConfig;
 

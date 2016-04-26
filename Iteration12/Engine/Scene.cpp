@@ -4,6 +4,7 @@
 #include "LightVolume.h"
 #include "Entity_Water.h"
 #include "Camera3D.h"
+#include "TextureCube.h"
 
 void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 {
@@ -61,7 +62,7 @@ void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	m_pSSAOCombinePass->SetTexture( "gbuffer1", m_pGBuffer[1] );
 	m_pSSAOCombinePass->SetTexture( "texSSAO", m_pSSAOBuffer );
 
-		// Compile tonemapping shader with diferrent settings
+	// Compile tonemapping shader with diferrent settings
 	m_pTonemappingShaderset[0] = m_pRenderSystem->LoadShaderset( L"Shaders/Tonemapping.hlsl", "VS", "PS", SM_5_0  );
 
 	std::vector<ShaderMacro> macros;
@@ -665,7 +666,6 @@ void Scene::ParallelRenderDeferred()
 	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->GetCamera()->getViewProjectionMatrix().inverse().transpose().intoXMFLOAT4X4() );
 	m_pSunlight->SetShaderParams( shaderParams );
 	m_pSunlight->render( true );*/
-	
 
 	//m_pSSAOPass->render( true );
 
@@ -708,7 +708,7 @@ void Scene::LoadCustomObjects()
 	//AddEntity( water );
 }
 
-void Scene::GetPhysicsSystem( std::wstring filename )
+void Scene::LoadFromFile( std::wstring filename )
 {
 	const int MAX_LINES = 2048;
 	const int MAX_CHARS_PER_LINE = 512;
@@ -729,7 +729,7 @@ void Scene::GetPhysicsSystem( std::wstring filename )
 	if (m_pPhysicsSystem)
 		m_pPhysicsSystem->GetWorld()->lock();
 
-	Entity* ent = NULL;
+	Entity* entity = NULL;
 	Transform* transform = NULL;
 	SpotLight* currentSpotLight = NULL;
 	PointLight* currentPointLight = NULL;
@@ -763,10 +763,10 @@ void Scene::GetPhysicsSystem( std::wstring filename )
 			{
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
-				ent = new Entity_StaticProp(m_pRenderSystem, m_pMeshes[L"mesh_metro_tumba01"]);
-				ent->SetName(str);
-				AddEntity(ent);
-				transform = ent->Transformation();
+				entity = new Entity_StaticProp(m_pRenderSystem, m_pMeshes[L"mesh_metro_tumba01"]);
+				entity->SetName(str);
+				AddEntity(entity);
+				transform = entity->Transformation();
 				rigidBody = NULL;
 			}
 			else if (class_string==L"ent_Lantai")
@@ -797,10 +797,10 @@ void Scene::GetPhysicsSystem( std::wstring filename )
 				hkpRigidBody* rb = CreateBoxRigidBody( Vector3(5.0f,5.0f,0.5f), 0 );
 				Transform rigidBodyRelative;
 				rigidBodyRelative.SetPosition(0.0f,0.0f,-0.5f);
-				ent = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb, rigidBodyRelative);
-				ent->SetName(str);
-				AddEntity(ent);
-				transform = ent->Transformation();
+				entity = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb, rigidBodyRelative);
+				entity->SetName(str);
+				AddEntity(entity);
+				transform = entity->Transformation();
 				rigidBody = rb;
 			}
 			else if (class_string==L"ent_Langitlangit")
@@ -813,10 +813,10 @@ void Scene::GetPhysicsSystem( std::wstring filename )
 				mat->SetNormalmap( m_pRenderSystem->LoadTexture( L"Media/concrete_opalubka_3_normal.1024.bmp" ) );
 				mat->SetSpecularMap( m_pRenderSystem->LoadTexture( L"Media/concrete_opalubka_3_bump.1024.bmp" ) );
 				
-				ent = new Entity_Plane(m_pRenderSystem,mat,XMFLOAT2(10.0f,10.0f),XMFLOAT2(3.33f,3.33f));
-				ent->SetName(str);
-				AddEntity(ent);
-				transform = ent->Transformation();
+				entity = new Entity_Plane(m_pRenderSystem,mat,XMFLOAT2(10.0f,10.0f),XMFLOAT2(3.33f,3.33f));
+				entity->SetName(str);
+				AddEntity(entity);
+				transform = entity->Transformation();
 				rigidBody = NULL;
 			}
 			else if (class_string==L"ent_Tembok")
@@ -833,10 +833,10 @@ void Scene::GetPhysicsSystem( std::wstring filename )
 				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( XMFLOAT2(10.0f,3.0f),XMFLOAT2(-3.33f,-1.0f) );
 				mesh->SetMaterial(mat);
 				hkpRigidBody* rb = CreateBoxRigidBody( Vector3(5.0f,1.5f,0.1f), 0 );
-				ent = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb);
-				ent->SetName(str);
-				AddEntity(ent);
-				transform = ent->Transformation();
+				entity = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb);
+				entity->SetName(str);
+				AddEntity(entity);
+				transform = entity->Transformation();
 				rigidBody = rb;
 			}
 			else if (class_string==L"SpotLight")
@@ -860,21 +860,21 @@ void Scene::GetPhysicsSystem( std::wstring filename )
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
 				Mesh* mesh = m_pMeshes[class_string];
-				ent = new Entity_StaticProp( m_pRenderSystem, mesh );
-				ent->SetName(str);
-				AddEntity(ent);
-				transform = ent->Transformation();
+				entity = new Entity_StaticProp( m_pRenderSystem, mesh );
+				entity->SetName(str);
+				AddEntity(entity);
+				transform = entity->Transformation();
 				rigidBody = NULL;
 			}
 			else if (m_pPrefabs.find(class_string)!=m_pPrefabs.end())
 			{
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
-				Entity_Prop* entity = new Entity_Prop(*m_pPrefabs[class_string]);	// Copy constructor
-				entity->SetName(str);
-				AddEntity(entity);
-				transform = entity->Transformation();
-				rigidBody = entity->m_pRigidBody;
+				Entity_Prop* entity_ = new Entity_Prop(*m_pPrefabs[class_string]);	// Copy constructor
+				entity_->SetName(str);
+				AddEntity(entity_);
+				transform = entity_->Transformation();
+				rigidBody = entity_->m_pRigidBody;
 			}
 			else
 			{
@@ -1444,6 +1444,9 @@ void Scene::LoadMeshes()
 		m_pMeshes[L"mesh_metro_tumba01"] = mesh;
 	}
 	
+	TextureCube* IBL = (TextureCube*)ptr->LoadTexture( L"Media/cubemap0.dds" );
+	IBL->Prefilter();
+
 	// Prefab : prop_ddo_helmet
 	// Mesh : mesh_ddo_helmet
 	{
@@ -1518,7 +1521,7 @@ void Scene::LoadMeshes()
 			}
 		}
 		//mat->SetIBL( ptr->CreateCubemap( faces ) );
-		mat->SetIBL( ptr->LoadTexture( L"Media/cubemap0.dds" ) );
+		mat->SetIBL( IBL );
 
 		Mesh* mesh = ptr->LoadMesh( "Media/DDO_SDK_Helmet/HelmetMeshTriCentered.obj" );
 		mesh->SetMaterial( mat );
@@ -1542,7 +1545,7 @@ void Scene::LoadMeshes()
 		mat->SetSpecularIntensity( 1.0f );
 		mat->SetGlossiness( 2048.0f );
 
-		mat->SetIBL( ptr->LoadTexture( L"Media/cubemap0.dds" ) );
+		mat->SetIBL( IBL );
 
 		Mesh* mesh = ptr->LoadMesh( "Media/DDO_SDK_AKS/Low.obj" );
 		mesh->SetMaterial( mat );
@@ -1562,7 +1565,7 @@ void Scene::LoadMeshes()
 		mat->SetAOMap( ptr->LoadTexture( L"Media/white.bmp" ) );
 		mat->SetSpecularIntensity( 1.0f );
 		mat->SetGlossiness( 2048.0f );
-		mat->SetIBL( ptr->LoadTexture( L"Media/cubemap0.dds" ) );
+		mat->SetIBL( IBL );
 
 		Mesh* mesh = ptr->LoadMesh( "Media/Meshes/sphere64.obj" );
 		mesh->SetMaterial( mat );

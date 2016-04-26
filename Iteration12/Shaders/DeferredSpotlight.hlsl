@@ -5,11 +5,11 @@
 
 #define SPECULAR_POWER_SCALE 2048.0f
 
-Texture2D txGBuffer0;
-Texture2D txGBuffer1;
-Texture2D txGBuffer2;
-Texture2D txShadowmap;
-Texture2D txCookie;
+Texture2D texGBuffer0;
+Texture2D texGBuffer1;
+Texture2D texGBuffer2;
+Texture2D texShadowmap;
+Texture2D texCookie;
 
 cbuffer cbPerFrame
 {
@@ -73,7 +73,7 @@ float4 PS( PS_INPUT input) : SV_Target
     float4 vFrustumRayVS = input.VSPos * (fFarPlane/-input.VSPos.z);
 
 	// Calculate view space position from linear depth
-    float4 VSPos = txGBuffer1.Sample( samLinear, ScreenCoord ).w * vFrustumRayVS;
+    float4 VSPos = texGBuffer1.Sample( samLinear, ScreenCoord ).w * vFrustumRayVS;
 	VSPos.w = 1.0f;
 
 	// Un-project to world space
@@ -95,22 +95,27 @@ float4 PS( PS_INPUT input) : SV_Target
 	// Only light this pixel if it's inside the spotlight's frustum
 	if (!(SpotlightUV.x <= 0.0f || SpotlightUV.x >= 1.0f || SpotlightUV.y <= 0.0f || SpotlightUV.y >= 1.0f))
 	{
+	
+#ifdef NO_SHADOWS
+		float Shadowing = 1.0f;
+#else
 		// Sample shadowmap
-		float shadowing = txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius );
-		shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(-1,-1) );
-		//shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(0,-1) );
-		shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(1,-1) );
-		//shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(-1,0) );
-		//shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(1,0) );
-		shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(-1,1) );
-		//shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(0,1) );
-		shadowing += txShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(1,1) );
-		shadowing /= 5.0f;
+		float Shadowing = texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius );
+		Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(-1,-1) );
+		//Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(0,-1) );
+		Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(1,-1) );
+		//Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(-1,0) );
+		//Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(1,0) );
+		Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(-1,1) );
+		//Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(0,1) );
+		Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV, SpotlightCSPos.w-SHADOWMAP_BIAS/SpotLightRadius, int2(1,1) );
+		Shadowing /= 5.0f;
+#endif // NO_SHADOWS
 
 		// Variables for lighting
-		float4 Cookie = pow(txCookie.Sample( samLinear, SpotlightUV ),GAMMATOLINEAR);
-		float4 Specmap = txGBuffer2.Sample( samLinear, ScreenCoord );
-		float3 Normal = txGBuffer1.Sample( samLinear, ScreenCoord ).xyz;
+		float4 Cookie = pow(texCookie.Sample( samLinear, SpotlightUV ),GAMMATOLINEAR);
+		float4 Specmap = texGBuffer2.Sample( samLinear, ScreenCoord );
+		float3 Normal = texGBuffer1.Sample( samLinear, ScreenCoord ).xyz;
 		float3 LightPos = float3( World._41, World._42, World._43 );
 		float3 LightVec = LightPos.xyz - WSPos.xyz;
 		float3 ViewVec = normalize(vEyePos.xyz - WSPos.xyz);
@@ -121,17 +126,17 @@ float4 PS( PS_INPUT input) : SV_Target
 		float VdotH = saturate(dot(ViewVec, normalize(normalize( LightVec )+ViewVec)));
 		float NdotV = saturate(dot(ViewVec, Normal));
 
-		float3 specular = D_GGX( 1.0f-Specmap.w, NdotH ) * F_Schlick(vSpotLightColor.xyzw*Specmap.xyz, NdotV ) * Vis_Implicit();//Vis_Smith( 1.0f-Specmap.w, NdotV, NdotL );
+		float3 Specular = D_GGX( 1.0f-Specmap.w, NdotH ) * F_Schlick(vSpotLightColor.xyzw*Specmap.xyz, NdotV ) * Vis_Implicit();//Vis_Smith( 1.0f-Specmap.w, NdotV, NdotL );
 		
-		//float3 diffuse = Diffuse_Lambert((pow(txGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vSpotLightColor.xyz);
-		//float3 diffuse = Diffuse_Burley( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ).xyz,GAMMATOLINEAR))*vSpotLightColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
-		//float3 diffuse = Diffuse_OrenNayar( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vSpotLightColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
-		float3 diffuse = Diffuse_Lambert( (pow(txGBuffer0.Sample( samLinear, ScreenCoord ).xyz,GAMMATOLINEAR))*vSpotLightColor.xyz );
+		//float3 Diffuse = Diffuse_Lambert((pow(texGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vSpotLightColor.xyz);
+		float3 Diffuse = Diffuse_Burley( (pow(texGBuffer0.Sample( samLinear, ScreenCoord ).xyz,GAMMATOLINEAR))*vSpotLightColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
+		//float3 Diffuse = Diffuse_OrenNayar( (pow(texGBuffer0.Sample( samLinear, ScreenCoord ),GAMMATOLINEAR))*vSpotLightColor.xyz, 1.0f-Specmap.w, NdotV, NdotL, VdotH );
+		//float3 Diffuse = Diffuse_Lambert( (pow(texGBuffer0.Sample( samLinear, ScreenCoord ).xyz,GAMMATOLINEAR))*vSpotLightColor.xyz );
 		
-		diffuse = max(diffuse*NdotL*DistanceAttenuation,0.0f) * Cookie * shadowing;
-		specular = max(specular*NdotL*DistanceAttenuation,0.0f) * Cookie * shadowing;
+		Diffuse = max(Diffuse*NdotL*DistanceAttenuation,0.0f) * Cookie * Shadowing;
+		Specular = max(Specular*NdotL*DistanceAttenuation,0.0f) * Cookie * Shadowing;
 		
-		return float4(diffuse,0.0f) + float4(specular,0.0f);
+		return float4(Diffuse,0.0f) + float4(Specular,0.0f);
 	}
 
 	return 0.0f;

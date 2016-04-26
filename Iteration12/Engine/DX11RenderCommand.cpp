@@ -81,3 +81,17 @@ void DX11RenderCommand_Map::Clone( RenderCommand* ptr )
 {
 	new (ptr) DX11RenderCommand_Map(*this);
 }
+
+void DX11RenderCommand_CopySubresourceRegion::Execute( RenderDispatcher *pDispatcher )
+{	
+	DX11RenderDispatcher* pd3d11Dispatcher = dynamic_cast<DX11RenderDispatcher*>(pDispatcher);
+
+	pd3d11Dispatcher->GetImmediateContext()->CopySubresourceRegion( 
+		m_pDestination, m_DestinationSubresourceIndex, 0, 0, 0,
+		m_pSource, m_SourceSubresourceIndex, NULL );
+}
+
+void DX11RenderCommand_CopySubresourceRegion::Clone( RenderCommand* ptr )
+{
+	new (ptr) DX11RenderCommand_CopySubresourceRegion(*this);
+}

@@ -3,14 +3,9 @@
 #include "Prerequisites.h"
 #include "Texture2D.h"
 
-class TextureCube : public virtual DX11Texture2D
+class TextureCube : public DX11Texture2D
 {
 public:
-	TextureCube() : DX11Texture2D() {};
-};
-
-class D3D11TextureCube : public TextureCube
-{
-	public:
-		D3D11TextureCube() : TextureCube()	{};
+	// TODO : different brdfs
+	void Prefilter();
 };

@@ -68,6 +68,7 @@ struct RenderSystemConfig
 	bool Multithreaded;
 };
 
+// TODO : This class does too many things (bad design)?
 class RenderSystem
 {
 public:
@@ -103,8 +104,9 @@ public:
 	// Render target clears.
 	void ClearBackbuffer( float* clearColorRGBA );
 	void ClearDepthStencil( float depth, UINT8 stencil );
-	// Texture clear
+	// Texture clears
 	void ClearTexture( Texture2D* pTexture, float* clearColorRGBA );
+	void ClearTexture( Texture2D* pTexture, Vector4 clearColorRGBA );
 	void DownsampleTexture( Texture2D* target, Texture2D* source );
 	// Returns current bound render target
 	Texture2D*	GetRenderTarget()	{ return m_pRenderTarget; };
@@ -139,10 +141,9 @@ public:
 	virtual Shaderset*	CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug );
 	virtual Texture2D*	CreateTextureFromFile( std::wstring filename );
 	virtual Texture2D*	CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format );
-	virtual Texture2D*	CreateTexture( const Image* const initialData );
-	template<typename T> Texture2D*	CreateTexture( const Array2D<T>* const initialData, TEXTURE_FORMAT format );
-	//virtual	Texture3D*	CreateTexture3D( UINT height, UINT width, UINT depth, TEXTURE_FORMAT format );
-	template<typename T> Texture3D* CreateTexture3D( Array3D<T>* data, TEXTURE_FORMAT format );
+	virtual Texture2D*	CreateTexture( const Image* initialData );
+	template<typename T> Texture2D*	CreateTexture( const Array2D<T>* initialData, TEXTURE_FORMAT format );
+	template<typename T> Texture3D* CreateTexture3D( const Array3D<T>* data, TEXTURE_FORMAT format );
 
 	// Create cubemap from 6 images in the order: x+,x-,y+,y-,z+,z-.
 	// All images must have the same dimensions. Only TEXTURE_FORMAT_R8G8B8A8_UNORM supported for now.
@@ -202,7 +203,7 @@ protected:
 };
 
 template<typename T> 
-Texture2D*	RenderSystem::CreateTexture( const Array2D<T>* const initialData, TEXTURE_FORMAT format )
+Texture2D*	RenderSystem::CreateTexture( const Array2D<T>* initialData, TEXTURE_FORMAT format )
 {
 	Texture2D* tex;
 	if ( initialData != NULL)
@@ -220,7 +221,7 @@ Texture2D*	RenderSystem::CreateTexture( const Array2D<T>* const initialData, TEX
 }
 
 template<typename T>
-Texture3D* RenderSystem::CreateTexture3D( Array3D<T>* data, TEXTURE_FORMAT format )
+Texture3D* RenderSystem::CreateTexture3D( const Array3D<T>* data, TEXTURE_FORMAT format )
 {
 	Texture3D* tex = m_pDispatcher->CreateTexture3D( data->width(), data->height(), data->depth(), format, data->data(), data->pitch(), data->slicePitch(), data->size() ); 
 	if (tex)

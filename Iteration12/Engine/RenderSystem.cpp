@@ -5,6 +5,7 @@
 #include "Array3D.h"
 #include "FullscreenQuad.h"
 
+// TODO : Don't use HRESULT
 HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
 {
 	m_Config = creationConfig;
@@ -23,10 +24,12 @@ HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
 	rdConfig.DebugDevice = creationConfig.DebugDevice;
 
 	m_pDispatcher = new DX11RenderDispatcher();
-	m_pDispatcher->initialize( rdConfig );
+	m_pDispatcher->Initialize( rdConfig );
 	m_pDispatcher->m_pRenderSystem = this;
 
 	m_RenderCommandAllocator.Initialize( 2048 );
+
+	m_pRenderTarget = NULL;
 
 	return S_OK;
 };
@@ -70,7 +73,7 @@ Texture2D*	 RenderSystem::CreateTexture( UINT height, UINT width, TEXTURE_FORMAT
 	return tex;
 }
 
-Texture2D*	 RenderSystem::CreateTexture( const Image* const initialData )
+Texture2D*	 RenderSystem::CreateTexture( const Image* initialData )
 {
 	Texture2D* tex;
 	if ( initialData != NULL)
@@ -303,6 +306,12 @@ void RenderSystem::ClearTexture( Texture2D* pTexture, float* clearColorRGBA )
 	rc.SetTexture( (DX11Texture2D*)pTexture );
 	
 	Submit( &rc );
+}
+
+void RenderSystem::ClearTexture( Texture2D* pTexture, Vector4 clearColorRGBA )
+{
+	float color[4] = { clearColorRGBA.x, clearColorRGBA.y, clearColorRGBA.z, clearColorRGBA.w };
+	ClearTexture( pTexture, color );
 }
 
 void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
