@@ -3,9 +3,32 @@
 #include "Prerequisites.h"
 #include "Texture2D.h"
 
-class TextureCube : public DX11Texture2D
+class TextureCube : public Texture
 {
 public:
+	TextureCube();
+	virtual ~TextureCube();
+
+	inline void SetRenderSystem( RenderSystem* ptr )		{ m_pRenderSystem = ptr; };
+	inline void SetDimensions( UINT height, UINT width )	{ m_Height = height; m_Width = width; };
+	inline void SetFormat( TEXTURE_FORMAT format )			{ m_Format = format; };
+	inline void SetMipLevels( UINT levels )					{ m_MipLevels = levels; };
+
+	inline RenderSystem* GetRenderSystem()					{ return m_pRenderSystem; };
+	inline UINT GetHeight()									{ return m_Height; };
+	inline UINT GetWidth()									{ return m_Width; };
+	inline Vector2 GetDimensions()							{ return Vector2( m_Width, m_Height ); };
+	inline TEXTURE_FORMAT GetFormat()						{ return m_Format; };
+	inline UINT GetMipLevels()								{ return m_MipLevels; };
+
+	virtual void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )=0;
+	virtual void ReleaseResources() = 0;
+
 	// TODO : different brdfs
-	void Prefilter();
+	virtual void Prefilter() = 0;
+
+protected:
+	UINT				m_Height, m_Width, m_MipLevels;
+	RenderSystem*		m_pRenderSystem;		// Owner
+	TEXTURE_FORMAT		m_Format;
 };

@@ -2,6 +2,7 @@
 
 #include "DX11Renderer.h"
 #include "DX11Material.h"
+#include "DX11Shaderset.h"
 
 void DX11Renderer::SetRenderSystem( RenderSystem*	pRenderSystem )
 {
@@ -38,21 +39,21 @@ void DX11Renderer::SetMesh( Mesh* pMesh )
 			{
 				// Main render commands
 				DX11RenderCommand_Draw* command = new DX11RenderCommand_Draw();
-				command->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
+				command->SetGeometryChunk( (DX11GeometryChunk*)submesh->GetGeometryChunk() );
 				m_pSubmeshRenderCommands.push_back(std::vector<DX11RenderCommand_Draw*>());
 				m_pSubmeshRenderCommands[i].push_back( command );
 			}
 
 			// Render commands for shadowmap rendering
 			DX11RenderCommand_Draw* command = new DX11RenderCommand_Draw();
-			command->SetShaderset( (D3D11Shaderset*)m_pShadowmapShader );
-			command->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
+			command->SetShaderset( (DX11Shaderset*)m_pShadowmapShader );
+			command->SetGeometryChunk( (DX11GeometryChunk*)submesh->GetGeometryChunk() );
 			m_pShadowmapRenderCommands.push_back( command );
 
 			// Render commands for debug OBB drawing
 			DX11RenderCommand_Draw* rcDebug = new DX11RenderCommand_Draw();
-			rcDebug->SetGeometryChunk( (D3D11GeometryChunk*)m_pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
-			rcDebug->SetShaderset( (D3D11Shaderset*)m_pRenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
+			rcDebug->SetGeometryChunk( (DX11GeometryChunk*)m_pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
+			rcDebug->SetShaderset( (DX11Shaderset*)m_pRenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
 			m_pDebugRenderCommands.push_back( rcDebug );
 		}
 	}
@@ -109,7 +110,7 @@ void DX11Renderer::RenderShadowmap( Transform* pTransform, Camera3D* pShadowCame
 				params.setParam( "fFarPlane", 0, pShadowCamera->GetFarPlane() );
 			
 				command->SetShaderParams( &params );
-				command->SetShaderset( (D3D11Shaderset*)m_pShadowmapShader );
+				command->SetShaderset( (DX11Shaderset*)m_pShadowmapShader );
 
 				m_pRenderSystem->Submit( command ); 
 				m_pRenderSystem->drawcalls++;
@@ -139,17 +140,17 @@ void DX11Renderer::RenderRSM( Transform* pTransform, Camera3D* pShadowCamera, Sp
 				params.setParam( "fFarPlane", 0, pShadowCamera->GetFarPlane() );
 			
 				command->SetShaderParams( &params );
-				command->SetShaderset( (D3D11Shaderset*)m_pRSMShader );
-				command->SetTexture( "txCookie", (DX11Texture2D*)pLightSource->GetCookie() );
+				command->SetShaderset( (DX11Shaderset*)m_pRSMShader );
+				command->SetTexture( "txCookie", pLightSource->GetCookie() );
 				if (dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial()))
 				{
-					command->SetTexture( "txDiffuse", (DX11Texture2D*)dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
-					command->SetTexture( "txNormal", (DX11Texture2D*)dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
+					command->SetTexture( "txDiffuse", dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
+					command->SetTexture( "txNormal", dynamic_cast<DX11Material_DeferredIBL*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
 				}
 				else if (dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial()))
 				{
-					command->SetTexture( "txDiffuse", (DX11Texture2D*)dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
-					command->SetTexture( "txNormal", (DX11Texture2D*)dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
+					command->SetTexture( "txDiffuse", dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
+					command->SetTexture( "txNormal", dynamic_cast<DX11Material_Deferred*>(m_pMesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
 				}
 				m_pRenderSystem->Submit( command ); 
 				m_pRenderSystem->drawcalls++;

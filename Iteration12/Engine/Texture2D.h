@@ -4,7 +4,7 @@
 
 #include <d3d11.h>
 #include "RenderSystem.h"
-#include "GPUResource.h"
+#include "Texture.h"
 
 enum TEXTURE_FORMAT
 {
@@ -110,11 +110,11 @@ enum TEXTURE_FORMAT
     BC7_UNORM_SRGB              = 99,
 };
 
-class Texture2D : public GPUResource
+class Texture2D : public Texture
 {
 public:
-	Texture2D() : m_Height(0), m_Width(0), m_pRenderSystem(NULL), m_Format(TEXTURE_FORMAT_UNKNOWN)	{};
-	virtual ~Texture2D() {};
+	Texture2D();
+	virtual ~Texture2D();
 
 	inline void SetRenderSystem( RenderSystem* ptr )					{ m_pRenderSystem = ptr; };
 	inline void SetDimensions( UINT height, UINT width )				{ m_Height = height; m_Width = width; };
@@ -128,15 +128,14 @@ public:
 	inline TEXTURE_FORMAT GetFormat()								{ return m_Format; };
 	inline UINT GetMipLevels()										{ return m_MipLevels; };
 
-	
 	// Bind as shader input to the pipeline
-	virtual void Bind( std::string const &name, RenderDispatcher* pDispatcher )=0;
+	virtual void Bind( const std::string& name, RenderDispatcher* pDispatcher ) =0;
 	// Unbind from pipeline
-	virtual void Unbind( std::string const &name, RenderDispatcher* pDispatcher )=0;
+	virtual void Unbind( const std::string& name, RenderDispatcher* pDispatcher ) =0;
 	// Bind to the pipeline as render target
 	virtual void BindRenderTarget( RenderDispatcher* pDispatcher)=0;
 	// Unbind render target from pipeline
-	virtual void UnBindRenderTarget( RenderDispatcher* pDispatcher)=0;
+	virtual void UnbindRenderTarget( RenderDispatcher* pDispatcher)=0;
 
 	virtual void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )=0;
 	virtual void ReleaseResources() = 0;
@@ -145,60 +144,4 @@ protected:
 	UINT						m_Height, m_Width, m_MipLevels;
 	RenderSystem*				m_pRenderSystem;		// Owner
 	TEXTURE_FORMAT				m_Format;
-};
-
-class DX11Texture2D : public Texture2D
-{
-public:
-	DX11Texture2D() : m_pSRV(NULL), m_pRTV(NULL), m_pDSV(NULL)	{};
-
-	void Bind(  std::string const &name, RenderDispatcher* pDispatcher );
-	void Unbind(  std::string const &name, RenderDispatcher* pDispatcher );
-	void BindRenderTarget( RenderDispatcher* pDispatcher );
-	void UnBindRenderTarget( RenderDispatcher* pDispatcher );
-	void ReleaseResources();
-
-	void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil );
-
-	// Set DX11 objects
-	inline void SetResource( ID3D11Texture2D* pResource )				{ m_pResource = pResource; };
-	inline void SetShaderResourceView( ID3D11ShaderResourceView* pSRV )	{ m_pSRV = pSRV; };
-	inline void SetRenderTargetView( ID3D11RenderTargetView* pRTV )		{ m_pRTV = pRTV; };
-	inline void SetDepthStencilView( ID3D11DepthStencilView* pDSV )		{ m_pDSV = pDSV; };
-	
-	// Get DX11 objects
-	inline ID3D11Texture2D* GetResource()							{ return m_pResource; };
-	inline ID3D11ShaderResourceView* GetShaderResourceView()		{ return m_pSRV; };
-	inline ID3D11RenderTargetView* GetRenderTargetView()			{ return m_pRTV; };
-	inline ID3D11DepthStencilView* GetDepthStencilView()			{ return m_pDSV; };
-
-private:
-	ID3D11Texture2D*			m_pResource;
-	ID3D11ShaderResourceView*	m_pSRV;
-	ID3D11RenderTargetView*		m_pRTV;
-	ID3D11DepthStencilView*		m_pDSV;
-};
-
-class DX10Texture2D : public Texture2D
-{
-public:
-	DX10Texture2D() : m_pSRV(NULL), m_pRTV(NULL), m_pDSV(NULL)	{ Texture2D; };
-
-	void Bind( RenderDispatcher* pDispatcher, std::string name );
-	void Unbind( RenderDispatcher* pDispatcher, std::string name );
-	void BindRenderTarget( RenderDispatcher* pDispatcher );
-	void UnBindRenderTarget( RenderDispatcher* pDispatcher );
-
-	inline void SetShaderResourceView( ID3D10ShaderResourceView* pSRV )	{ m_pSRV = pSRV; };
-	inline void SetRenderTargetView( ID3D10RenderTargetView* pRTV )		{ m_pRTV = pRTV; };
-	inline void SetDepthStencilView( ID3D10DepthStencilView* pDSV )		{ m_pDSV = pDSV; };
-	
-	inline ID3D10ShaderResourceView* GetShaderResourceView()		{ return m_pSRV; };
-	inline ID3D10RenderTargetView* GetRenderTargetView()			{ return m_pRTV; };
-	inline ID3D10DepthStencilView* GetDepthStencilView()			{ return m_pDSV; };
-
-private:
-	ID3D10ShaderResourceView*	m_pSRV;
-	ID3D10RenderTargetView*		m_pRTV;
-	ID3D10DepthStencilView*		m_pDSV;
 };

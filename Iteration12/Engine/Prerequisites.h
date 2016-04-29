@@ -9,6 +9,12 @@
 #include "tbb\scalable_allocator.h"
 #include <assert.h>
 #include "Debug.h"
+#include <map>
+#include <unordered_map>
+#include <vector>
+#include <queue>
+#include <string>
+#include <math.h>
 
 class BufferLayout;
 class Camera3D;
@@ -19,7 +25,7 @@ class D3D10Texture2D;
 class D3D10VertexBuffer;
 class D3D10GeometryChunk;
 class D3D10IndexBuffer;
-class D3D11GeometryChunk;
+class DX11GeometryChunk;
 class D3D11IndexBuffer;
 class D3D11RenderCommand_BeginFrame;
 class D3D11RenderCommand_ClearTexture;
@@ -28,7 +34,7 @@ class D3D11RenderCommand_EndFrame;
 class D3D11RenderCommand_RenderTarget;
 class D3D11RenderCommand_SharedCB;
 class DX11RenderDispatcher;
-class D3D11Shaderset;
+class DX11Shaderset;
 class DX11Texture2D;
 class D3D11VertexBuffer;
 class DX11Material;
@@ -68,6 +74,7 @@ class ShaderParamBlock;
 class ShaderParams;
 class SpotLight;
 class Submesh;
+class Texture;
 class Texture2D;
 class Texture3D;
 class TextureCube;

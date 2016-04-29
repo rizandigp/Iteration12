@@ -1,7 +1,8 @@
 #pragma once
 
 #include "DX11Material.h"
-#include "TextureCube.h"
+#include "..\TextureCube.h"
+#include "DX11RenderDispatcher.h"
 
 //
 //	DX11Material_DiffuseDetailbump
@@ -43,9 +44,9 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 		command->SetDepthStencilState(m_pDefaultDepthStencilState);
 		command->SetRasterizerState(m_pDefaultRasterizerState);
 
-		command->SetTexture( "txDiffuse", (DX11Texture2D*)m_pDiffuse );
-		command->SetTexture( "txNormal", (DX11Texture2D*)m_pNormal );
-		command->SetTexture( "txDetailNormal", (DX11Texture2D*)m_pDetailNormal );
+		command->SetTexture( "txDiffuse", m_pDiffuse );
+		command->SetTexture( "txNormal", m_pNormal );
+		command->SetTexture( "txDetailNormal", m_pDetailNormal );
 
 		// No affecting lights, simply use the default ambient/black shader
 		if ( pSpotLights->empty() && pPointLights->empty() )
@@ -55,7 +56,7 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 			params2.setParam( "ViewProjection", 0, &m_pRenderSystem->GetCamera()->GetViewProjectionMatrix().transpose() );
 			params2.setParam( "World", 0, &pTransform->GetMatrix().transpose() );
 			params2.setParam( "vMeshColor", 0, &XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ) );
-			command->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+			command->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 			command->SetShaderParams( &params2 );
 			return 1;
 		}
@@ -111,13 +112,13 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 
 				if (i==0)
 				{
-					command->SetTexture( "txShadowmap", (DX11Texture2D*)(*it)->GetShadowmap() );
-					command->SetTexture( "txCookie", (DX11Texture2D*)(*it)->GetCookie() );
+					command->SetTexture( "txShadowmap", (*it)->GetShadowmap() );
+					command->SetTexture( "txCookie", (*it)->GetCookie() );
 				}
 				else
 				{
-					command->SetTexture( "txShadowmap2", (DX11Texture2D*)(*it)->GetShadowmap() );
-					command->SetTexture( "txCookie2", (DX11Texture2D*)(*it)->GetCookie() );
+					command->SetTexture( "txShadowmap2", (*it)->GetShadowmap() );
+					command->SetTexture( "txCookie2", (*it)->GetCookie() );
 				}
 				i++;
 				spot++;
@@ -129,7 +130,7 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 		m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
 		command->SetShaderParams( &params );
-		command->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+		command->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 		if(pass>1)
 		{
@@ -184,9 +185,9 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 		command->SetDepthStencilState(m_pDefaultDepthStencilState);
 		command->SetRasterizerState(m_pDefaultRasterizerState);
 
-		command->SetTexture( "txDiffuse", (DX11Texture2D*)m_pDiffuse );
-		command->SetTexture( "txNormal", (DX11Texture2D*)m_pNormal );
-		command->SetTexture( "txSpecular", (DX11Texture2D*)m_pSpecular );
+		command->SetTexture( "txDiffuse", m_pDiffuse );
+		command->SetTexture( "txNormal", m_pNormal );
+		command->SetTexture( "txSpecular", m_pSpecular );
 
 		// No affecting lights, simply use the default ambient/black shader
 		if ( pSpotLights->empty() && pPointLights->empty() )
@@ -196,7 +197,7 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 			params2.setParam( "ViewProjection", 0, &m_pRenderSystem->GetCamera()->GetViewProjectionMatrix().transpose() );
 			params2.setParam( "World", 0, &pTransform->GetMatrix().transpose() );
 			params2.setParam( "vMeshColor", 0, &XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ) );
-			command->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+			command->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 			command->SetShaderParams( &params2 );
 			return 1;
 		}
@@ -256,13 +257,13 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 
 				if (i==0)
 				{
-					command->SetTexture( "txShadowmap", (DX11Texture2D*)(*it)->GetShadowmap() );
-					command->SetTexture( "txCookie", (DX11Texture2D*)(*it)->GetCookie() );
+					command->SetTexture( "txShadowmap", (*it)->GetShadowmap() );
+					command->SetTexture( "txCookie", (*it)->GetCookie() );
 				}
 				else
 				{
-					command->SetTexture( "txShadowmap2", (DX11Texture2D*)(*it)->GetShadowmap() );
-					command->SetTexture( "txCookie2", (DX11Texture2D*)(*it)->GetCookie() );
+					command->SetTexture( "txShadowmap2", (*it)->GetShadowmap() );
+					command->SetTexture( "txCookie2", (*it)->GetCookie() );
 				}
 				i++;
 				spot++;
@@ -273,7 +274,7 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 
 		//m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-		command->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+		command->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 		command->SetShaderParams( &params );
 
 		if(pass>1)
@@ -331,7 +332,7 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 	
 	if ( pSpotLights->empty() && pPointLights->empty() )
 	{
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		break;
 	}
 	
@@ -384,7 +385,7 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 	params.assign( &paramBlock );
 	m_pRenderSystem->t_shaderparams += testTimer.GetMiliseconds();
 	
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 	rc->SetShaderParams( &params );
 
 	if(pass>1)
@@ -421,9 +422,9 @@ UINT DX11Material_Deferred::Bind(Renderer* pRenderer, RenderCommand* pRenderComm
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);
 
-	command->SetTexture( "txDiffuse", (DX11Texture2D*)m_pDiffuse );
-	command->SetTexture( "txNormal", (DX11Texture2D*)m_pNormal );
-	command->SetTexture( "txSpecular", (DX11Texture2D*)m_pSpecular );
+	command->SetTexture( "txDiffuse", m_pDiffuse );
+	command->SetTexture( "txNormal", m_pNormal );
+	command->SetTexture( "txSpecular", m_pSpecular );
 
 	Timer paraminit;
 	// Set common shader parameters
@@ -441,7 +442,7 @@ UINT DX11Material_Deferred::Bind(Renderer* pRenderer, RenderCommand* pRenderComm
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-	command->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	command->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 	command->SetShaderParams( &params );
 
 	return 1;
@@ -461,11 +462,11 @@ UINT DX11Material_DeferredIBL::Bind(Renderer* pRenderer, RenderCommand* pRenderC
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);
 
-	command->SetTexture( "txDiffuse", (DX11Texture2D*)m_pDiffuse );
-	command->SetTexture( "txNormal", (DX11Texture2D*)m_pNormal );
-	command->SetTexture( "txSpecular", (DX11Texture2D*)m_pSpecular );
-	command->SetTexture( "txAO", (DX11Texture2D*)m_pAO );
-	command->SetTexture( "txIBL", dynamic_cast<DX11Texture2D*>(m_pIBL) );
+	command->SetTexture( "txDiffuse", m_pDiffuse );
+	command->SetTexture( "txNormal", m_pNormal );
+	command->SetTexture( "txSpecular", m_pSpecular );
+	command->SetTexture( "txAO", m_pAO );
+	command->SetTexture( "txIBL", m_pIBL );
 
 	Timer paraminit;
 	// Set common shader parameters
@@ -483,7 +484,7 @@ UINT DX11Material_DeferredIBL::Bind(Renderer* pRenderer, RenderCommand* pRenderC
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-	command->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	command->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 	command->SetShaderParams( &params );
 
 	return 1;
@@ -533,11 +534,11 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);*/
 
-	command->SetTexture( "texGBuffer0", (DX11Texture2D*)m_pGbuffer[0] );
-	command->SetTexture( "texGBuffer1", (DX11Texture2D*)m_pGbuffer[1] );
-	command->SetTexture( "texGBuffer2", (DX11Texture2D*)m_pGbuffer[2] );
-	command->SetTexture( "texShadowmap", (DX11Texture2D*)m_pShadowmap );
-	command->SetTexture( "texCookie", (DX11Texture2D*)m_pCookie );
+	command->SetTexture( "texGBuffer0", m_pGbuffer[0] );
+	command->SetTexture( "texGBuffer1", m_pGbuffer[1] );
+	command->SetTexture( "texGBuffer2", m_pGbuffer[2] );
+	command->SetTexture( "texShadowmap", m_pShadowmap );
+	command->SetTexture( "texCookie", m_pCookie );
 
 	Timer paraminit;
 	// Set common shader parameters
@@ -562,7 +563,7 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-	command->SetShaderset( (D3D11Shaderset*)m_pShader );
+	command->SetShaderset( (DX11Shaderset*)m_pShader );
 	command->SetShaderParams( &params );
 
 	return 1;
@@ -609,11 +610,11 @@ UINT DX11Material_Pointlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 	command->SetDepthStencilState(m_pBackfaceDepthStencilState);
 	command->SetRasterizerState(m_pBackfaceRasterizerState);
 
-	command->SetTexture( "txGBuffer0", (DX11Texture2D*)m_pGbuffer[0] );
-	command->SetTexture( "txGBuffer1", (DX11Texture2D*)m_pGbuffer[1] );
-	command->SetTexture( "txGBuffer2", (DX11Texture2D*)m_pGbuffer[2] );
-	command->SetTexture( "txShadowmap", (DX11Texture2D*)m_pShadowmap );
-	command->SetTexture( "txCookie", (DX11Texture2D*)m_pCookie );
+	command->SetTexture( "txGBuffer0", m_pGbuffer[0] );
+	command->SetTexture( "txGBuffer1", m_pGbuffer[1] );
+	command->SetTexture( "txGBuffer2", m_pGbuffer[2] );
+	command->SetTexture( "txShadowmap", m_pShadowmap );
+	command->SetTexture( "txCookie", m_pCookie );
 
 	Timer paraminit;
 	// Set common shader parameters
@@ -632,7 +633,7 @@ UINT DX11Material_Pointlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-	command->SetShaderset( (D3D11Shaderset*)m_pShader );
+	command->SetShaderset( (DX11Shaderset*)m_pShader );
 	command->SetShaderParams( &params );
 
 	return 1;
@@ -657,10 +658,10 @@ UINT DX11Material_Water::Bind(Renderer* pRenderer, RenderCommand* pRenderCommand
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);
 
-	command->SetTexture( "txDiffuse", (DX11Texture2D*)m_pDiffuse );
-	command->SetTexture( "txNormal", (DX11Texture2D*)m_pNormal );
-	command->SetTexture( "txFoam", (DX11Texture2D*)m_pFoam );
-	command->SetTexture( "txCubemap", (DX11Texture2D*)m_pIBL );
+	command->SetTexture( "txDiffuse", m_pDiffuse );
+	command->SetTexture( "txNormal", m_pNormal );
+	command->SetTexture( "txFoam", m_pFoam );
+	command->SetTexture( "txCubemap", m_pIBL );
 	//command->SetTexture( "txSpecular", (DX11Texture2D*)m_pSpecular );
 
 	Timer paraminit;
@@ -681,7 +682,7 @@ UINT DX11Material_Water::Bind(Renderer* pRenderer, RenderCommand* pRenderCommand
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-	command->SetShaderset( (D3D11Shaderset*)m_pShader );
+	command->SetShaderset( (DX11Shaderset*)m_pShader );
 	command->SetShaderParams( &params );
 
 	return 1;
@@ -703,7 +704,7 @@ UINT DX11Material_Skybox::Bind(Renderer* pRenderer, RenderCommand* pRenderComman
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);
 
-	command->SetTexture( "txCubemap", (DX11Texture2D*)m_pCubemap );
+	command->SetTexture( "txCubemap", m_pCubemap );
 
 	Timer paraminit;
 	// Set common shader parameters
@@ -716,7 +717,7 @@ UINT DX11Material_Skybox::Bind(Renderer* pRenderer, RenderCommand* pRenderComman
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 
-	command->SetShaderset( (D3D11Shaderset*)m_pShader );
+	command->SetShaderset( (DX11Shaderset*)m_pShader );
 	command->SetShaderParams( &params );
 
 	return 1;

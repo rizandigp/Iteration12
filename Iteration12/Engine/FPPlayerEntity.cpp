@@ -16,7 +16,7 @@ FPPlayerEntity::FPPlayerEntity(RenderSystem* pRenderSystem)
 	m_pSpotlight->SetIntensity( 20.0f );
 	m_pSpotlight->SetColor( Vector3(1.0f,1.0f,0.8f) );
 	m_pSpotlight->SetCone( Vector2( XM_PI/3.0f, XM_PI/3.0f ) );
-	m_pSpotlight->SetCookie( m_pRenderSystem->LoadTexture( L"Media/spotlight.bmp" ) );
+	m_pSpotlight->SetCookie( m_pRenderSystem->LoadTexture2D( L"Media/spotlight.bmp" ) );
 	m_pSpotlight->Transformation()->SetPosition( 0.0f, 0.0f, 0.0f );
 	m_pSpotlight->PointTo( Vector3( 0.0f, 0.0f, 25.0f ), 0.0f );
 	m_pSpotlight->SetRSMEnabled( false );

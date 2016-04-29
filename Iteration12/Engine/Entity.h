@@ -5,9 +5,9 @@
 #include <vector>
 #include "Transform.h"
 //#include "Renderer.h"
-#include "DX11Renderer.h"
+#include "DX11/DX11Renderer.h"
 #include "RenderSystem.h"
-#include "DX11Material.h"
+#include "DX11/DX11Material.h"
 //#include "PhysicsSystem.h"
 
 

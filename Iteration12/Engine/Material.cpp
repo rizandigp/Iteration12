@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Material.h"
+#include "DX11/DX11RenderDispatcher.h"
 
 Material::Material( RenderSystem* pRenderSystem )
 {
@@ -179,7 +180,7 @@ UINT Material_DiffuseBump::bind(Renderer* pRenderer, std::vector< D3D11RenderCom
 	{
 		rc->shaderParams()->assign( "ViewProjection", 0, &XMMatrixTranspose(m_pRenderSystem->GetCamera()->getView()*m_pRenderSystem->GetCamera()->getProjection()) );
 		rc->shaderParams()->assign( "World", 0, &XMMatrixTranspose(pTransform->getXMMatrix()) );
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		return 1;
 	}
 	else
@@ -204,7 +205,7 @@ UINT Material_DiffuseBump::bind(Renderer* pRenderer, std::vector< D3D11RenderCom
 		}
 		if (pSpotLights->empty())
 		{
-			rc->SetShaderset( (D3D11Shaderset*)m_pShader[1] );
+			rc->SetShaderset( (DX11Shaderset*)m_pShader[1] );
 			return 1;
 		}
 	}
@@ -235,12 +236,12 @@ UINT Material_DiffuseBump::bind(Renderer* pRenderer, std::vector< D3D11RenderCom
 		}
 		if (pPointLights->empty())
 		{
-			rc->SetShaderset( (D3D11Shaderset*)m_pShader[2] );
+			rc->SetShaderset( (DX11Shaderset*)m_pShader[2] );
 			return 1;
 		}
 	}
 
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 	return 1;
 }
@@ -286,7 +287,7 @@ UINT Material_DiffuseDetailbump::bind(Renderer* pRenderer, std::vector< D3D11Ren
 	
 	if ( pSpotLights->empty() && pPointLights->empty() )
 	{
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		break;
 	}
 	
@@ -333,7 +334,7 @@ UINT Material_DiffuseDetailbump::bind(Renderer* pRenderer, std::vector< D3D11Ren
 		}
 	}
 
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 	if(pass>1)
 	{
@@ -370,7 +371,7 @@ UINT Material_DiffuseBumpSpecular::bind(Renderer* pRenderer, std::vector< D3D11R
 	{
 		rc->shaderParams()->assign( "ViewProjection", 0, &XMMatrixTranspose(m_pRenderSystem->GetCamera()->getView()*m_pRenderSystem->GetCamera()->getProjection()) );
 		rc->shaderParams()->assign( "World", 0, &XMMatrixTranspose(pTransform->getXMMatrix()) );
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		return 1;
 	}
 	else
@@ -395,7 +396,7 @@ UINT Material_DiffuseBumpSpecular::bind(Renderer* pRenderer, std::vector< D3D11R
 		}
 		if (pSpotLights->empty())
 		{
-			rc->SetShaderset( (D3D11Shaderset*)m_pShader[1] );
+			rc->SetShaderset( (DX11Shaderset*)m_pShader[1] );
 			return 1;
 		}
 	}
@@ -426,12 +427,12 @@ UINT Material_DiffuseBumpSpecular::bind(Renderer* pRenderer, std::vector< D3D11R
 		}
 		if (pPointLights->empty())
 		{
-			rc->SetShaderset( (D3D11Shaderset*)m_pShader[2] );
+			rc->SetShaderset( (DX11Shaderset*)m_pShader[2] );
 			return 1;
 		}
 	}
 
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 	return 1;
 }
@@ -469,7 +470,7 @@ UINT Material_BlinnPhong::bind(Renderer* pRenderer, std::vector< D3D11RenderComm
 
 	if ( pSpotLights->empty() && pPointLights->empty() )
 	{
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		break;
 	}
 	
@@ -516,7 +517,7 @@ UINT Material_BlinnPhong::bind(Renderer* pRenderer, std::vector< D3D11RenderComm
 		}
 	}
 
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 	if(pass>1)
 	{
@@ -571,7 +572,7 @@ UINT Material_DiffuseDetailbump::bind(Renderer* pRenderer, RenderCommand* pRende
 	
 	if ( pSpotLights->empty() && pPointLights->empty() )
 	{
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		break;
 	}
 	
@@ -618,7 +619,7 @@ UINT Material_DiffuseDetailbump::bind(Renderer* pRenderer, RenderCommand* pRende
 		}
 	}
 
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 	if(pass>1)
 	{
@@ -668,7 +669,7 @@ UINT Material_BlinnPhong::bind(Renderer* pRenderer, RenderCommand* pRenderComman
 
 	if ( pSpotLights->empty() && pPointLights->empty() )
 	{
-		rc->SetShaderset( (D3D11Shaderset*)m_pShaderNoLight );
+		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
 		break;
 	}
 	
@@ -715,7 +716,7 @@ UINT Material_BlinnPhong::bind(Renderer* pRenderer, RenderCommand* pRenderComman
 		}
 	}
 
-	rc->SetShaderset( (D3D11Shaderset*)m_pShader[0] );
+	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
 
 	if(pass>1)
 	{

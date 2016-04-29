@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Material.h"
+#include "..\Material.h"
 #include "DX11RenderCommand.h"
 /*
 class DX11Material : public Material
@@ -139,17 +139,17 @@ class DX11Material_DeferredIBL : public DX11Material_Deferred
 public:
 	DX11Material_DeferredIBL( RenderSystem* pRenderSystem );
 
-	void SetIBL( Texture2D* ptr )		{ m_pIBL = ptr; };
+	void SetIBL( Texture* ptr )			{ m_pIBL = ptr; };
 	void SetAOMap( Texture2D* ptr )		{ m_pAO = ptr; };
 	Texture2D* GetAOMap()				{ return m_pAO; };
-	Texture2D* GetIBL()				{ return m_pIBL; };
+	Texture* GetIBL()					{ return m_pIBL; };
 
 	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
 	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
 	Texture2D* m_pAO;
-	Texture2D* m_pIBL;
+	Texture* m_pIBL;
 };
 
 // Deferred spotlight material
@@ -270,13 +270,13 @@ class DX11Material_Skybox : public Material
 public:
 	DX11Material_Skybox( RenderSystem* pRenderSystem );
 
-	void SetCubemap( Texture2D* pTexture )	{ m_pCubemap = pTexture; };
-	Texture2D* GetCubemap()					{ return m_pCubemap; };
+	void SetCubemap( TextureCube* pTexture )	{ m_pCubemap = pTexture; };
+	TextureCube* GetCubemap()					{ return m_pCubemap; };
 	
 	UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform ) {return 0;};
 	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
-	Texture2D* m_pCubemap;
+	TextureCube* m_pCubemap;
 	Shaderset* m_pShader;
 };

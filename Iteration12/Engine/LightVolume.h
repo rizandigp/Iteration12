@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Prerequisites.h"
-#include "DX11Renderer.h"
+#include "DX11/DX11Renderer.h"
 #include "Light.h"
-#include "DX11Material.h"
+#include "DX11/DX11Material.h"
 
 class LightVolume
 {

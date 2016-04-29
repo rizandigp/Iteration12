@@ -19,6 +19,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{5b602c58-6a3c-4752-9fda-e1cd6108d749}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\DX11">
+      <UniqueIdentifier>{c2cd78c1-8668-4ec8-aab1-cd4ef7dd1acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\DX10">
+      <UniqueIdentifier>{c59f06c8-dc84-449a-80b8-d6fe6f66a70b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -168,15 +174,6 @@
     <ClInclude Include="Engine\DepthStencil.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\DX11Material.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\DX11RenderCommand.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\DX11Renderer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -312,6 +309,39 @@
     <ClInclude Include="Engine\Array2D.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Texture.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11Material.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11RenderCommand.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11Renderer.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11Texture2D.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX10Texture2D.h">
+      <Filter>Engine\DX10</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11Texture3D.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11TextureCube.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11RenderDispatcher.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11Shaderset.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11GeometryChunk.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -327,15 +357,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Debug.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\DX11Material.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\DX11RenderCommand.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\DX11Renderer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Entity.cpp">
@@ -448,6 +469,36 @@
     </ClCompile>
     <ClCompile Include="Engine\xnaCollision.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11Material.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11RenderCommand.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11Renderer.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11Texture2D.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX10Texture2D.cpp">
+      <Filter>Engine\DX10</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11Texture3D.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11TextureCube.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11RenderDispatcher.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11Shaderset.cpp">
+      <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX11\DX11GeometryChunk.cpp">
+      <Filter>Engine\DX11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

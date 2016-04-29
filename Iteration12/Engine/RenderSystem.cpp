@@ -4,6 +4,7 @@
 #include "TextureCube.h"
 #include "Array3D.h"
 #include "FullscreenQuad.h"
+#include "DX11\DX11RenderDispatcher.h"
 
 // TODO : Don't use HRESULT
 HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
@@ -23,7 +24,14 @@ HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
 	rdConfig.OutputWindow = creationConfig.OutputWindow;
 	rdConfig.DebugDevice = creationConfig.DebugDevice;
 
-	m_pDispatcher = new DX11RenderDispatcher();
+	if (creationConfig.api = GRAPHICS_API_DX11 )
+		m_pDispatcher = new DX11RenderDispatcher();
+	else
+	{
+		NGERROR( " Graphics API not implemented yet. Only DX11 implemented for now. Render System initialization failed." );
+		return S_FALSE;
+	}
+
 	m_pDispatcher->Initialize( rdConfig );
 	m_pDispatcher->m_pRenderSystem = this;
 
@@ -39,7 +47,7 @@ void RenderSystem::SetOutputWindow( HWND hWnd, UINT width, UINT height )
 	m_pDispatcher->SetOutputWindow( hWnd, width, height );
 }
 
-GeometryChunk*	 RenderSystem::CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology )
+GeometryChunk*	 RenderSystem::CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic, PRIMITIVE_TOPOLOGY topology )
 {
 	GeometryChunk* pGeom = m_pDispatcher->CreateGeometryChunk( vertices, stride, byteWidth, layout, indices, numIndices, dynamic, topology );
 	if (pGeom)
@@ -58,14 +66,19 @@ Shaderset*	 RenderSystem::CreateShadersetFromFile( std::wstring filename, std::s
 	return m_pDispatcher->CreateShadersetFromFile( filename, vertexShader, pixelShader, sm, shaderMacros, debug );
 }
 
-Texture2D*	 RenderSystem::CreateTextureFromFile( std::wstring filename )
+Texture2D*	 RenderSystem::CreateTexture2DFromFile( std::wstring filename )
 {
-	return m_pDispatcher->CreateTextureFromFile( filename );
+	return m_pDispatcher->CreateTexture2DFromFile( filename );
 }
 
-Texture2D*	 RenderSystem::CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format )
+TextureCube* RenderSystem::CreateTextureCubeFromFile( std::wstring filename )
 {
-	Texture2D* tex = m_pDispatcher->CreateTexture( height, width, format );
+	return m_pDispatcher->CreateTextureCubeFromFile( filename );
+}
+
+Texture2D*	 RenderSystem::CreateTexture2D( UINT height, UINT width, TEXTURE_FORMAT format )
+{
+	Texture2D* tex = m_pDispatcher->CreateTexture2D( height, width, format );
 
 	if (tex)
 		tex->SetRenderSystem(this);
@@ -73,11 +86,11 @@ Texture2D*	 RenderSystem::CreateTexture( UINT height, UINT width, TEXTURE_FORMAT
 	return tex;
 }
 
-Texture2D*	 RenderSystem::CreateTexture( const Image* initialData )
+Texture2D*	 RenderSystem::CreateTexture2D( const Image* initialData )
 {
 	Texture2D* tex;
 	if ( initialData != NULL)
-		tex = m_pDispatcher->CreateTexture( initialData->Height(), 
+		tex = m_pDispatcher->CreateTexture2D( initialData->Height(), 
 											initialData->Width(), 
 											R8G8B8A8_UNORM, 
 											initialData->Data(), 
@@ -90,7 +103,7 @@ Texture2D*	 RenderSystem::CreateTexture( const Image* initialData )
 	return tex;
 }
 
-TextureCube* RenderSystem::CreateCubemap( Image* faces[6] )
+TextureCube* RenderSystem::CreateCubemap( const Image* faces[6] )
 {
 	// Check that all faces are of equal dimensions
 	UINT width = faces[0]->Width();
@@ -299,19 +312,19 @@ void RenderSystem::ResolveMSAA( Texture2D* pDestination, Texture2D* pSource )
 	Submit( &rc );
 }
 
-void RenderSystem::ClearTexture( Texture2D* pTexture, float* clearColorRGBA )
+void RenderSystem::ClearTexture( Texture* texture, float* clearColorRGBA )
 {
 	D3D11RenderCommand_ClearTexture rc;
 	rc.SetClearColor( clearColorRGBA );
-	rc.SetTexture( (DX11Texture2D*)pTexture );
+	rc.SetTexture( texture );
 	
 	Submit( &rc );
 }
 
-void RenderSystem::ClearTexture( Texture2D* pTexture, Vector4 clearColorRGBA )
+void RenderSystem::ClearTexture( Texture* texture, Vector4 clearColorRGBA )
 {
 	float color[4] = { clearColorRGBA.x, clearColorRGBA.y, clearColorRGBA.z, clearColorRGBA.w };
-	ClearTexture( pTexture, color );
+	ClearTexture( texture, color );
 }
 
 void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
@@ -422,24 +435,26 @@ Mesh* RenderSystem::LoadMesh( std::string filename, bool cache )
 	}
 }
 
-Texture2D*	RenderSystem::LoadTexture( std::wstring filename, bool cache )
+Texture2D*	RenderSystem::LoadTexture2D( std::wstring filename, bool cache )
 {
 	if (cache)
 	{
 		// Find texture in the cache
-		std::map< std::wstring, Texture2D* >::iterator it = m_pTextures.find(filename);
+		std::map< std::wstring, Texture* >::iterator it = m_pTextures.find(filename);
 		if (it != m_pTextures.end())
-			return (*it).second;
+			return (Texture2D*)(*it).second;
 		else
 		{
 			DEBUG_OUTPUT( "Loading " );
 			DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
 			DEBUG_OUTPUT( "\n" );
 			// If not found, create and cache it
-			Texture2D* tex = CreateTextureFromFile( filename );
+			Texture2D* tex = CreateTexture2DFromFile( filename );
 			if (tex)
+			{
 				tex->SetRenderSystem(this);
-			m_pTextures[filename] = tex;
+				m_pTextures[filename] = tex;
+			}
 			return tex;
 		}
 	}
@@ -448,13 +463,47 @@ Texture2D*	RenderSystem::LoadTexture( std::wstring filename, bool cache )
 		DEBUG_OUTPUT( "Loading " );
 		DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
 		DEBUG_OUTPUT( "\n" );
-		Texture2D* tex = CreateTextureFromFile( filename );
+		Texture2D* tex = CreateTexture2DFromFile( filename );
 		if (tex)
 			tex->SetRenderSystem(this);
 		return tex;
 	}
 }
 
+TextureCube* RenderSystem::LoadTextureCube( std::wstring filename, bool cache )
+{
+	if (cache)
+	{
+		// Find texture in the cache
+		std::map< std::wstring, Texture* >::iterator it = m_pTextures.find(filename);
+		if (it != m_pTextures.end())
+			return (TextureCube*)(*it).second;
+		else
+		{
+			DEBUG_OUTPUT( "Loading " );
+			DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
+			DEBUG_OUTPUT( "\n" );
+			// If not found, create and cache it
+			TextureCube* tex = CreateTextureCubeFromFile( filename );
+			if (tex)
+			{
+				tex->SetRenderSystem(this);
+				m_pTextures[filename] = tex;
+			}
+			return tex;
+		}
+	}
+	else
+	{
+		DEBUG_OUTPUT( "Loading " );
+		DEBUG_OUTPUT( wstring_to_string(filename).c_str() );
+		DEBUG_OUTPUT( "\n" );
+		TextureCube* tex = CreateTextureCubeFromFile( filename );
+		if (tex)
+			tex->SetRenderSystem(this);
+		return tex;
+	}
+}
 
 Shaderset* RenderSystem::LoadShaderset( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm,  std::vector<ShaderMacro>* macros, bool debug, bool cache )
 {
@@ -569,7 +618,7 @@ Mesh* RenderSystem::CreateBoxWireframeMesh(XMFLOAT3 dimensions)
 			bufflayout, (UINT*)&indices, 
 			24, 
 			false, 
-			D3D_PRIMITIVE_TOPOLOGY_LINELIST ) );
+			PRIMITIVE_TOPOLOGY_LINELIST ) );
 		Mesh* mesh = new Mesh();
 		mesh->SetName("Box Wireframe Mesh");
 		mesh->AddSubmesh( submesh );
@@ -634,7 +683,7 @@ Mesh* RenderSystem::CreatePlaneMesh(XMFLOAT2 dimensions, XMFLOAT2 uvscale)
 	}
 }
 
-Mesh* RenderSystem::CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic, D3D_PRIMITIVE_TOPOLOGY topology )
+Mesh* RenderSystem::CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic, PRIMITIVE_TOPOLOGY topology )
 {
 	// TODO : store mesh
 

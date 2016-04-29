@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer.h"
+#include "..\Renderer.h"
 #include "DX11RenderCommand.h"
 
 // Object Renderer implementation in DX11

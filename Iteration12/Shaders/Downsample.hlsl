@@ -41,6 +41,6 @@ float4 PS( PS_INPUT input) : SV_Target
 {
 	float2 TexCoord = input.Pos.xy/TargetDimensions.xy;
 	
-	// Average 4 pixels' depths via bilinear sampling
+	// Average 4 pixels' values via bilinear sampling
 	return texSource.Sample( samLinear, TexCoord );
 }

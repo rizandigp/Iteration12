@@ -3,6 +3,7 @@
 #include "FullscreenQuad.h"
 #include "RenderSystem.h"
 #include "Vector4.h"
+#include "DX11/DX11RenderDispatcher.h"
 
 FullscreenQuad::FullscreenQuad( RenderSystem *ptr )
 {
@@ -55,13 +56,13 @@ void FullscreenQuad::SetShaderset( Shaderset* ptr )
 	m_pShaderset = ptr;
 }
 
-void FullscreenQuad::SetTexture( std::string const &name, Texture2D *pTexture )
+void FullscreenQuad::SetTexture( std::string const &name, Texture* pTexture )
 {
-	std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = std::find_if( m_pTextures.begin(), m_pTextures.end(), FindFirst<std::string, DX11Texture2D*>( name ) );
+	std::vector< std::pair< std::string, Texture* >, tbb::scalable_allocator<std::pair< std::string, Texture* >> >::iterator it = std::find_if( m_pTextures.begin(), m_pTextures.end(), FindFirst<std::string, Texture*>( name ) );
 	if (it==m_pTextures.end())
-		m_pTextures.push_back( std::pair< std::string, DX11Texture2D* > (name,(DX11Texture2D*)pTexture) );
+		m_pTextures.push_back( std::pair< std::string, Texture* > (name, pTexture) );
 	else
-		it->second = (DX11Texture2D*)pTexture;
+		it->second = pTexture;
 }
 
 void FullscreenQuad::ClearTextures()
@@ -84,9 +85,9 @@ void FullscreenQuad::Render( bool renderAdditive )
 	params.initialize( m_pShaderset );
 	params.assign( &m_ShaderParams );
 	params.setParam( "ScreenDimensions", &XMFLOAT4(config.Width,config.Height,0.0f,0.0f) );
-	command->SetShaderset( (D3D11Shaderset*)m_pShaderset );
+	command->SetShaderset( (DX11Shaderset*)m_pShaderset );
 	command->SetShaderParams( &params );
-	command->SetGeometryChunk( (D3D11GeometryChunk*)m_pQuadGeom );
+	command->SetGeometryChunk( (DX11GeometryChunk*)m_pQuadGeom );
 	command->ClearTextures();
 
 	if (renderAdditive)
@@ -94,7 +95,7 @@ void FullscreenQuad::Render( bool renderAdditive )
 		command->SetBlendState( m_pAdditiveBlendState );
 	}
 
-	for ( std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> >::iterator it = m_pTextures.begin(); it!=m_pTextures.end(); ++it )
+	for ( std::vector< std::pair< std::string, Texture* >, tbb::scalable_allocator<std::pair< std::string, Texture* >> >::iterator it = m_pTextures.begin(); it!=m_pTextures.end(); ++it )
 	{
 		command->SetTexture( it->first, it->second );
 	}

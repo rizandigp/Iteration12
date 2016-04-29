@@ -3,6 +3,8 @@
 #include "MeshLoader.h"
 #include "Vector3.h"
 #include "Vector3.h"
+#include "DX11/DX11RenderDispatcher.h"
+#include "DX11/DX11GeometryChunk.h"
 
 GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const char* pFile, UINT meshNumber )
 {
@@ -171,7 +173,7 @@ GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const c
 	DEBUG_OUTPUT( " : " );
 	DEBUG_OUTPUT( pFile );
 	DEBUG_OUTPUT( " : Memory allocation failed. RAM full?\n" );
-	D3D11GeometryChunk* ret = new D3D11GeometryChunk();
+	DX11GeometryChunk* ret = new DX11GeometryChunk();
 	return ret;
 	}
 	
@@ -364,7 +366,7 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 			DEBUG_OUTPUT( " : " );
 			DEBUG_OUTPUT( filename );
 			DEBUG_OUTPUT( " : Memory allocation failed. RAM full?\n" );
-			//D3D11GeometryChunk* ret = new D3D11GeometryChunk();
+			//DX11GeometryChunk* ret = new DX11GeometryChunk();
 			return NULL;
 		}
 	}

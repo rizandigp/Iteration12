@@ -18,7 +18,7 @@ public:
 	// Bind material to the render commands, return number of passes
 	virtual UINT Bind(Renderer* pRenderer, std::vector< D3D11RenderCommand_Draw* >* pRenderCommands, UINT submeshIndex, Transform* pTransform )=0;
 	virtual UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform )	{return 0;};
-	UINT getNumberOfPasses();
+	UINT GetNumberOfPasses();
 
 protected:
 	RenderSystem* m_pRenderSystem;

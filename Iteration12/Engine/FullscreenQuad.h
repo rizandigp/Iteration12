@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Prerequisites.h"
-#include "DX11RenderCommand.h"
+#include "DX11/DX11RenderCommand.h"
 
 
 class FullscreenQuad
@@ -10,7 +10,7 @@ public:
 	FullscreenQuad( RenderSystem *ptr );
 
 	void SetShaderset( Shaderset* ptr );
-	void SetTexture( std::string const &name, Texture2D *pTexture );
+	void SetTexture( std::string const &name, Texture* pTexture );
 	void SetShaderParams( ShaderParamBlock params );
 	void ClearTextures();
 	void Render( bool renderAdditive = false );
@@ -22,5 +22,5 @@ protected:
 	ShaderParamBlock m_ShaderParams;
 	ID3D11BlendState* m_pAdditiveBlendState;
 	DX11RenderCommand_Draw m_DrawCommand;
-	std::vector< std::pair< std::string, DX11Texture2D* >, tbb::scalable_allocator<std::pair< std::string, DX11Texture2D* >> > m_pTextures;
+	std::vector< std::pair< std::string, Texture* >, tbb::scalable_allocator<std::pair< std::string, Texture* >> > m_pTextures;
 };

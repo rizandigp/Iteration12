@@ -28,7 +28,7 @@ private:
 };
 
 /*
-	A mesh consist of one or more submeshes. Each with a geometry and material
+	A mesh consists of one or more submeshes. Each with a geometry and material
 	for rendering.
 */
 class Mesh

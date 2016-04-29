@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
+#include "DX11\DX11RenderCommand.h"
 
 void Renderer::SetRenderSystem( RenderSystem*	pRenderSystem )
 {
@@ -45,21 +46,21 @@ void Renderer::SetMesh( Mesh* pMesh )
 			for (int multipass = 0; multipass < 4; multipass++)
 			{
 				D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
-				RC->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
+				RC->SetGeometryChunk( (DX11GeometryChunk*)submesh->GetGeometryChunk() );
 				m_pSubmeshRenderCommands.push_back(std::vector<D3D11RenderCommand_Draw*>());
 				m_pSubmeshRenderCommands[i].push_back( RC );
 			}
 
 			// Shadowmap rendering
 			D3D11RenderCommand_Draw* RC = new D3D11RenderCommand_Draw();
-			RC->SetShaderset( (D3D11Shaderset*)m_pShadowmapShader );
-			RC->SetGeometryChunk( (D3D11GeometryChunk*)submesh->GetGeometryChunk() );
+			RC->SetShaderset( (DX11Shaderset*)m_pShadowmapShader );
+			RC->SetGeometryChunk( (DX11GeometryChunk*)submesh->GetGeometryChunk() );
 			m_pShadowmapRenderCommands.push_back( RC );
 
 			// Debug OBB drawing
 			D3D11RenderCommand_Draw* rcDebug = new D3D11RenderCommand_Draw();
-			rcDebug->SetGeometryChunk( (D3D11GeometryChunk*)m_pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
-			rcDebug->SetShaderset( (D3D11Shaderset*)m_pRenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
+			rcDebug->SetGeometryChunk( (DX11GeometryChunk*)m_pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
+			rcDebug->SetShaderset( (DX11Shaderset*)m_pRenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
 			m_pDebugRenderCommands.push_back( rcDebug );
 		}
 	

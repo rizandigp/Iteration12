@@ -105,8 +105,8 @@ public:
 	void ClearBackbuffer( float* clearColorRGBA );
 	void ClearDepthStencil( float depth, UINT8 stencil );
 	// Texture clears
-	void ClearTexture( Texture2D* pTexture, float* clearColorRGBA );
-	void ClearTexture( Texture2D* pTexture, Vector4 clearColorRGBA );
+	void ClearTexture( Texture* texture, float* clearColorRGBA );
+	void ClearTexture( Texture* texture, Vector4 clearColorRGBA );
 	void DownsampleTexture( Texture2D* target, Texture2D* source );
 	// Returns current bound render target
 	Texture2D*	GetRenderTarget()	{ return m_pRenderTarget; };
@@ -135,25 +135,28 @@ public:
 	// Cached resource loading & creation.
 	virtual Mesh*	LoadMesh( std::string filename, bool cache = true );
 	virtual Shaderset*	LoadShaderset( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros = NULL, bool debug = false, bool cache = true );
-	virtual Texture2D*	LoadTexture( std::wstring filename, bool cache = true );
+	virtual Texture2D*	LoadTexture2D( std::wstring filename, bool cache = true );
+	virtual TextureCube* LoadTextureCube( std::wstring filename, bool cache = true );
+
 	// Resource creation.
-	virtual GeometryChunk*	CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-	virtual Shaderset*	CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug );
-	virtual Texture2D*	CreateTextureFromFile( std::wstring filename );
-	virtual Texture2D*	CreateTexture( UINT height, UINT width, TEXTURE_FORMAT format );
-	virtual Texture2D*	CreateTexture( const Image* initialData );
-	template<typename T> Texture2D*	CreateTexture( const Array2D<T>* initialData, TEXTURE_FORMAT format );
-	template<typename T> Texture3D* CreateTexture3D( const Array3D<T>* data, TEXTURE_FORMAT format );
+	virtual GeometryChunk*	CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT *indices, UINT numIndices, bool dynamic = false, PRIMITIVE_TOPOLOGY topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	virtual Shaderset*		CreateShadersetFromFile( std::wstring filename, std::string vertexShader, std::string pixelShader, SHADERMODEL sm, std::vector<ShaderMacro>* macros, bool debug );
+	virtual Texture2D*		CreateTexture2DFromFile( std::wstring filename );
+	virtual TextureCube*	CreateTextureCubeFromFile( std::wstring filename );
+	virtual Texture2D*		CreateTexture2D( UINT height, UINT width, TEXTURE_FORMAT format );
+	virtual Texture2D*		CreateTexture2D( const Image* initialData );
+	template<typename T> Texture2D*	CreateTexture2D( const Array2D<T>* initialData, TEXTURE_FORMAT format );
+	template<typename T> Texture3D* CreateTexture3D( const Array3D<T>* initialData, TEXTURE_FORMAT format );
 
 	// Create cubemap from 6 images in the order: x+,x-,y+,y-,z+,z-.
 	// All images must have the same dimensions. Only TEXTURE_FORMAT_R8G8B8A8_UNORM supported for now.
-	virtual TextureCube*	CreateCubemap( Image* faces[6] );
+	virtual TextureCube*	CreateCubemap( const Image* faces[6] );
 
 	// Simple meshes
 	//virtual Mesh* createBoxMesh( XMFLOAT3 dimensions, XMFLOAT3 uvscale );
 	virtual Mesh* CreatePlaneMesh( XMFLOAT2 dimensions, XMFLOAT2 uvscale );
 	virtual Mesh* CreateBoxWireframeMesh(XMFLOAT3 dimensions);
-	virtual Mesh* CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, D3D_PRIMITIVE_TOPOLOGY topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	virtual Mesh* CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, PRIMITIVE_TOPOLOGY topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// Object renderer
 	virtual Renderer*	CreateRenderer();
@@ -183,7 +186,7 @@ protected:
 
 	// Resource caches
 	std::vector< std::pair<ShadersetDescription, Shaderset*> >	m_pShadersets;
-	std::map< std::wstring, Texture2D* > m_pTextures;
+	std::map< std::wstring, Texture* > m_pTextures;
 	std::map< std::string, Mesh* > m_pMeshes;
 
 	// Simple meshes
@@ -203,11 +206,11 @@ protected:
 };
 
 template<typename T> 
-Texture2D*	RenderSystem::CreateTexture( const Array2D<T>* initialData, TEXTURE_FORMAT format )
+Texture2D*	RenderSystem::CreateTexture2D( const Array2D<T>* initialData, TEXTURE_FORMAT format )
 {
 	Texture2D* tex;
 	if ( initialData != NULL)
-		tex = m_pDispatcher->CreateTexture( initialData->Height(), 
+		tex = m_pDispatcher->CreateTexture2D( initialData->Height(), 
 											initialData->Width(), 
 											format, 
 											initialData->Data(), 
@@ -221,9 +224,9 @@ Texture2D*	RenderSystem::CreateTexture( const Array2D<T>* initialData, TEXTURE_F
 }
 
 template<typename T>
-Texture3D* RenderSystem::CreateTexture3D( const Array3D<T>* data, TEXTURE_FORMAT format )
+Texture3D* RenderSystem::CreateTexture3D( const Array3D<T>* initialData, TEXTURE_FORMAT format )
 {
-	Texture3D* tex = m_pDispatcher->CreateTexture3D( data->width(), data->height(), data->depth(), format, data->data(), data->pitch(), data->slicePitch(), data->size() ); 
+	Texture3D* tex = m_pDispatcher->CreateTexture2D3D( data->width(), data->height(), data->depth(), format, data->data(), data->pitch(), data->slicePitch(), data->size() ); 
 	if (tex)
 		tex->SetRenderSystem(this);
 	

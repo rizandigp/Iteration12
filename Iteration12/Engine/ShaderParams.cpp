@@ -2,6 +2,7 @@
 
 #include "ShaderParams.h"
 #include "Vector4.h"
+#include "DX11\DX11Shaderset.h"
 
 void ShaderParams::initialize( Shaderset* shader )
 {
@@ -9,25 +10,25 @@ void ShaderParams::initialize( Shaderset* shader )
 
 	// Vertex Shader
 	// Initialize empty constant buffers
-	UINT numConstantBuffers = ((D3D11Shaderset*)m_pShaderset)->numVSConstantBuffers;
+	UINT numConstantBuffers = ((DX11Shaderset*)m_pShaderset)->numVSConstantBuffers;
 	m_VSConstantBuffers.reserve(numConstantBuffers);
 	for (int i=0; i<numConstantBuffers; i++)
 	{
 		ConstantBufferData empty;
 		m_VSConstantBuffers.push_back(empty);
-		UINT size = ((D3D11Shaderset*)m_pShaderset)->GetVSConstantBufferSize(i);
+		UINT size = ((DX11Shaderset*)m_pShaderset)->GetVSConstantBufferSize(i);
 		m_VSConstantBuffers.back().Init( size );
 	}
 	
 	// Pixel Shader
 	// Initialize empty constant buffers
-	numConstantBuffers = ((D3D11Shaderset*)m_pShaderset)->numPSConstantBuffers;
+	numConstantBuffers = ((DX11Shaderset*)m_pShaderset)->numPSConstantBuffers;
 	m_PSConstantBuffers.reserve(numConstantBuffers);
 	for (int i=0; i<numConstantBuffers; i++)
 	{
 		ConstantBufferData empty;
 		m_PSConstantBuffers.push_back(empty);
-		UINT size = ((D3D11Shaderset*)m_pShaderset)->GetPSConstantBufferSize(i);
+		UINT size = ((DX11Shaderset*)m_pShaderset)->GetPSConstantBufferSize(i);
 		m_PSConstantBuffers.back().Init( size );
 	}
 }
@@ -36,7 +37,7 @@ void ShaderParams::initialize( Shaderset* shader )
 void ShaderParams::setParam( const std::string& paramName, UINT index, const XMFLOAT4X4* pMatrixParam )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
+	const ShaderVariable* pvar = ((DX11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -59,7 +60,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
+	pvar = ((DX11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -85,7 +86,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 void ShaderParams::setParam( const std::string& paramName, UINT index, const XMFLOAT4* pVectorParam )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
+	const ShaderVariable* pvar = ((DX11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -108,7 +109,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
+	pvar = ((DX11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -134,7 +135,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 void ShaderParams::setParam( const std::string& paramName, UINT index, float pScalarParam )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
+	const ShaderVariable* pvar = ((DX11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -158,7 +159,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
+	pvar = ((DX11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -185,7 +186,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 void ShaderParams::setParam( const std::string& paramName, UINT index, const Matrix4x4* matrix )
 {
 	// Vertex Shader
-	const ShaderVariable* pvar = ((D3D11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
+	const ShaderVariable* pvar = ((DX11Shaderset*)m_pShaderset)->GetVSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
@@ -208,7 +209,7 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const Mat
 	}
 	
 	// Pixel Shader
-	pvar = ((D3D11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
+	pvar = ((DX11Shaderset*)m_pShaderset)->GetPSVariable( paramName );
 	if(pvar)
 	{
 		if ( index < pvar->Elements )
