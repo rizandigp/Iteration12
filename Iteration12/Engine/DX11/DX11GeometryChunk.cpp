@@ -81,7 +81,7 @@ ID3D11InputLayout* DX11GeometryChunk::CreateInputLayoutFromBufferLayouts( ID3D11
 			elementDesc.SemanticName = pElements[ii].SemanticName;		
 			elementDesc.SemanticIndex = pElements[ii].SemanticIndex;
 			elementDesc.InputSlot = i;
-			elementDesc.Format = pElements[ii].Format;
+			elementDesc.Format = (DXGI_FORMAT)pElements[ii].Format;
 			elementDesc.AlignedByteOffset = byteOffset;
 			elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			elementDesc.InstanceDataStepRate = 0;

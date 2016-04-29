@@ -55,8 +55,8 @@ public:
 	TextureCube*	CreateCubemap( const Image* faces[6] );
 	Texture3D*		CreateTexture3D( UINT width, UINT height, UINT depth, TEXTURE_FORMAT format, const void* data, size_t pitch, size_t slicePitch, size_t dataSize );
 
-	D3D11VertexBuffer*	CreateVertexBuffer( const void* pData, int dataSize, BufferLayout layout, int stride, bool dynamic = false );
-	D3D11IndexBuffer*	CreateIndexBuffer( UINT* pData, int numOfIndices );
+	DX11VertexBuffer*	CreateVertexBuffer( const void* pData, int dataSize, BufferLayout layout, int stride, bool dynamic = false );
+	DX11IndexBuffer*	CreateIndexBuffer( UINT* pData, int numOfIndices );
 
 protected:
 	RenderDispatcherConfig		m_Config;

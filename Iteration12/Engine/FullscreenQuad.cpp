@@ -33,7 +33,7 @@ FullscreenQuad::FullscreenQuad( RenderSystem *ptr )
 
 	// Create geometry
 	BufferLayout bufferLayout;
-	bufferLayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+	bufferLayout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
 	m_pQuadGeom = m_pRenderSystem->CreateGeometryChunk( (float*)&verts, bufferLayout.GetByteSize(), bufferLayout.GetByteSize() * 4, bufferLayout, (UINT*)&indices, 6);
 
 	// Additive blend state

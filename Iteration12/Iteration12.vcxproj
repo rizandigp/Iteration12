@@ -126,7 +126,9 @@
     <ClInclude Include="Engine\ConstantBufferData.h" />
     <ClInclude Include="Engine\Debug.h" />
     <ClInclude Include="Engine\DepthStencil.h" />
-    <ClInclude Include="Engine\DX11\DX10Texture2D.h" />
+    <ClInclude Include="Engine\DX10\DX10Texture2D.h" />
+    <ClInclude Include="Engine\DX11\DX10Buffer.h" />
+    <ClInclude Include="Engine\DX11\DX11Buffer.h" />
     <ClInclude Include="Engine\DX11\DX11GeometryChunk.h" />
     <ClInclude Include="Engine\DX11\DX11Material.h" />
     <ClInclude Include="Engine\DX11\DX11RenderCommand.h" />
@@ -190,7 +192,7 @@
     <ClCompile Include="Engine\Camera3D.cpp" />
     <ClCompile Include="Engine\ConstantBufferData.cpp" />
     <ClCompile Include="Engine\Debug.cpp" />
-    <ClCompile Include="Engine\DX11\DX10Texture2D.cpp" />
+    <ClCompile Include="Engine\DX10\DX10Texture2D.cpp" />
     <ClCompile Include="Engine\DX11\DX11GeometryChunk.cpp" />
     <ClCompile Include="Engine\DX11\DX11Material.cpp" />
     <ClCompile Include="Engine\DX11\DX11RenderCommand.cpp" />

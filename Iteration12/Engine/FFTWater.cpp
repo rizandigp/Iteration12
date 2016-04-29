@@ -7,6 +7,7 @@
 #include <tbb\parallel_for.h>
 #include "Plane.h"
 #include "Camera3D.h"
+#include "Buffer.h"
 
 FFTWater::FFTWater(RenderSystem* ptr, const int N, const float A, const Vector2 w, const float length, const bool geometry, const bool infinite) :
 		m_pRenderSystem(ptr), 
@@ -75,9 +76,9 @@ FFTWater::FFTWater(RenderSystem* ptr, const int N, const float A, const Vector2 
 
 	// Create the mesh, set to dynamic so we can update data
 	BufferLayout vertexLayout;
-	vertexLayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-	vertexLayout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-	vertexLayout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+	vertexLayout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
+	vertexLayout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
+	vertexLayout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 
 	m_pMesh = m_pRenderSystem->CreateMesh( (float*)&vertices[0], Ndisplay*Ndisplay, &indices[0], indices_count, vertexLayout, true );
 	DX11Material_Water* mat = new DX11Material_Water( m_pRenderSystem );
@@ -387,9 +388,9 @@ void FFTWater::GenerateWaterSurface()
 		// Send this vertex data to the GPU
 		// Index buffer remains the same
 		BufferLayout layout;
-		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 		m_pMesh->GetSubmesh(0)->GetGeometryChunk()->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 	}
 	else
@@ -437,9 +438,9 @@ void FFTWater::GenerateWaterSurface()
 		// Send this vertex data to the GPU
 		// Index buffer remains the same
 		BufferLayout layout;
-		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 		((DX11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 
 	}
@@ -696,9 +697,9 @@ void FFTWater::GenerateWaterSurfaceLod( int lod )
 		// Send this vertex data to the GPU
 		// Index buffer remains the same
 		BufferLayout layout;
-		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 		((DX11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 	}
 }

@@ -852,8 +852,8 @@ void DX11RenderDispatcher::SetBackbufferAsRenderTarget()
 GeometryChunk*	DX11RenderDispatcher::CreateGeometryChunk( float* vertices, UINT stride, UINT byteWidth, BufferLayout layout, UINT* indices, UINT numIndices, bool dynamic, PRIMITIVE_TOPOLOGY topology)
 {
 	// Create DX11 buffers
-	D3D11VertexBuffer*	pVertexBuffer = CreateVertexBuffer( vertices, byteWidth, layout, stride, dynamic );
-	D3D11IndexBuffer*	pIndexBuffer = CreateIndexBuffer( indices, numIndices );
+	DX11VertexBuffer*	pVertexBuffer = CreateVertexBuffer( vertices, byteWidth, layout, stride, dynamic );
+	DX11IndexBuffer*	pIndexBuffer = CreateIndexBuffer( indices, numIndices );
 	
 	if (!pVertexBuffer)
 	{
@@ -882,7 +882,7 @@ GeometryChunk*	DX11RenderDispatcher::CreateGeometryChunk( float* vertices, UINT 
 	return pChunk;
 }
 
-D3D11VertexBuffer* DX11RenderDispatcher::CreateVertexBuffer( const void* pData, int dataSize, BufferLayout layout, int stride, bool dynamic )
+DX11VertexBuffer* DX11RenderDispatcher::CreateVertexBuffer( const void* pData, int dataSize, BufferLayout layout, int stride, bool dynamic )
 {
 	ID3D11Device* pDevice = GetDevice();
 
@@ -906,13 +906,13 @@ D3D11VertexBuffer* DX11RenderDispatcher::CreateVertexBuffer( const void* pData, 
 		return NULL;
 	}
 
-	D3D11VertexBuffer*	pBuffer = new D3D11VertexBuffer( pd3d11Buffer, layout );
+	DX11VertexBuffer*	pBuffer = new DX11VertexBuffer( pd3d11Buffer, layout );
 	pBuffer->SetStride( stride );
 
 	return pBuffer;
 }
 
-D3D11IndexBuffer* DX11RenderDispatcher::CreateIndexBuffer( UINT* pData, int numOfIndices )
+DX11IndexBuffer* DX11RenderDispatcher::CreateIndexBuffer( UINT* pData, int numOfIndices )
 {
 	ID3D11Device* pDevice = GetDevice();
 
@@ -936,7 +936,7 @@ D3D11IndexBuffer* DX11RenderDispatcher::CreateIndexBuffer( UINT* pData, int numO
 		return NULL;
 	}
 
-	D3D11IndexBuffer*	pBuffer = new D3D11IndexBuffer( pd3d11Buffer );
+	DX11IndexBuffer*	pBuffer = new DX11IndexBuffer( pd3d11Buffer );
 	pBuffer->SetNumberOfIndices(numOfIndices);
 	return pBuffer;
 }

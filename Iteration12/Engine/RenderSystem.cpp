@@ -607,8 +607,8 @@ Mesh* RenderSystem::CreateBoxWireframeMesh(XMFLOAT3 dimensions)
 
 		// Define vertex layout of the Vertex Buffer
 		BufferLayout bufflayout;
-		bufflayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		bufflayout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
+		bufflayout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 
 		// Create the object
 		Submesh* submesh = new Submesh();
@@ -661,11 +661,11 @@ Mesh* RenderSystem::CreatePlaneMesh(XMFLOAT2 dimensions, XMFLOAT2 uvscale)
 		};
 
 		BufferLayout bufflayout;
-		bufflayout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		bufflayout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.AddElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		bufflayout.AddElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		bufflayout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
+		bufflayout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
+		bufflayout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
+		bufflayout.AddElement( "TANGENT", 0, R32G32B32_FLOAT );
+		bufflayout.AddElement( "BITANGENT", 0, R32G32B32_FLOAT );
 
 		Submesh* submesh = new Submesh();
 		submesh->SetGeometryChunk( this->CreateGeometryChunk( (float*)&verts, 

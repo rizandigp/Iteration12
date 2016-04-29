@@ -324,9 +324,6 @@
     <ClInclude Include="Engine\DX11\DX11Texture2D.h">
       <Filter>Engine\DX11</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\DX11\DX10Texture2D.h">
-      <Filter>Engine\DX10</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\DX11\DX11Texture3D.h">
       <Filter>Engine\DX11</Filter>
     </ClInclude>
@@ -341,6 +338,15 @@
     </ClInclude>
     <ClInclude Include="Engine\DX11\DX11GeometryChunk.h">
       <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX10\DX10Texture2D.h">
+      <Filter>Engine\DX10</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX11Buffer.h">
+      <Filter>Engine\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DX11\DX10Buffer.h">
+      <Filter>Engine\DX10</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -482,9 +488,6 @@
     <ClCompile Include="Engine\DX11\DX11Texture2D.cpp">
       <Filter>Engine\DX11</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\DX11\DX10Texture2D.cpp">
-      <Filter>Engine\DX10</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\DX11\DX11Texture3D.cpp">
       <Filter>Engine\DX11</Filter>
     </ClCompile>
@@ -499,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="Engine\DX11\DX11GeometryChunk.cpp">
       <Filter>Engine\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DX10\DX10Texture2D.cpp">
+      <Filter>Engine\DX10</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

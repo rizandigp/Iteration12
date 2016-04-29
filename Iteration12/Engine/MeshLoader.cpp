@@ -61,7 +61,7 @@ GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const c
 	// Set up vertex buffer data layout
 	if( mesh->HasPositions() )
 	{
-		layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
 		vertexFloatSize += 3;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -71,7 +71,7 @@ GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const c
 	
 	if( mesh->HasTextureCoords(0) )
 	{
-		layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+		layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 		vertexFloatSize += 2;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -81,7 +81,7 @@ GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const c
 	}
 	if( mesh->HasNormals() )
 	{
-		layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
 		vertexFloatSize += 3;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -90,8 +90,8 @@ GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const c
 	}
 	if( mesh->HasTangentsAndBitangents() )
 	{
-		layout.AddElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-		layout.AddElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+		layout.AddElement( "TANGENT", 0, R32G32B32_FLOAT );
+		layout.AddElement( "BITANGENT", 0, R32G32B32_FLOAT );
 		vertexFloatSize += 6;
 		for( i = 0; i<mesh->mNumVertices; i++ )
 		{
@@ -245,7 +245,7 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		// Set up vertex buffer data layout
 		if( mesh->HasPositions() )
 		{
-			layout.AddElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
 			vertexFloatSize += 3;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -255,7 +255,7 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 	
 		if( mesh->HasTextureCoords(0) )
 		{
-			layout.AddElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
+			layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 			vertexFloatSize += 2;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -265,7 +265,7 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		}
 		if( mesh->HasNormals() )
 		{
-			layout.AddElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
 			vertexFloatSize += 3;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
@@ -274,8 +274,8 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		}
 		if( mesh->HasTangentsAndBitangents() )
 		{
-			layout.AddElement( "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
-			layout.AddElement( "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT );
+			layout.AddElement( "TANGENT", 0, R32G32B32_FLOAT );
+			layout.AddElement( "BITANGENT", 0, R32G32B32_FLOAT );
 			vertexFloatSize += 6;
 			for( i = 0; i<mesh->mNumVertices; i++ )
 			{
