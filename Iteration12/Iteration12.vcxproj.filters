@@ -348,6 +348,12 @@
     <ClInclude Include="Engine\DX11\DX10Buffer.h">
       <Filter>Engine\DX10</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\RenderState.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\BlendState.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

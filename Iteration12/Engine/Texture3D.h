@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Prerequisites.h"
-
-#include <d3d11.h>
-#include "GPUResource.h"
-#include "Texture2D.h"
+#include "Texture.h"
 
 // TODO : 3D Texture as render target
 class Texture3D : public Texture

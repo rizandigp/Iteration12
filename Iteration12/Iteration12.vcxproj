@@ -119,6 +119,7 @@
   <ItemGroup>
     <ClInclude Include="Engine\Array2D.h" />
     <ClInclude Include="Engine\Array3D.h" />
+    <ClInclude Include="Engine\BlendState.h" />
     <ClInclude Include="Engine\Buffer.h" />
     <ClInclude Include="Engine\Camera3D.h" />
     <ClInclude Include="Engine\Color.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Engine\RenderDispatcher.h" />
     <ClInclude Include="Engine\Renderer.h" />
     <ClInclude Include="Engine\RenderOutput.h" />
+    <ClInclude Include="Engine\RenderState.h" />
     <ClInclude Include="Engine\RenderSystem.h" />
     <ClInclude Include="Engine\Scene.h" />
     <ClInclude Include="Engine\ShaderParamBlock.h" />

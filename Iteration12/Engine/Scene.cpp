@@ -5,6 +5,7 @@
 #include "Entity_Water.h"
 #include "Camera3D.h"
 #include "TextureCube.h"
+#include <d3dx9math.h>
 
 void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 {
@@ -98,7 +99,7 @@ void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	//m_pGI->SetTexture( "txGBuffer2", m_pGBuffer[2] );
 
 	// Shadowmaps
-	m_pShadowmap[0] = m_pRenderSystem->CreateTexture2D( 256*8, 256*8, R32_FLOAT );/*
+	m_pShadowmap[0] = m_pRenderSystem->CreateTexture2D( 256*2, 256*2, R32_FLOAT );/*
 	m_pShadowmap[1] = m_pRenderSystem->CreateTexture2D( 256*4, 256*4, R32_FLOAT ); 
 	m_pShadowmap[2] = m_pRenderSystem->CreateTexture2D( 256*4, 256*4, R32_FLOAT );
 	m_pShadowmap[3] = m_pRenderSystem->CreateTexture2D( 256*4, 256*4, R32_FLOAT );

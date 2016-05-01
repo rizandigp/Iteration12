@@ -5,6 +5,7 @@
 #include <d3dx11.h>
 #include <d3dcompiler.h>
 
+
 class DX11VertexBuffer : public VertexBuffer
 {
 public:

@@ -273,6 +273,10 @@ HRESULT DX11RenderDispatcher::Initialize( RenderDispatcherConfig creationConfig 
 	// Default render state
 	GetImmediateContext()->RSSetState( NULL );
 
+	// Create default render & blend state
+	CreateRenderState( m_CurrentRenderState );
+	CreateBlendState( m_CurrentBlendState );
+
 	// All good
 	return S_OK;
 }
@@ -1752,6 +1756,107 @@ TextureCube* DX11RenderDispatcher::CreateCubemap( const Image* faces[6] )
 	tex->SetDimensions( faces[0]->Height(), faces[0]->Width() );
 
 	return tex;
+}
+
+void DX11RenderDispatcher::Present( UINT SyncInterval )
+{ 
+	m_pSwapChain->Present( SyncInterval, 0 ); 
+};
+
+void DX11RenderDispatcher::SetRenderState( const RenderState& renderState )
+{
+	if (!(m_CurrentRenderState == renderState))
+	{
+		std::unordered_map<RenderState, std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*>, RenderStateHasher>::iterator it = m_RenderStates.find( renderState );
+		if (it != m_RenderStates.end())
+		{
+			GetImmediateContext()->RSSetState( it->second.first );
+			GetImmediateContext()->OMSetDepthStencilState( it->second.second, 0 );
+		}
+		else
+		{
+			std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> states = CreateRenderState( renderState );
+			GetImmediateContext()->RSSetState( states.first );
+			GetImmediateContext()->OMSetDepthStencilState( states.second, 0 );
+		}
+	}
+}
+
+void DX11RenderDispatcher::SetBlendState( const BlendState& blendState )
+{
+	if (!(m_CurrentBlendState == blendState))
+	{
+		std::unordered_map<BlendState, ID3D11BlendState*, BlendStateHasher>::iterator it = m_BlendStates.find( blendState );
+		if (it != m_BlendStates.end())
+		{
+			GetImmediateContext()->OMSetBlendState( it->second, NULL, 0xffffffff );
+		}
+		else
+		{
+			ID3D11BlendState* state = CreateBlendState( blendState );
+			GetImmediateContext()->OMSetBlendState( state, NULL, 0xffffffff );
+		}
+	}
+}
+
+std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> DX11RenderDispatcher::CreateRenderState( const RenderState& renderState )
+{
+	// TODO : Check for errors
+	ID3D11RasterizerState* _RasterizerState;
+	ID3D11DepthStencilState* _DepthStencilState;
+
+	D3D11_RASTERIZER_DESC desc;
+	desc.FillMode = renderState.FillSolid ? D3D11_FILL_SOLID : D3D11_FILL_WIREFRAME;
+	desc.CullMode = (D3D11_CULL_MODE)renderState.CullingMode;
+	desc.FrontCounterClockwise = true;
+	desc.DepthBias = renderState.DepthBias;
+	desc.SlopeScaledDepthBias = 0.0f;
+	desc.DepthBiasClamp = 0.0f;
+	desc.DepthClipEnable = true;
+	desc.ScissorEnable = false;
+	desc.MultisampleEnable = true;
+	desc.AntialiasedLineEnable = false;
+	GetDevice()->CreateRasterizerState( &desc, &_RasterizerState );
+
+	D3D11_DEPTH_STENCIL_DESC desc2;
+	desc2.DepthEnable = renderState.EnableDepthTest;
+	desc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	desc2.DepthFunc = (D3D11_COMPARISON_FUNC)renderState.DepthComparison;
+	desc2.StencilEnable = renderState.EnableStencil;
+	desc2.StencilReadMask = renderState.StencilReadMask;
+	desc2.StencilWriteMask = renderState.StencilWriteMask;
+	desc2.FrontFace.StencilDepthFailOp = (D3D11_STENCIL_OP)renderState.FrontFace.StencilDepthFailOp;
+	desc2.FrontFace.StencilFailOp = (D3D11_STENCIL_OP)renderState.FrontFace.StencilFailOp;
+	desc2.FrontFace.StencilFunc = (D3D11_COMPARISON_FUNC)renderState.FrontFace.StencilFunc;
+	desc2.FrontFace.StencilPassOp = (D3D11_STENCIL_OP)renderState.FrontFace.StencilPassOp;
+	GetDevice()->CreateDepthStencilState( &desc2, &_DepthStencilState );
+
+	m_RenderStates[renderState] = std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> (_RasterizerState,_DepthStencilState);
+
+	return std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> (_RasterizerState,_DepthStencilState);
+}
+
+ID3D11BlendState* DX11RenderDispatcher::CreateBlendState( const BlendState& blendState )
+{
+	// TODO : Check for errors
+	ID3D11BlendState* _BlendState;
+
+	D3D11_BLEND_DESC desc;
+	desc.AlphaToCoverageEnable = false;
+	desc.IndependentBlendEnable = false;
+	desc.RenderTarget[0].BlendEnable = blendState.BlendEnable;
+	desc.RenderTarget[0].SrcBlend = (D3D11_BLEND)blendState.SrcBlend;
+	desc.RenderTarget[0].DestBlend = (D3D11_BLEND)blendState.DestBlend;
+	desc.RenderTarget[0].BlendOp = (D3D11_BLEND_OP)blendState.BlendOp;
+	desc.RenderTarget[0].SrcBlendAlpha = (D3D11_BLEND)blendState.SrcBlendAlpha;
+	desc.RenderTarget[0].DestBlendAlpha = (D3D11_BLEND)blendState.DestBlendAlpha;
+	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	desc.RenderTarget[0].BlendOpAlpha = (D3D11_BLEND_OP)blendState.BlendOpAlpha;
+	GetDevice()->CreateBlendState( &desc, &_BlendState );
+
+	m_BlendStates[blendState] = _BlendState;
+
+	return _BlendState;
 }
 
 //

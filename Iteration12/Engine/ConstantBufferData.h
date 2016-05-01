@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include "Prerequisites.h"
+
 
 // Containter storing aligned data for a constant buffer
 class ConstantBufferData

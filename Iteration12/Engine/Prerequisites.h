@@ -4,17 +4,18 @@
 #pragma warning( disable : 4238 ) // "nonstandard extension used : class rvalue used as lvalue"
 #pragma warning( disable : 4018 ) // "'<' : signed/unsigned mismatch"
 
-#include <d3dx9math.h>
+//#include <d3dx9math.h>
 #include "tbb\tbb.h"
 #include "tbb\scalable_allocator.h"
 #include <assert.h>
-#include "Debug.h"
 #include <map>
 #include <unordered_map>
 #include <vector>
 #include <queue>
 #include <string>
 #include <math.h>
+#include "Debug.h"
+#include <boost\functional\hash.hpp>
 
 class BufferLayout;
 class Camera3D;

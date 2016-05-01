@@ -9,6 +9,8 @@
 #include "Image.h"
 #include "Shaderset.h"
 #include "GeometryChunk.h"
+#include "RenderState.h"
+#include "BlendState.h"
 
 enum SHADERMODEL;
 enum TEXTURE_FORMAT;
@@ -95,6 +97,10 @@ public:
 	virtual void ResolveMSAA( Texture2D* pDestination, Texture2D* pSource )=0;
 	// Present back buffer. SyncInterval not yet in use.
 	virtual void Present( UINT SyncInterval )=0;
+	//
+	virtual void SetRenderState( const RenderState& renderState )=0;
+	//
+	virtual void SetBlendState( const BlendState& blendState )=0;
 
 	inline void	SetBackbufferTexture( Texture2D* pTexture )		{ m_pBackbuffer = pTexture; };
 	inline Texture2D*	GetBackbuffer()							{ return m_pBackbuffer; };

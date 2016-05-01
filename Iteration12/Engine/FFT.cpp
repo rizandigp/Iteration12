@@ -13,7 +13,7 @@ FFT::FFT(unsigned int N) : N(N), reversed(0), W(0), pi2(2.0f * PI)
 	reversed = new unsigned int[N];
 	for (int i = 0; i < N; i++) reversed[i] = ReverseIndices(i);
 
-	// Prepare danielson-lanczos lemma twiddle factor
+	// Prepare the danielson-lanczos lemma twiddle factors
 	int pow2 = 1;
 	W = new Complex*[log_2_N];
 	for (int i = 0; i < log_2_N; i++) 

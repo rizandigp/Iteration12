@@ -26,7 +26,9 @@ public:
 	void SetMultipleRenderTargets( UINT numRenderTargets, Texture2D** pRenderTargetArray );
 	void SetBackbufferAsRenderTarget();
 	void ResolveMSAA( Texture2D* pDestination, Texture2D* pSource );
-	void Present( UINT SyncInterval )									{ m_pSwapChain->Present( SyncInterval, 0 ); };
+	void Present( UINT SyncInterval );
+	void SetRenderState( const RenderState& renderState );
+	void SetBlendState( const BlendState& blendState );
 
 	void SetDevice( ID3D11Device* pDevice )								{ m_pDevice = pDevice; };
 	void SetImmediateContext( ID3D11DeviceContext* pContext )			{ m_pImmediateContext = pContext; };
@@ -73,6 +75,11 @@ protected:
 
 	DX11Shaderset*				m_pActiveShaderset;
 
+	RenderState					m_CurrentRenderState;
+	BlendState					m_CurrentBlendState;
+	std::unordered_map<BlendState, ID3D11BlendState*, BlendStateHasher> m_BlendStates;
+	std::unordered_map<RenderState, std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*>, RenderStateHasher> m_RenderStates;
+
 	// Default sampler states
 	ID3D11SamplerState*			m_pPointSampler, 
 								*m_pLinearSampler, 
@@ -108,6 +115,10 @@ private:
 	DXGI_FORMAT ToDXGIFormat( TEXTURE_FORMAT format );
 	TEXTURE_FORMAT ToNGTextureFormat( DXGI_FORMAT format );
 	HRESULT CompileShaderFromFile( WCHAR* szFileName, DWORD flags, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut );
+	// Doesn't check if a matching RenderState has already been created
+	std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> CreateRenderState( const RenderState& renderState );
+	// TODO : MRT blend states
+	ID3D11BlendState* CreateBlendState( const BlendState& blendState );
 };
 
 D3D_PRIMITIVE_TOPOLOGY ToD3DPrimitiveTopology( PRIMITIVE_TOPOLOGY topology );
