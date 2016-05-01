@@ -2,6 +2,8 @@
 
 #include "..\RenderCommand.h"
 #include "..\ShaderParams.h"
+#include "..\RenderState.h"
+#include "..\BlendState.h"
 
 
 // Generic drawing
@@ -9,7 +11,7 @@
 class DX11RenderCommand_Draw : public RenderCommand
 {
 public:
-	DX11RenderCommand_Draw()	: m_pRasterizerState( NULL ), m_pDepthStencilState(NULL), m_pBlendState( NULL )		{};
+	DX11RenderCommand_Draw()	/*: m_pRasterizerState( NULL ), m_pDepthStencilState(NULL), m_pBlendState( NULL )		*/{};
 
 	// MUTATORS
 	inline void SetGeometryChunk( DX11GeometryChunk *pGeometryChunk )					{ m_pGeometryChunk = pGeometryChunk; };
@@ -18,10 +20,12 @@ public:
 	inline void SetShaderParams( ShaderParams* pParams )								{ m_ShaderParams = *pParams; };
 	void SetTexture( const std::string& name, Texture* pTexture );//					{ m_pTextures.push_back( std::pair< std::string, DX11Texture2D* > (name,pTexture) );};
 
-	inline void SetBlendState( ID3D11BlendState* pBlendState )							{ m_pBlendState = pBlendState; };
-	inline void SetDepthStencilState( ID3D11DepthStencilState* pDepthStencilState )		{ m_pDepthStencilState = pDepthStencilState; };
-	inline void SetRasterizerState( ID3D11RasterizerState* pRasterizerState )			{ m_pRasterizerState = pRasterizerState; };
+	//inline void SetBlendState( ID3D11BlendState* pBlendState )							{ m_pBlendState = pBlendState; };
+	//inline void SetDepthStencilState( ID3D11DepthStencilState* pDepthStencilState )		{ m_pDepthStencilState = pDepthStencilState; };
+	//inline void SetRasterizerState( ID3D11RasterizerState* pRasterizerState )			{ m_pRasterizerState = pRasterizerState; };
 
+	void SetBlendState( const BlendState& blendState )		{ m_BlendState = blendState; };
+	void SetRenderState( const RenderState& renderState )	{ m_RenderState = renderState; };
 
 	// ACCESSORS
 	inline DX11GeometryChunk *GetGeometryChunk()									{ return m_pGeometryChunk; };
@@ -39,9 +43,11 @@ protected:
 	//ShaderParamBlock	m_ShaderParamBlock;
 	ShaderParams		m_ShaderParams;
 	// DX11 state objects
-	ID3D11BlendState*	m_pBlendState;
-	ID3D11DepthStencilState*	m_pDepthStencilState;
-	ID3D11RasterizerState*	m_pRasterizerState;
+	//ID3D11BlendState*	m_pBlendState;
+	//ID3D11DepthStencilState*	m_pDepthStencilState;
+	//ID3D11RasterizerState*	m_pRasterizerState;
+	RenderState		m_RenderState;
+	BlendState		m_BlendState;
 };
 
 // Render command for mapping data to GPU

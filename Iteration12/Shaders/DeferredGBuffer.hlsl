@@ -91,7 +91,7 @@ PSOut PS( PS_INPUT input) : SV_Target
 	float3 ViewVector = normalize(vEyePos.xyz - input.WSPos.xyz);
 
 	PSOut output;
-	output.backbuffer = 0;//0.05f*float4(0.2f,0.4f,1.0f,1.0f)*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*pow( 1.0f - saturate( dot(ViewVector, Normal ) ), 2.0f );
+	output.backbuffer = 0;// float4(0.2f,0.4f,1.0f,1.0f)*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*pow( saturate( dot(ViewVector, Normal ) ), 1.0f );
 	output.gbuffer0.xyz = txDiffuse.Sample( samLinear, input.Tex ).xyz;
 	output.gbuffer1.xyz = Normal;//input.Normal.xyz;
 	output.gbuffer1.w = -input.VSPos.z/fFarPlane; // View space linear depth

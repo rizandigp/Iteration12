@@ -92,7 +92,30 @@ void FullscreenQuad::Render( bool renderAdditive )
 
 	if (renderAdditive)
 	{
-		command->SetBlendState( m_pAdditiveBlendState );
+		BlendState AdditiveBlendState;
+		AdditiveBlendState.BlendEnable = true;
+		AdditiveBlendState.SrcBlend = BLEND_ONE;
+		AdditiveBlendState.DestBlend = BLEND_ONE;
+		AdditiveBlendState.BlendOp = BLEND_OP_ADD;
+		AdditiveBlendState.SrcBlendAlpha = BLEND_ONE;
+		AdditiveBlendState.DestBlendAlpha = BLEND_ONE;
+		AdditiveBlendState.BlendOpAlpha = BLEND_OP_ADD;
+		command->SetBlendState(AdditiveBlendState);
+
+		RenderState _RenderState;
+		_RenderState.EnableDepthTest = false;
+		_RenderState.CullingMode = CULL_NONE;
+		command->SetRenderState(_RenderState);
+	}
+	else
+	{
+		BlendState DefaultBlendState;
+		command->SetBlendState(DefaultBlendState);
+
+		RenderState _RenderState;
+		_RenderState.EnableDepthTest = false;
+		_RenderState.CullingMode = CULL_NONE;
+		command->SetRenderState(_RenderState);
 	}
 
 	for ( std::vector< std::pair< std::string, Texture* >, tbb::scalable_allocator<std::pair< std::string, Texture* >> >::iterator it = m_pTextures.begin(); it!=m_pTextures.end(); ++it )

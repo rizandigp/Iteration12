@@ -112,6 +112,13 @@ void DX11Renderer::RenderShadowmap( Transform* pTransform, Camera3D* pShadowCame
 				command->SetShaderParams( &params );
 				command->SetShaderset( (DX11Shaderset*)m_pShadowmapShader );
 
+				RenderState renderState;
+				renderState.CullingMode = CULL_FRONT;
+				command->SetRenderState(renderState);
+
+				BlendState blendState;
+				command->SetBlendState(blendState);
+
 				m_pRenderSystem->Submit( command ); 
 				m_pRenderSystem->drawcalls++;
 			}

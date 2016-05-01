@@ -1820,7 +1820,7 @@ std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> DX11RenderDispatcher
 
 	D3D11_DEPTH_STENCIL_DESC desc2;
 	desc2.DepthEnable = renderState.EnableDepthTest;
-	desc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	desc2.DepthWriteMask = renderState.EnableDepthWrite ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
 	desc2.DepthFunc = (D3D11_COMPARISON_FUNC)renderState.DepthComparison;
 	desc2.StencilEnable = renderState.EnableStencil;
 	desc2.StencilReadMask = renderState.StencilReadMask;
@@ -1829,6 +1829,10 @@ std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> DX11RenderDispatcher
 	desc2.FrontFace.StencilFailOp = (D3D11_STENCIL_OP)renderState.FrontFace.StencilFailOp;
 	desc2.FrontFace.StencilFunc = (D3D11_COMPARISON_FUNC)renderState.FrontFace.StencilFunc;
 	desc2.FrontFace.StencilPassOp = (D3D11_STENCIL_OP)renderState.FrontFace.StencilPassOp;
+	desc2.BackFace.StencilDepthFailOp = (D3D11_STENCIL_OP)renderState.BackFace.StencilDepthFailOp;
+	desc2.BackFace.StencilFailOp = (D3D11_STENCIL_OP)renderState.BackFace.StencilFailOp;
+	desc2.BackFace.StencilFunc = (D3D11_COMPARISON_FUNC)renderState.BackFace.StencilFunc;
+	desc2.BackFace.StencilPassOp = (D3D11_STENCIL_OP)renderState.BackFace.StencilPassOp;
 	GetDevice()->CreateDepthStencilState( &desc2, &_DepthStencilState );
 
 	m_RenderStates[renderState] = std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> (_RasterizerState,_DepthStencilState);

@@ -135,7 +135,7 @@ float4 PS( PS_INPUT input) : SV_Target
 		
 		Diffuse = max(Diffuse*NdotL*DistanceAttenuation,0.0f) * Cookie * Shadowing;
 		Specular = max(Specular*NdotL*DistanceAttenuation,0.0f) * Cookie * Shadowing;
-		
+		//frac(texShadowmap.Sample( samLinear, SpotlightUV ).xxxx*SpotLightRadius)*Cookie;//*
 		return float4(Diffuse,0.0f) + float4(Specular,0.0f);
 	}
 

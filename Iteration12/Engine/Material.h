@@ -7,6 +7,8 @@
 #include "Mesh.h"
 #include "ShaderParams.h"
 #include "RenderSystem.h"
+#include "RenderState.h"
+#include "BlendState.h"
 
 
 // Base class
@@ -23,13 +25,8 @@ public:
 protected:
 	RenderSystem* m_pRenderSystem;
 	UINT m_NumPasses;
-	ID3D11BlendState*	m_pAdditiveBlendState;
-	ID3D11BlendState*	m_pDefaultBlendState;
-	ID3D11DepthStencilState* m_pAdditiveDepthStencilState;
-	ID3D11DepthStencilState* m_pDefaultDepthStencilState;
-	ID3D11RasterizerState*	m_pAdditiveRasterizerState;
-	ID3D11RasterizerState*	m_pDefaultRasterizerState;
-	ID3D11RasterizerState*	m_pWireframeRasterizerState;
+	RenderState		m_RenderState;
+	BlendState		m_BlendState;
 };
 
 class Material_DiffuseBump : public Material

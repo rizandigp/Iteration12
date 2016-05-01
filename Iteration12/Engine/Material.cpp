@@ -3,75 +3,10 @@
 #include "Material.h"
 #include "DX11/DX11RenderDispatcher.h"
 
-Material::Material( RenderSystem* pRenderSystem )
+Material::Material( RenderSystem* pRenderSystem ) : m_RenderState(), m_BlendState()
 {
 	m_pRenderSystem = pRenderSystem;
 	m_NumPasses = 0;
-
-	m_pAdditiveBlendState = NULL;
-	m_pDefaultBlendState = NULL;
-	m_pAdditiveDepthStencilState = NULL;
-	m_pDefaultDepthStencilState = NULL;
-	m_pAdditiveRasterizerState = NULL;
-	m_pDefaultRasterizerState = NULL;
-	//----------------------------------------------------------------------------------------
-	D3D11_BLEND_DESC desc;
-	desc.AlphaToCoverageEnable = false;
-	desc.IndependentBlendEnable = false;
-	desc.RenderTarget[0].BlendEnable = true;
-	desc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	desc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateBlendState( &desc, &m_pAdditiveBlendState );
-	//-----------------------------------------------------------------------------------------
-	D3D11_RASTERIZER_DESC desc2;
-	desc2.FillMode = D3D11_FILL_SOLID;
-	desc2.CullMode = D3D11_CULL_BACK;
-	desc2.FrontCounterClockwise = true;
-	desc2.DepthBias = -1;
-	desc2.SlopeScaledDepthBias = 0.0f;
-	desc2.DepthBiasClamp = 0.0f;
-	desc2.DepthClipEnable = true;
-	desc2.ScissorEnable = false;
-	desc2.MultisampleEnable = true;
-	desc2.AntialiasedLineEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateRasterizerState( &desc2, &m_pAdditiveRasterizerState );
-
-	desc2.FillMode = D3D11_FILL_SOLID;
-	desc2.CullMode = D3D11_CULL_BACK;
-	desc2.FrontCounterClockwise = true;
-	desc2.DepthBias = 0;
-	desc2.SlopeScaledDepthBias = 0.0f;
-	desc2.DepthBiasClamp = 0.0f;
-	desc2.DepthClipEnable = true;
-	desc2.ScissorEnable = false;
-	desc2.MultisampleEnable = true;
-	desc2.AntialiasedLineEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateRasterizerState( &desc2, &m_pDefaultRasterizerState );
-
-	desc2.FillMode = D3D11_FILL_WIREFRAME;
-	desc2.CullMode = D3D11_CULL_NONE;
-	desc2.FrontCounterClockwise = true;
-	desc2.DepthBias = 0;
-	desc2.SlopeScaledDepthBias = 0.0f;
-	desc2.DepthBiasClamp = 0.0f;
-	desc2.DepthClipEnable = true;
-	desc2.ScissorEnable = false;
-	desc2.MultisampleEnable = true;
-	desc2.AntialiasedLineEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateRasterizerState( &desc2, &m_pWireframeRasterizerState );
-	//------------------------------------------------------------------------------------------
-	D3D11_DEPTH_STENCIL_DESC desc3;
-	desc3.DepthEnable = true;
-	desc3.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	desc3.DepthFunc = D3D11_COMPARISON_LESS;
-	desc3.StencilEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateDepthStencilState( &desc3, &m_pAdditiveDepthStencilState );
-
 }
 /*
 Material_DiffuseBump::Material_DiffuseBump( RenderSystem* pRenderSystem )	:	Material( pRenderSystem ), m_SpecIntensity(0.12f), m_SpecPower(13.0f)

@@ -69,6 +69,8 @@ struct RenderState
 	bool EnableDepthTest;
 	// A function that compares depth data against existing depth data. Defaults to COMPARISON_LESS
 	COMPARISON_FUNCTION DepthComparison;
+	// Enables depth writing. Defaults to true
+	bool EnableDepthWrite;
 	// Whether to enable stencil or not. Defaults to false
 	bool EnableStencil;
 	// Bit value that will mask which bits can be read. Defaults to 0xff
@@ -87,6 +89,7 @@ struct RenderState
 		DepthBias(0),
 		EnableDepthTest(true),
 		DepthComparison(COMPARISON_LESS),
+		EnableDepthWrite(true),
 		EnableStencil(false),
 		StencilReadMask(0xff),
 		StencilWriteMask(0xff) {}
@@ -107,6 +110,7 @@ struct RenderStateHasher
 		boost::hash_combine(seed, boost::hash_value(state.DepthBias));
 		boost::hash_combine(seed, boost::hash_value(state.EnableDepthTest));
 		boost::hash_combine(seed, boost::hash_value(state.DepthComparison));
+		boost::hash_combine(seed, boost::hash_value(state.EnableDepthWrite));
 		boost::hash_combine(seed, boost::hash_value(state.EnableStencil));
 		boost::hash_combine(seed, boost::hash_value(state.StencilReadMask));
 		boost::hash_combine(seed, boost::hash_value(state.StencilWriteMask));

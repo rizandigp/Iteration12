@@ -40,9 +40,8 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 		DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[pass-1]);
 
 		// Set render state & textures
-		command->SetBlendState(m_pDefaultBlendState);
-		command->SetDepthStencilState(m_pDefaultDepthStencilState);
-		command->SetRasterizerState(m_pDefaultRasterizerState);
+		command->SetBlendState(m_BlendState);
+		command->SetRenderState(m_RenderState);
 
 		command->SetTexture( "txDiffuse", m_pDiffuse );
 		command->SetTexture( "txNormal", m_pNormal );
@@ -134,9 +133,25 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 
 		if(pass>1)
 		{
-			command->SetBlendState(m_pAdditiveBlendState);
-			command->SetRasterizerState(m_pAdditiveRasterizerState);
-			command->SetDepthStencilState(m_pAdditiveDepthStencilState);
+			BlendState AdditiveBlendState;
+			AdditiveBlendState.BlendEnable = true;
+			AdditiveBlendState.SrcBlend = BLEND_ONE;
+			AdditiveBlendState.DestBlend = BLEND_ONE;
+			AdditiveBlendState.BlendOp = BLEND_OP_ADD;
+			AdditiveBlendState.SrcBlendAlpha = BLEND_ONE;
+			AdditiveBlendState.DestBlendAlpha = BLEND_ONE;
+			AdditiveBlendState.BlendOpAlpha = BLEND_OP_ADD;
+			command->SetBlendState(AdditiveBlendState);
+
+			RenderState AdditiveRenderState;
+			AdditiveRenderState.FillSolid = true;
+			AdditiveRenderState.CullingMode = CULL_BACK;
+			AdditiveRenderState.EnableDepthTest = true;
+			AdditiveRenderState.DepthBias = -1;
+			AdditiveRenderState.DepthComparison = COMPARISON_LESS;
+			AdditiveRenderState.EnableStencil = false;
+
+			command->SetRenderState(AdditiveRenderState);
 		}
 
 		if (omni>=numOmni && spot>=numSpot)
@@ -181,9 +196,8 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 		DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[pass-1]);
 
 		// Set render states & textures
-		command->SetBlendState(m_pDefaultBlendState);
-		command->SetDepthStencilState(m_pDefaultDepthStencilState);
-		command->SetRasterizerState(m_pDefaultRasterizerState);
+		command->SetBlendState(m_BlendState);
+		command->SetRenderState(m_RenderState);
 
 		command->SetTexture( "txDiffuse", m_pDiffuse );
 		command->SetTexture( "txNormal", m_pNormal );
@@ -279,9 +293,24 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 
 		if(pass>1)
 		{
-			command->SetBlendState(m_pAdditiveBlendState);
-			command->SetRasterizerState(m_pAdditiveRasterizerState);
-			command->SetDepthStencilState(m_pAdditiveDepthStencilState);
+			BlendState AdditiveBlendState;
+			AdditiveBlendState.BlendEnable = true;
+			AdditiveBlendState.SrcBlend = BLEND_ONE;
+			AdditiveBlendState.DestBlend = BLEND_ONE;
+			AdditiveBlendState.BlendOp = BLEND_OP_ADD;
+			AdditiveBlendState.SrcBlendAlpha = BLEND_ONE;
+			AdditiveBlendState.DestBlendAlpha = BLEND_ONE;
+			AdditiveBlendState.BlendOpAlpha = BLEND_OP_ADD;
+			command->SetBlendState(AdditiveBlendState);
+
+			RenderState AdditiveRenderState;
+			AdditiveRenderState.FillSolid = true;
+			AdditiveRenderState.CullingMode = CULL_BACK;
+			AdditiveRenderState.EnableDepthTest = true;
+			AdditiveRenderState.DepthBias = -1;
+			AdditiveRenderState.DepthComparison = COMPARISON_LESS;
+			AdditiveRenderState.EnableStencil = false;
+			command->SetRenderState(AdditiveRenderState);
 		}
 
 		if (omni>=numOmni && spot>=numSpot)
@@ -418,9 +447,10 @@ UINT DX11Material_Deferred::Bind(Renderer* pRenderer, RenderCommand* pRenderComm
 	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
 
 	// Set render states & textures
-	command->SetBlendState(m_pDefaultBlendState);
-	command->SetDepthStencilState(m_pDefaultDepthStencilState);
-	command->SetRasterizerState(m_pDefaultRasterizerState);
+	BlendState DefaultBlendState;
+	RenderState DefaultRenderState;
+	command->SetBlendState(DefaultBlendState);
+	command->SetRenderState(DefaultRenderState);
 
 	command->SetTexture( "txDiffuse", m_pDiffuse );
 	command->SetTexture( "txNormal", m_pNormal );
@@ -458,9 +488,8 @@ UINT DX11Material_DeferredIBL::Bind(Renderer* pRenderer, RenderCommand* pRenderC
 	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
 
 	// Set render states & textures
-	command->SetBlendState(m_pDefaultBlendState);
-	command->SetDepthStencilState(m_pDefaultDepthStencilState);
-	command->SetRasterizerState(m_pDefaultRasterizerState);
+	command->SetBlendState(m_BlendState);
+	command->SetRenderState(m_RenderState);
 
 	command->SetTexture( "txDiffuse", m_pDiffuse );
 	command->SetTexture( "txNormal", m_pNormal );
@@ -498,27 +527,6 @@ DX11Material_Spotlight::DX11Material_Spotlight( RenderSystem* pRenderSystem ) :	
 	m_pGbuffer[2] = NULL;
 
 	m_pShader = pRenderSystem->LoadShaderset( L"Shaders/DeferredSpotlight.hlsl", "VS", "PS", SM_5_0 );
-
-	// Render states
-	D3D11_RASTERIZER_DESC desc2;
-	desc2.FillMode = D3D11_FILL_SOLID;
-	desc2.CullMode = D3D11_CULL_FRONT;
-	desc2.FrontCounterClockwise = true;
-	desc2.DepthBias = 0;
-	desc2.SlopeScaledDepthBias = 0.0f;
-	desc2.DepthBiasClamp = 0.0f;
-	desc2.DepthClipEnable = true;
-	desc2.ScissorEnable = false;
-	desc2.MultisampleEnable = true;
-	desc2.AntialiasedLineEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateRasterizerState( &desc2, &m_pBackfaceRasterizerState );
-
-	D3D11_DEPTH_STENCIL_DESC desc3;
-	desc3.DepthEnable = true;
-	desc3.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	desc3.DepthFunc = D3D11_COMPARISON_GREATER;
-	desc3.StencilEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateDepthStencilState( &desc3, &m_pBackfaceDepthStencilState );
 }
 
 UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform )
@@ -526,9 +534,26 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
 
 	// Set render states & textures
-	command->SetBlendState(m_pAdditiveBlendState);
-	command->SetDepthStencilState(m_pBackfaceDepthStencilState);
-	command->SetRasterizerState(m_pBackfaceRasterizerState);
+	BlendState AdditiveBlendState;
+	AdditiveBlendState.BlendEnable = true;
+	AdditiveBlendState.SrcBlend = BLEND_ONE;
+	AdditiveBlendState.DestBlend = BLEND_ONE;
+	AdditiveBlendState.BlendOp = BLEND_OP_ADD;
+	AdditiveBlendState.SrcBlendAlpha = BLEND_ONE;
+	AdditiveBlendState.DestBlendAlpha = BLEND_ONE;
+	AdditiveBlendState.BlendOpAlpha = BLEND_OP_ADD;
+	command->SetBlendState(AdditiveBlendState);
+
+	RenderState BackfaceRenderState;
+	BackfaceRenderState.FillSolid = true;
+	BackfaceRenderState.CullingMode = CULL_FRONT;
+	BackfaceRenderState.EnableDepthTest = true;
+	BackfaceRenderState.EnableDepthWrite = false;
+	BackfaceRenderState.DepthBias = 0;
+	BackfaceRenderState.DepthComparison = COMPARISON_GREATER;
+	BackfaceRenderState.EnableStencil = false;
+	command->SetRenderState(BackfaceRenderState);
+
 	/*
 	command->SetBlendState(m_pDefaultBlendState);
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
@@ -578,27 +603,6 @@ DX11Material_Pointlight::DX11Material_Pointlight( RenderSystem* pRenderSystem ) 
 	m_pGbuffer[2] = NULL;
 
 	m_pShader = pRenderSystem->LoadShaderset( L"Shaders/DeferredPointlight.hlsl", "VS", "PS", SM_5_0 );
-
-	// Render states
-	D3D11_RASTERIZER_DESC desc2;
-	desc2.FillMode = D3D11_FILL_SOLID;
-	desc2.CullMode = D3D11_CULL_FRONT;
-	desc2.FrontCounterClockwise = true;
-	desc2.DepthBias = 0;
-	desc2.SlopeScaledDepthBias = 0.0f;
-	desc2.DepthBiasClamp = 0.0f;
-	desc2.DepthClipEnable = true;
-	desc2.ScissorEnable = false;
-	desc2.MultisampleEnable = true;
-	desc2.AntialiasedLineEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateRasterizerState( &desc2, &m_pBackfaceRasterizerState );
-
-	D3D11_DEPTH_STENCIL_DESC desc3;
-	desc3.DepthEnable = true;
-	desc3.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	desc3.DepthFunc = D3D11_COMPARISON_GREATER;
-	desc3.StencilEnable = false;
-	((DX11RenderDispatcher*)m_pRenderSystem->GetRenderDispatcher())->GetDevice()->CreateDepthStencilState( &desc3, &m_pBackfaceDepthStencilState );
 }
 
 UINT DX11Material_Pointlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform )
@@ -606,9 +610,25 @@ UINT DX11Material_Pointlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
 
 	// Set render states & textures
-	command->SetBlendState(m_pAdditiveBlendState);
-	command->SetDepthStencilState(m_pBackfaceDepthStencilState);
-	command->SetRasterizerState(m_pBackfaceRasterizerState);
+	BlendState AdditiveBlendState;
+	AdditiveBlendState.BlendEnable = true;
+	AdditiveBlendState.SrcBlend = BLEND_ONE;
+	AdditiveBlendState.DestBlend = BLEND_ONE;
+	AdditiveBlendState.BlendOp = BLEND_OP_ADD;
+	AdditiveBlendState.SrcBlendAlpha = BLEND_ONE;
+	AdditiveBlendState.DestBlendAlpha = BLEND_ONE;
+	AdditiveBlendState.BlendOpAlpha = BLEND_OP_ADD;
+	command->SetBlendState(AdditiveBlendState);
+
+	RenderState BackfaceRenderState;
+	BackfaceRenderState.FillSolid = true;
+	BackfaceRenderState.CullingMode = CULL_FRONT;
+	BackfaceRenderState.EnableDepthTest = true;
+	BackfaceRenderState.EnableDepthWrite = false;
+	BackfaceRenderState.DepthBias = 0;
+	BackfaceRenderState.DepthComparison = COMPARISON_GREATER;
+	BackfaceRenderState.EnableStencil = false;
+	command->SetRenderState(BackfaceRenderState);
 
 	command->SetTexture( "txGBuffer0", m_pGbuffer[0] );
 	command->SetTexture( "txGBuffer1", m_pGbuffer[1] );
@@ -654,9 +674,8 @@ UINT DX11Material_Water::Bind(Renderer* pRenderer, RenderCommand* pRenderCommand
 	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
 
 	// Set render states & textures
-	command->SetBlendState(m_pDefaultBlendState);
-	command->SetDepthStencilState(m_pDefaultDepthStencilState);
-	command->SetRasterizerState(m_pDefaultRasterizerState);
+	command->SetBlendState(m_BlendState);
+	command->SetRenderState(m_RenderState);
 
 	command->SetTexture( "txDiffuse", m_pDiffuse );
 	command->SetTexture( "txNormal", m_pNormal );
@@ -700,9 +719,8 @@ UINT DX11Material_Skybox::Bind(Renderer* pRenderer, RenderCommand* pRenderComman
 	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
 
 	// Set render states & textures
-	command->SetBlendState(m_pDefaultBlendState);
-	command->SetDepthStencilState(m_pDefaultDepthStencilState);
-	command->SetRasterizerState(m_pDefaultRasterizerState);
+	command->SetBlendState(m_BlendState);
+	command->SetRenderState(m_RenderState);
 
 	command->SetTexture( "txCubemap", m_pCubemap );
 

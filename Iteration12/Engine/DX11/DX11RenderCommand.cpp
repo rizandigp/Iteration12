@@ -38,9 +38,11 @@ void DX11RenderCommand_Draw::Execute( RenderDispatcher *pDispatcher )
 
 	// Set DX11 render states
 	timer.Start();
-	pd3d11Dispatcher->GetImmediateContext()->RSSetState( m_pRasterizerState );
-	pd3d11Dispatcher->GetImmediateContext()->OMSetDepthStencilState( m_pDepthStencilState, 0 );
-	pd3d11Dispatcher->GetImmediateContext()->OMSetBlendState( m_pBlendState, NULL, 0xffffffff );
+	//pd3d11Dispatcher->GetImmediateContext()->RSSetState( m_pRasterizerState );
+	//pd3d11Dispatcher->GetImmediateContext()->OMSetDepthStencilState( m_pDepthStencilState, 0 );
+	//pd3d11Dispatcher->GetImmediateContext()->OMSetBlendState( m_pBlendState, NULL, 0xffffffff );
+	pDispatcher->SetRenderState(m_RenderState);
+	pDispatcher->SetBlendState(m_BlendState);
 
 	// Draw call
 	pd3d11Dispatcher->GetImmediateContext()->DrawIndexed( m_pGeometryChunk->GetNumberOfVertices(), 0, 0 );
