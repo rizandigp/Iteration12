@@ -104,7 +104,7 @@ PSOut PS( PS_INPUT input) : SV_Target
 
 	PSOut output;
 	// Diffuse part of the environment lighting
-	output.backbuffer = 0; //ao*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*txIBL.SampleLevel( samLinear, normals.xzy, 7.5f );
+	output.backbuffer = ao*pow(txDiffuse.Sample( samLinear, input.Tex ),GAMMATOLINEAR)*txIBL.SampleLevel( samLinear, normals.xzy, 7.5f );
 	// Specular part of the environment lighting
 	output.backbuffer += (1.0/PI)*ao*fresnel*txIBL.SampleLevel( samLinear, reflectionvector, (1.0f-gloss)*10.0f );
 	
