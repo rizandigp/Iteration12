@@ -1059,7 +1059,8 @@ Shaderset*	DX11RenderDispatcher::CreateShadersetFromFile( std::wstring filename,
 	{
 		pShaderReflection->GetResourceBindingDesc( i, &desc2 );
 		// Map resource name to its index
-		if (desc2.Type==D3D_SIT_TEXTURE)	pShaderset->SetVSShaderResourceIndex( desc2.Name, desc2.BindPoint );
+		if (desc2.Type==D3D_SIT_TEXTURE)	
+			pShaderset->SetVSShaderResourceIndex( desc2.Name, desc2.BindPoint );
 	}
 
 	int ii=0;

@@ -37,3 +37,12 @@ void DX11Shaderset::Bind( RenderDispatcher* pDispatcher )
 	pd3d11Dispatcher->GetImmediateContext()->VSSetShader( m_pVertexShader, NULL, 0 );
 	pd3d11Dispatcher->GetImmediateContext()->PSSetShader( m_pPixelShader, NULL, 0 );
 }
+
+void DX11Shaderset::Unbind( RenderDispatcher* pDispatcher )
+{
+}
+
+// TODO : implement
+void DX11Shaderset::ReleaseResources()
+{
+}

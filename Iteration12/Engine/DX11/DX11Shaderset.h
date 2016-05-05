@@ -22,25 +22,26 @@ public:
 	void SetComputeShader( ID3D11ComputeShader* pShader )			{ m_pComputeShader = pShader; };
 	void SetInputSignature( ID3DBlob* pInputSignature )				{ m_pInputSignature = pInputSignature; };
 
-	void SetVSShaderResourceIndex( std::string name, UINT index )	{ m_pVSShaderResourceIndices[name] = index; };
-	void SetGSShaderResourceIndex( std::string name, UINT index )	{ m_pGSShaderResourceIndices[name] = index; };
-	void SetPSShaderResourceIndex( std::string name, UINT index )	{ m_pPSShaderResourceIndices[name] = index; };
-	void SetCSShaderResourceIndex( std::string name, UINT index )	{ m_pCSShaderResourceIndices[name] = index; };
+	void SetVSShaderResourceIndex( const std::string& name, UINT index )	{ m_pVSShaderResourceIndices[name] = index; };
+	void SetGSShaderResourceIndex( const std::string& name, UINT index )	{ m_pGSShaderResourceIndices[name] = index; };
+	void SetPSShaderResourceIndex( const std::string& name, UINT index )	{ m_pPSShaderResourceIndices[name] = index; };
+	void SetCSShaderResourceIndex( const std::string& name, UINT index )	{ m_pCSShaderResourceIndices[name] = index; };
 
-	void SetVSVariable( std::string name, ShaderVariable var )		{ m_pVSVariables[name] = var; };
-	void SetGSVariable( std::string name, ShaderVariable var )		{ m_pGSVariables[name] = var; };
-	void SetPSVariable( std::string name, ShaderVariable var )		{ m_pPSVariables[name] = var; };
-	void SetCSVariable( std::string name, ShaderVariable var )		{ m_pCSVariables[name] = var; };
+	void SetVSVariable( const std::string& name, ShaderVariable var )		{ m_pVSVariables[name] = var; };
+	void SetGSVariable( const std::string& name, ShaderVariable var )		{ m_pGSVariables[name] = var; };
+	void SetPSVariable( const std::string& name, ShaderVariable var )		{ m_pPSVariables[name] = var; };
+	void SetCSVariable( const std::string& name, ShaderVariable var )		{ m_pCSVariables[name] = var; };
 
 	void SetVSConstantBufferSize( UINT index, UINT byteWidth )		{ m_pVSConstantBufferByteSizes[index] = byteWidth; };
 	void SetGSConstantBufferSize( UINT index, UINT byteWidth )		{ m_pGSConstantBufferByteSizes[index] = byteWidth; };
 	void SetPSConstantBufferSize( UINT index, UINT byteWidth )		{ m_pPSConstantBufferByteSizes[index] = byteWidth; };
 	void SetCSConstantBufferSize( UINT index, UINT byteWidth )		{ m_pCSConstantBufferByteSizes[index] = byteWidth; };
 
-	void SetVSSampler( UINT index, std::string name, ID3D11SamplerState* pSampler );
-	void SetGSSampler( UINT index, std::string name, ID3D11SamplerState* pSampler );
-	void SetPSSampler( UINT index, std::string name, ID3D11SamplerState* pSampler );
-	void SetCSSampler( UINT index, std::string name, ID3D11SamplerState* pSampler );
+	// TODO : Remember what these are for
+	void SetVSSampler( UINT index, const std::string& name, ID3D11SamplerState* pSampler );
+	void SetGSSampler( UINT index, const std::string& name, ID3D11SamplerState* pSampler );
+	void SetPSSampler( UINT index, const std::string& name, ID3D11SamplerState* pSampler );
+	void SetCSSampler( UINT index, const std::string& name, ID3D11SamplerState* pSampler );
 
 	inline ID3D11VertexShader*	GetVertexShader()							{ return m_pVertexShader; };
 	inline ID3D11GeometryShader* GetGeometryShader()						{ return m_pGeometryShader; };
@@ -51,15 +52,15 @@ public:
 	inline ID3DBlob*			GetInputSignature()							{ return m_pInputSignature; };
 
 	// Accessors
-	inline int GetVSShaderResourceIndex( std::string const &name );
-	inline int GetGSShaderResourceIndex( std::string const &name );
-	inline int GetPSShaderResourceIndex( std::string const &name );
-	inline int GetCSShaderResourceIndex( std::string const &name );
+	inline int GetVSShaderResourceIndex( const std::string& name );
+	inline int GetGSShaderResourceIndex( const std::string& name );
+	inline int GetPSShaderResourceIndex( const std::string& name );
+	inline int GetCSShaderResourceIndex( const std::string& name );
 	
-	inline const ShaderVariable* GetVSVariable( std::string const &name ) const;
-	inline const ShaderVariable* GetGSVariable( std::string const &name ) const;
-	inline const ShaderVariable* GetPSVariable( std::string const &name ) const;
-	inline const ShaderVariable* GetCSVariable( std::string const &name ) const;
+	inline const ShaderVariable* GetVSVariable( const std::string& name ) const;
+	inline const ShaderVariable* GetGSVariable( const std::string& name ) const;
+	inline const ShaderVariable* GetPSVariable( const std::string& name ) const;
+	inline const ShaderVariable* GetCSVariable( const std::string& name ) const;
 	
 	inline int GetVSConstantBufferSize( UINT index )					{ return m_pVSConstantBufferByteSizes.find(index)->second; };
 	inline int GetGSConstantBufferSize( UINT index )					{ return m_pGSConstantBufferByteSizes.find(index)->second; };
@@ -72,10 +73,10 @@ public:
 	UINT numCSConstantBuffers;
 
 	void Bind( RenderDispatcher* pDispatcher );
-	void Unbind( RenderDispatcher* pDispatcher )	{};		// Not needed?
+	void Unbind( RenderDispatcher* pDispatcher );	// Not needed?
 
 	// TODO : implement
-	void ReleaseResources()	{};
+	void ReleaseResources();
 
 private:
 	// Shaders
@@ -117,7 +118,7 @@ private:
 //
 /////////////////////////////////
 
-inline INT DX11Shaderset::GetVSShaderResourceIndex( std::string const &name )	
+inline INT DX11Shaderset::GetVSShaderResourceIndex( const std::string& name )	
 {
 	std::map<std::string, UINT>::const_iterator it = m_pVSShaderResourceIndices.find(name);
 	if(it!=m_pVSShaderResourceIndices.end())
@@ -126,7 +127,7 @@ inline INT DX11Shaderset::GetVSShaderResourceIndex( std::string const &name )
 		return -1; 
 }
 
-inline INT DX11Shaderset::GetGSShaderResourceIndex( std::string const &name )					
+inline INT DX11Shaderset::GetGSShaderResourceIndex( const std::string& name )					
 {
 	std::map<std::string, UINT>::const_iterator it = m_pGSShaderResourceIndices.find(name);
 	if(it!=m_pGSShaderResourceIndices.end())
@@ -135,7 +136,7 @@ inline INT DX11Shaderset::GetGSShaderResourceIndex( std::string const &name )
 		return -1;
 }
 
-inline INT DX11Shaderset::GetPSShaderResourceIndex( std::string const &name )
+inline INT DX11Shaderset::GetPSShaderResourceIndex( const std::string& name )
 {
 	std::map<std::string, UINT>::const_iterator it = m_pPSShaderResourceIndices.find(name);
 	if(it!=m_pPSShaderResourceIndices.end())
@@ -144,7 +145,7 @@ inline INT DX11Shaderset::GetPSShaderResourceIndex( std::string const &name )
 		return -1;
 }
 
-inline INT DX11Shaderset::GetCSShaderResourceIndex( std::string const &name )
+inline INT DX11Shaderset::GetCSShaderResourceIndex( const std::string& name )
 {
 	std::map<std::string, UINT>::const_iterator it = m_pCSShaderResourceIndices.find(name);
 	if(it!=m_pCSShaderResourceIndices.end())
@@ -154,7 +155,7 @@ inline INT DX11Shaderset::GetCSShaderResourceIndex( std::string const &name )
 }
 	
 
-inline const ShaderVariable* DX11Shaderset::GetVSVariable( std::string const &name ) const
+inline const ShaderVariable* DX11Shaderset::GetVSVariable( const std::string& name ) const
 {
 	std::unordered_map<std::string, ShaderVariable>::const_iterator it = m_pVSVariables.find(name);
 	if(it!=m_pVSVariables.end())
@@ -162,7 +163,7 @@ inline const ShaderVariable* DX11Shaderset::GetVSVariable( std::string const &na
 	return NULL;
 }
 
-inline const ShaderVariable* DX11Shaderset::GetGSVariable( std::string const &name ) const
+inline const ShaderVariable* DX11Shaderset::GetGSVariable( const std::string& name ) const
 {
 	std::unordered_map<std::string, ShaderVariable>::const_iterator it = m_pGSVariables.find(name);
 	if(it!=m_pGSVariables.end())
@@ -170,7 +171,7 @@ inline const ShaderVariable* DX11Shaderset::GetGSVariable( std::string const &na
 	return NULL;
 }
 
-inline const ShaderVariable* DX11Shaderset::GetPSVariable( std::string const &name ) const
+inline const ShaderVariable* DX11Shaderset::GetPSVariable( const std::string& name ) const
 {
 	std::unordered_map<std::string, ShaderVariable>::const_iterator it = m_pPSVariables.find(name);
 	if(it!=m_pPSVariables.end())
@@ -178,7 +179,7 @@ inline const ShaderVariable* DX11Shaderset::GetPSVariable( std::string const &na
 	return NULL;
 }
 
-inline const ShaderVariable* DX11Shaderset::GetCSVariable( std::string const &name ) const
+inline const ShaderVariable* DX11Shaderset::GetCSVariable( const std::string& name ) const
 {
 	std::unordered_map<std::string, ShaderVariable>::const_iterator it = m_pCSVariables.find(name);
 	if(it!=m_pCSVariables.end())
