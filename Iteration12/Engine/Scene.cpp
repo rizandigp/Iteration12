@@ -415,7 +415,7 @@ void Scene::RenderDeferred()
 	//m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	//m_pRenderSystem->SetBackbufferAsRenderTarget();
 
-
+	
 	// Render all entities
 	std::for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 	{
@@ -433,7 +433,7 @@ void Scene::RenderDeferred()
 	//
 	// Render lights
 	//
-	if (!m_pSpotLights.empty())
+	/*if (!m_pSpotLights.empty())
 	{
 		// It is crucial to clear shadowmaps to the max possible float value. 
 		float clear0[] = { D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX };
@@ -504,7 +504,7 @@ void Scene::RenderDeferred()
 					//m_pGI->render(true);
 			}
 		}
-	}
+	}*/
 	
 	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	
@@ -543,7 +543,7 @@ void Scene::RenderDeferred()
 	// Fullscreen pass to backbuffer
 	m_pRenderSystem->SetBackbufferAsRenderTarget();
 	m_pTonemappingPass->Render( false );
-
+	
 	t_scenerender = t.GetMiliseconds();
 }
 

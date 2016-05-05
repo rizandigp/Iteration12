@@ -8,6 +8,7 @@ class DX11Renderer : public Renderer
 {
 public:
 	DX11Renderer();
+	~DX11Renderer();
 
 	void SetRenderSystem( RenderSystem*	pRenderSystem );
 	void SetMesh( Mesh* pMesh );

@@ -206,3 +206,24 @@ void DX11Renderer::RenderOBB( Transform* pTransform )
 		}
 	}
 }
+
+DX11Renderer::~DX11Renderer()
+{
+	// Delete all render commands
+	while (!m_pSubmeshRenderCommands.empty())
+	{
+		std::vector< DX11RenderCommand_Draw* >* container = &m_pSubmeshRenderCommands.back();
+		while (!container->empty())
+		{
+			delete container->back();  container->pop_back();
+		}
+	}
+	while (!m_pDebugRenderCommands.empty())
+	{
+		delete m_pDebugRenderCommands.back();  m_pDebugRenderCommands.pop_back();
+	}
+	while (!m_pShadowmapRenderCommands.empty())
+	{
+		delete m_pShadowmapRenderCommands.back();  m_pShadowmapRenderCommands.pop_back();
+	}
+}

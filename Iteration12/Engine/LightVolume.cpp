@@ -3,69 +3,77 @@
 #include "LightVolume.h"
 #include "Material.h"
 
-LightVolume::LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight )
+LightVolume::LightVolume( RenderSystem* renderSystem, SpotLight* spotlight )
 {
-	m_pPointlight = NULL;
-	m_pSpotlight = pSpotlight;
-	m_pMesh = pRenderSystem->LoadMesh( "Media/Meshes/unit_cube_2.obj" );
+	m_Pointlight = NULL;
+	m_Spotlight = spotlight;
+	m_Mesh = renderSystem->LoadMesh( "Media/Meshes/unit_cube_2.obj" );
 	//m_pMesh = pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) );
-	m_pMesh->SetMaterial( Material_Spotlight::Create( pRenderSystem ) );
+	m_Material = Material_Spotlight::Create( renderSystem );
+	m_Mesh->SetMaterial( m_Material );
 
-	m_Renderer = pRenderSystem->CreateRenderer();
-	m_Renderer->SetRenderSystem( pRenderSystem );
-	m_Renderer->SetMesh( m_pMesh );
+	m_Renderer = renderSystem->CreateRenderer();
+	m_Renderer->SetRenderSystem( renderSystem );
+	m_Renderer->SetMesh( m_Mesh );
 }
 
-LightVolume::LightVolume( RenderSystem* pRenderSystem, PointLight* pPointlight )
+LightVolume::LightVolume( RenderSystem* renderSystem, PointLight* pointlight )
 {
-	m_pSpotlight = NULL;
-	m_pPointlight = pPointlight;
-	m_pMesh = pRenderSystem->LoadMesh( "Media/Meshes/geosphere.obj" );
+	m_Spotlight = NULL;
+	m_Pointlight = pointlight;
+	m_Mesh = renderSystem->LoadMesh( "Media/Meshes/geosphere.obj" );
 	//m_pMesh = pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) );
-	m_pMesh->SetMaterial( Material_Pointlight::Create( pRenderSystem ) );
+	m_Material = Material_Pointlight::Create( renderSystem );
+	m_Mesh->SetMaterial( m_Material );
 
-	m_Renderer = pRenderSystem->CreateRenderer();
-	m_Renderer->SetRenderSystem( pRenderSystem );
-	m_Renderer->SetMesh( m_pMesh );
+	m_Renderer = renderSystem->CreateRenderer();
+	m_Renderer->SetRenderSystem( renderSystem );
+	m_Renderer->SetMesh( m_Mesh );
 }
 
 void LightVolume::SetGBuffer(Texture2D* buffers[3])
 {
-	m_pGBuffers[0] = buffers[0];
-	m_pGBuffers[1] = buffers[1];
-	m_pGBuffers[2] = buffers[2];
+	m_GBuffers[0] = buffers[0];
+	m_GBuffers[1] = buffers[1];
+	m_GBuffers[2] = buffers[2];
 }
 
 void LightVolume::Render()
 {
-	if (m_pSpotlight)
+	if (m_Spotlight)
 	{
-		Material_Spotlight* mat = (Material_Spotlight*)m_pMesh->GetSubmesh(0)->GetMaterial();
-		mat->setInverseProjectionMatrix( m_pSpotlight->GetProjectionCamera()->GetProjectionMatrix().inverse() );
-		mat->setViewProjectionMatrix( m_pSpotlight->GetProjectionCamera()->GetViewProjectionMatrix() );
-		mat->setViewMatrix( m_pSpotlight->GetProjectionCamera()->GetViewMatrix() );
-		mat->setGBuffer( m_pGBuffers );
-		mat->setShadowmap( m_pSpotlight->GetShadowmap() );
-		mat->SetPosition( m_pSpotlight->Transformation()->GetPosition() );
-		mat->setColor( m_pSpotlight->GetColor() );
-		mat->setIntensity( m_pSpotlight->GetIntensity() );
-		mat->setRadius( m_pSpotlight->GetRadius() );
-		if (m_pSpotlight->IsRSMEnabled()&&m_pSpotlight->IsCastingShadow())
-			mat->setCookie( m_pSpotlight->GetRSMNormal() );
+		Material_Spotlight* mat = (Material_Spotlight*)m_Mesh->GetSubmesh(0)->GetMaterial();
+		mat->setInverseProjectionMatrix( m_Spotlight->GetProjectionCamera()->GetProjectionMatrix().inverse() );
+		mat->setViewProjectionMatrix( m_Spotlight->GetProjectionCamera()->GetViewProjectionMatrix() );
+		mat->setViewMatrix( m_Spotlight->GetProjectionCamera()->GetViewMatrix() );
+		mat->setGBuffer( m_GBuffers );
+		mat->setShadowmap( m_Spotlight->GetShadowmap() );
+		mat->SetPosition( m_Spotlight->Transformation()->GetPosition() );
+		mat->setColor( m_Spotlight->GetColor() );
+		mat->setIntensity( m_Spotlight->GetIntensity() );
+		mat->setRadius( m_Spotlight->GetRadius() );
+		if (m_Spotlight->IsRSMEnabled()&&m_Spotlight->IsCastingShadow())
+			mat->setCookie( m_Spotlight->GetRSMNormal() );
 		else
-			mat->setCookie( m_pSpotlight->GetCookie() );
+			mat->setCookie( m_Spotlight->GetCookie() );
 
-		m_Renderer->Render( m_pSpotlight->Transformation() );
+		m_Renderer->Render( m_Spotlight->Transformation() );
 	}
-	else if (m_pPointlight)
+	else if (m_Pointlight)
 	{
-		Material_Pointlight* mat = (Material_Pointlight*)m_pMesh->GetSubmesh(0)->GetMaterial();
-		mat->setGBuffer( m_pGBuffers );
-		mat->SetPosition( m_pPointlight->Transformation()->GetPosition() );
-		mat->setColor( m_pPointlight->getColor() );
-		mat->setIntensity( m_pPointlight->GetIntensity() );
-		mat->setRadius( m_pPointlight->GetRadius() );
+		Material_Pointlight* mat = (Material_Pointlight*)m_Mesh->GetSubmesh(0)->GetMaterial();
+		mat->setGBuffer( m_GBuffers );
+		mat->SetPosition( m_Pointlight->Transformation()->GetPosition() );
+		mat->setColor( m_Pointlight->getColor() );
+		mat->setIntensity( m_Pointlight->GetIntensity() );
+		mat->setRadius( m_Pointlight->GetRadius() );
 
-		m_Renderer->Render( m_pPointlight->Transformation() );
+		m_Renderer->Render( m_Pointlight->Transformation() );
 	}
+}
+
+LightVolume::~LightVolume()
+{
+	delete m_Renderer;
+	delete m_Material;
 }

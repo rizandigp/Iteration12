@@ -8,17 +8,19 @@
 class LightVolume
 {
 public:
-	LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight );
-	LightVolume( RenderSystem* pRenderSystem, PointLight* pPointlight );
+	LightVolume( RenderSystem* pRenderSystem, SpotLight* spotlight );
+	LightVolume( RenderSystem* pRenderSystem, PointLight* sointlight );
+	~LightVolume();
 
 	void SetGBuffer(Texture2D* buffers[3]);
 	void Render();
 	void RenderVolumetricLight();
 
 protected:
-	SpotLight* m_pSpotlight;
-	PointLight* m_pPointlight;
-	Mesh* m_pMesh;
+	SpotLight* m_Spotlight;
+	PointLight* m_Pointlight;
+	Mesh* m_Mesh;
+	Material* m_Material;
 	Renderer* m_Renderer;
-	Texture2D* m_pGBuffers[3];
+	Texture2D* m_GBuffers[3];
 };
