@@ -1,7 +1,7 @@
 #pragma once
 
 #include "LightVolume.h"
-#include "DX11/DX11Material.h"
+#include "Material.h"
 
 LightVolume::LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight )
 {
@@ -9,7 +9,7 @@ LightVolume::LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight )
 	m_pSpotlight = pSpotlight;
 	m_pMesh = pRenderSystem->LoadMesh( "Media/Meshes/unit_cube_2.obj" );
 	//m_pMesh = pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) );
-	m_pMesh->SetMaterial( new DX11Material_Spotlight( pRenderSystem ) );
+	m_pMesh->SetMaterial( Material_Spotlight::Create( pRenderSystem ) );
 
 	m_Renderer = pRenderSystem->CreateRenderer();
 	m_Renderer->SetRenderSystem( pRenderSystem );
@@ -22,7 +22,7 @@ LightVolume::LightVolume( RenderSystem* pRenderSystem, PointLight* pPointlight )
 	m_pPointlight = pPointlight;
 	m_pMesh = pRenderSystem->LoadMesh( "Media/Meshes/geosphere.obj" );
 	//m_pMesh = pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) );
-	m_pMesh->SetMaterial( new DX11Material_Pointlight( pRenderSystem ) );
+	m_pMesh->SetMaterial( Material_Pointlight::Create( pRenderSystem ) );
 
 	m_Renderer = pRenderSystem->CreateRenderer();
 	m_Renderer->SetRenderSystem( pRenderSystem );
@@ -40,7 +40,7 @@ void LightVolume::Render()
 {
 	if (m_pSpotlight)
 	{
-		DX11Material_Spotlight* mat = ((DX11Material_Spotlight*)m_pMesh->GetSubmesh(0)->GetMaterial());
+		Material_Spotlight* mat = (Material_Spotlight*)m_pMesh->GetSubmesh(0)->GetMaterial();
 		mat->setInverseProjectionMatrix( m_pSpotlight->GetProjectionCamera()->GetProjectionMatrix().inverse() );
 		mat->setViewProjectionMatrix( m_pSpotlight->GetProjectionCamera()->GetViewProjectionMatrix() );
 		mat->setViewMatrix( m_pSpotlight->GetProjectionCamera()->GetViewMatrix() );
@@ -59,7 +59,7 @@ void LightVolume::Render()
 	}
 	else if (m_pPointlight)
 	{
-		DX11Material_Pointlight* mat = ((DX11Material_Pointlight*)m_pMesh->GetSubmesh(0)->GetMaterial());
+		Material_Pointlight* mat = (Material_Pointlight*)m_pMesh->GetSubmesh(0)->GetMaterial();
 		mat->setGBuffer( m_pGBuffers );
 		mat->SetPosition( m_pPointlight->Transformation()->GetPosition() );
 		mat->setColor( m_pPointlight->getColor() );
