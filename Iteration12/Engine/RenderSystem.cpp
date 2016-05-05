@@ -28,7 +28,7 @@ HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
 		m_pDispatcher = new DX11RenderDispatcher();
 	else
 	{
-		NGERROR( " Graphics API not implemented yet. Only DX11 implemented for now. Render System initialization failed." );
+		NGERROR( "GL/MANTLE/VULKAN not implemented yet. Only DX11 implemented for now. Render System initialization failed." );
 		return S_FALSE;
 	}
 
