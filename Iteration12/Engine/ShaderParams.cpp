@@ -42,7 +42,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
 			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)pMatrixParam, size );
 		}
@@ -65,7 +64,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
 			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)pMatrixParam, size );
 		}
@@ -91,7 +89,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
 			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), (void*)pVectorParam, size );
 		}
@@ -114,7 +111,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const XMF
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
 			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), (void*)pVectorParam, size );
 		}
@@ -140,8 +136,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
-			//UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
 			UINT size = sizeof(float);
 			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), &pScalarParam, size );
 		}
@@ -164,8 +158,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, float pSc
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (void*)(m_pVSCBDataBuffer[pvar->ConstantBuffer]+pvar->Offset+(it->first.second*sizeof(XMFLOAT4))), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4)), sizeof(XMFLOAT4)) );
-			//UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4)), sizeof(XMFLOAT4));
 			UINT size = sizeof(float);
 			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4), &pScalarParam, size );
 		}
@@ -191,7 +183,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const Mat
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
 			m_VSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)matrix, size );
 		}
@@ -214,7 +205,6 @@ void ShaderParams::setParam( const std::string& paramName, UINT index, const Mat
 	{
 		if ( index < pvar->Elements )
 		{
-			//memcpy( (m_pVSCBDataBuffer[pvar->ConstantBuffer])+pvar->Offset+(it->first.second*sizeof(XMFLOAT4X4)), &it->second, min( pvar->Size - (it->first.second*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4)) );
 			UINT size = min( pvar->Size - (index*sizeof(XMFLOAT4X4)), sizeof(XMFLOAT4X4));
 			m_PSConstantBuffers.at(pvar->ConstantBuffer).SetData( pvar->Offset + index*sizeof(XMFLOAT4X4), (void*)matrix, size );
 		}
