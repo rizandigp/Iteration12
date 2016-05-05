@@ -359,6 +359,7 @@ void RenderSystem::BeginFrame( float* clearColorRGBA, float depthClear, UINT8 st
 	t_alloc = 0.0f;
 	t_dealloc = 0.0f;
 	t_material = 0.0f;
+	t_shadowmapbinding = 0.0f;
 	t_queuepush = 0.0f;
 	t_queuepop = 0.0f;
 	t_renderstarve = 0.0f;

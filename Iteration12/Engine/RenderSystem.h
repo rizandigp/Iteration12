@@ -168,6 +168,7 @@ public:
 	double	t_alloc;
 	double	t_dealloc;
 	double	t_material;
+	double	t_shadowmapbinding;
 	double	t_queuepush;
 	double	t_queuepop;
 	double	t_renderstarve;

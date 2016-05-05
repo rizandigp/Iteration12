@@ -400,10 +400,10 @@ void DoFrame()
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
-		_gcvt( scene.t_ocean, 5, str );
+		/*_gcvt( scene.t_ocean, 5, str );
 		DEBUG_OUTPUT( "ocean: " );
 		DEBUG_OUTPUT( str );
-		DEBUG_OUTPUT( "ms\t  " );
+		DEBUG_OUTPUT( "ms\t  " );*/
 
 		_gcvt( t_update, 5, str );
 		DEBUG_OUTPUT( "Scene::update: " );
@@ -475,6 +475,11 @@ void DoFrame()
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
 
+		_gcvt( pRenderSystem->t_material, 5, str );
+		DEBUG_OUTPUT( "Renderer::RenderShadowmap: " );
+		DEBUG_OUTPUT( str );
+		DEBUG_OUTPUT( "ms\t  " );
+
 		_gcvt( pRenderSystem->t_shaderparams, 5, str );
 		DEBUG_OUTPUT( "shaderparams: " );
 		DEBUG_OUTPUT( str );
@@ -484,7 +489,7 @@ void DoFrame()
 		DEBUG_OUTPUT( "new shader params: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
-		*/
+		
 		_gcvt( pRenderSystem->t_alloc, 7, str );
 		DEBUG_OUTPUT( "command alloc: " );
 		DEBUG_OUTPUT( str );

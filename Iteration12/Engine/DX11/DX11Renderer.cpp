@@ -105,6 +105,7 @@ void DX11Renderer::RenderShadowmap( Transform* pTransform, Camera3D* pShadowCame
 		{
 			if (m_SubmeshRenderData[i].bVisible)
 			{
+				Timer timer;
 				DX11RenderCommand_Draw* command = m_pShadowmapRenderCommands[i];
 
 				ShaderParams params;
@@ -124,6 +125,8 @@ void DX11Renderer::RenderShadowmap( Transform* pTransform, Camera3D* pShadowCame
 
 				BlendState blendState;
 				command->SetBlendState(blendState);
+
+				m_RenderSystem->t_shadowmapbinding += timer.GetMiliseconds();
 
 				m_RenderSystem->Submit( command ); 
 				m_RenderSystem->drawcalls++;
