@@ -38,6 +38,6 @@ public:
 
 private:
 	Shaderset* m_pShaderset;
-	std::vector<ConstantBufferData,tbb::scalable_allocator<BYTE>> m_VSConstantBuffers;
-	std::vector<ConstantBufferData,tbb::scalable_allocator<BYTE>> m_PSConstantBuffers;
+	std::vector<ConstantBufferData,tbb::scalable_allocator<ConstantBufferData>> m_VSConstantBuffers;
+	std::vector<ConstantBufferData,tbb::scalable_allocator<ConstantBufferData>> m_PSConstantBuffers;
 };
