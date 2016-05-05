@@ -5,7 +5,7 @@
 Entity_KursiRoda::Entity_KursiRoda(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 {
 	//DX11Material_DiffuseDetailbump* pMaterial = new DX11Material_DiffuseDetailbump(ptr);
-	DX11Material_Deferred* pMaterial = new DX11Material_Deferred(ptr);
+	Material_Deferred* pMaterial = Material_Deferred::Create( ptr );
 	pMaterial->SetDiffusemap( ptr->LoadTexture2D( L"Media/props34_san_kol.2048.crn.bmp" ) );
 	pMaterial->SetNormalmap( ptr->LoadTexture2D( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
 	//pMaterial->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -24,7 +24,7 @@ Entity_KursiRoda::Entity_KursiRoda(RenderSystem* ptr) : Entity_StaticProp( ptr, 
 Entity_Kasur::Entity_Kasur(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 {
 	//DX11Material_DiffuseDetailbump* mat0 = new DX11Material_DiffuseDetailbump(ptr);
-	DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
+	Material_Deferred* mat0 = Material_Deferred::Create(ptr);
 	mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/metal34_props_01.1024.dds" ) );
 	mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/metal34_props_01_normal.2048.bmp" ) );
 	//mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -34,7 +34,7 @@ Entity_Kasur::Entity_Kasur(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 	//mat0->SetSpecularPower( 32.0f );
 
 	//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
-	DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
+	Material_Deferred* mat1 = Material_Deferred::Create(ptr);
 	mat1->SetDiffusemap( ptr->LoadTexture2D( L"Media/props34_san_kol.2048.crn.bmp" ) );
 	mat1->SetNormalmap( ptr->LoadTexture2D( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
 	//mat1->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -44,7 +44,7 @@ Entity_Kasur::Entity_Kasur(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 	//mat1->SetSpecularPower( 32.0f );
 
 	//DX11Material_DiffuseDetailbump* mat2 = new DX11Material_DiffuseDetailbump(ptr);
-	DX11Material_Deferred* mat2 = new DX11Material_Deferred(ptr);
+	Material_Deferred* mat2 = Material_Deferred::Create(ptr);
 	mat2->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_mattress.512.dds" ) );
 	mat2->SetNormalmap( ptr->LoadTexture2D( L"Media/props_mattress_normal.512.bmp" ) );
 	//mat2->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -54,7 +54,7 @@ Entity_Kasur::Entity_Kasur(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 	//mat2->SetSpecularPower( 16.0f );
 
 	//DX11Material_DiffuseDetailbump* mat3 = new DX11Material_DiffuseDetailbump(ptr);
-	DX11Material_Deferred* mat3 = new DX11Material_Deferred(ptr);
+	Material_Deferred* mat3 = Material_Deferred::Create(ptr);
 	mat3->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_fabric.2048.dds" ) );
 	mat3->SetNormalmap( ptr->LoadTexture2D( L"Media/props_fabric_normal.2048.bmp" ) );
 	//mat3->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -75,7 +75,7 @@ Entity_Kasur::Entity_Kasur(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 
 Entity_Tumba01::Entity_Tumba01(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL )
 {
-	DX11Material_DiffuseDetailbump* mat0 = new DX11Material_DiffuseDetailbump(ptr);
+	Material_DiffuseDetailbump* mat0 = Material_DiffuseDetailbump::Create(ptr);
 	mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_shkaf_01.1024.bmp" ) );
 	mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_shkaf_01_normal.1024.bmp" ) );
 	mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -84,7 +84,7 @@ Entity_Tumba01::Entity_Tumba01(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL
 	mat0->SetSpecularIntensity( 0.34f );
 	mat0->SetSpecularPower( 32.0f );
 
-	DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
+	Material_DiffuseDetailbump* mat1 = Material_DiffuseDetailbump::Create(ptr);
 	mat1->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_shkaf_01.1024.bmp" ) );
 	mat1->SetNormalmap( ptr->LoadTexture2D( L"Media/props_shkaf_01_normal.1024.bmp" ) );
 	mat1->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );

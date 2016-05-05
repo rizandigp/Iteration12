@@ -7,11 +7,8 @@
 //
 //	DX11Material_DiffuseDetailbump
 //
-DX11Material_DiffuseDetailbump::DX11Material_DiffuseDetailbump( RenderSystem* pRenderSystem )	:	Material( pRenderSystem )
+DX11Material_DiffuseDetailbump::DX11Material_DiffuseDetailbump( RenderSystem* pRenderSystem ) :	Material_DiffuseDetailbump( pRenderSystem )
 {
-	m_DetailNormalStrength = 1.0f;
-	m_DetailTiling = 10.0f;
-
 	// Shaders:
 	// 0: 2 omni + 2 spot lights
 	// 1: 2 omni lights only
@@ -166,12 +163,8 @@ UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pR
 //
 //	DX11Material_BlinnPhong
 //
-DX11Material_BlinnPhong::DX11Material_BlinnPhong( RenderSystem* pRenderSystem )	:	Material( pRenderSystem )/*, m_SpecIntensity(1.0), m_SpecPower(2048.0f)*/
+DX11Material_BlinnPhong::DX11Material_BlinnPhong( RenderSystem* pRenderSystem )	:	Material_BlinnPhong( pRenderSystem )
 {
-	m_pDiffuse = NULL;
-	m_pNormal = NULL;
-	m_pSpecular = NULL;
-
 	// TODO : different light configurations
 	m_pShaderNoLight = m_pRenderSystem->LoadShaderset( L"Shaders/Black.hlsl", "VS", "PS", SM_5_0 );
 	m_pShader[0] = m_pRenderSystem->LoadShaderset( L"Shaders/BlinnPhong.hlsl", "VS", "PS", SM_5_0 );
@@ -321,124 +314,8 @@ UINT DX11Material_BlinnPhong::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 	return pass;
 }
 
-/////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-/*
-UINT DX11Material_DiffuseDetailbump::Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform )
+DX11Material_Deferred::DX11Material_Deferred( RenderSystem* pRenderSystem )	:	Material_Deferred( pRenderSystem )
 {
-	std::vector<PointLight*>* pPointLights = &pRenderData->AffectingPointLights;
-	std::vector<SpotLight*>* pSpotLights = &pRenderData->AffectingSpotLights;
-
-	int numOmni = pPointLights->size();
-	int numSpot = pSpotLights->size();
-
-	int pass = 0, omni = 0, spot = 0;
-
-	while(1)
-	{
-	pass++;
-	DX11RenderCommand_Draw* rc = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[pass-1]);
-
-	rc->SetBlendState(m_pDefaultBlendState);
-	rc->SetDepthStencilState(m_pDefaultDepthStencilState);
-	rc->SetRasterizerState(m_pDefaultRasterizerState);
-
-	rc->SetTexture( "txDiffuse", (DX11Texture2D*)m_pDiffuse );
-	rc->SetTexture( "txNormal", (DX11Texture2D*)m_pNormal );
-	rc->SetTexture( "txDetailNormal", (DX11Texture2D*)m_pDetailNormal );
-
-	ShaderParamBlock paramBlock;
-
-	paramBlock.clear();	// <------ takes too long WTF
-	paramBlock.assign( "DetailNormalStrength", m_DetailNormalStrength );
-	paramBlock.assign( "DetailTiling", m_DetailTiling );
-	paramBlock.assign( "SpecularParams", 0, &XMFLOAT4( m_SpecIntensity, m_SpecPower, 0.0f ,0.0f) );
-
-	paramBlock.assign( "ViewProjection", 0, &XMMatrixTranspose(m_pRenderSystem->GetCamera()->getView()*m_pRenderSystem->GetCamera()->getProjection()) );
-	paramBlock.assign( "vEyePos", 0, &XMFLOAT4(m_pRenderSystem->GetCamera()->GetPosition().x,m_pRenderSystem->GetCamera()->GetPosition().y,m_pRenderSystem->GetCamera()->GetPosition().z,0.0f) );
-	paramBlock.assign( "NormalMatrix", 0, &pTransform->GetMatrix().transpose() ) ;
-	paramBlock.assign( "World", 0, &pTransform->GetMatrix().transpose() );
-	
-	if ( pSpotLights->empty() && pPointLights->empty() )
-	{
-		rc->SetShaderset( (DX11Shaderset*)m_pShaderNoLight );
-		break;
-	}
-	
-	if (!pPointLights->empty()&&(omni<numOmni))
-	{
-		int i = 0;
-		for (std::vector<PointLight*>::const_iterator it = pPointLights->begin() + omni; it != pPointLights->end(); ++it)
-		{
-			paramBlock.assign( "vPointLightPos", i, &XMFLOAT4((*it)->transform()->GetPosition().x,(*it)->transform()->GetPosition().y,(*it)->transform()->GetPosition().z,(*it)->getRadius()));
-			paramBlock.assign( "vPointLightColor", i, &XMFLOAT4(pow((*it)->getColor().x,2.2f)*(*it)->getIntensity(),pow((*it)->getColor().y,2.2f)*(*it)->getIntensity(),pow((*it)->getColor().z,2.2f)*(*it)->getIntensity(),(*it)->getIntensity()));
-			//rc->shaderParams()->assign( "vPointLightColor", i, &XMFLOAT4((*it)->getColor().x*(*it)->getIntensity(),(*it)->getColor().y*(*it)->getIntensity(),(*it)->getColor().z*(*it)->getIntensity(),(*it)->getIntensity()));
-			i++;
-			omni++;
-			if (i>=2)
-				break;
-		}
-	}
-
-	if (!pSpotLights->empty()&&(spot<numSpot))
-	{
-		int i = 0;
-		for (std::vector<SpotLight*>::const_iterator it = pSpotLights->begin() + spot; it != pSpotLights->end(); ++it)
-		{
-			paramBlock.assign( "vSpotLightPos", i, &XMFLOAT4((*it)->transform()->GetPosition().x,(*it)->transform()->GetPosition().y,(*it)->transform()->GetPosition().z,(*it)->getRadius()));
-			paramBlock.assign( "vSpotLightColor", i, &XMFLOAT4(pow((*it)->getColor().x,2.2f)*(*it)->getIntensity(),pow((*it)->getColor().y,2.2f)*(*it)->getIntensity(),pow((*it)->getColor().z,2.2f)*(*it)->getIntensity(),(*it)->getIntensity()));
-			//paramBlock.assign( "vSpotLightColor", i, &XMFLOAT4((*it)->getColor().x*(*it)->getIntensity(),(*it)->getColor().y*(*it)->getIntensity(),(*it)->getColor().z*(*it)->getIntensity(),(*it)->getIntensity()));
-			paramBlock.assign( "SpotLightViewProjection", i, &XMMatrixTranspose(XMLoadFloat4x4(&(*it)->getProjectionCamera()->getViewProjectionMatrix())) );
-			paramBlock.assign( "iSpotLightShadowEnabled", i, (int)( (*it)->isCastingShadow() ? 1 : 0 ) );
-			
-			if (i==0)
-			{
-				rc->SetTexture( "txShadowmap", (DX11Texture2D*)(*it)->getShadowmap() );
-				rc->SetTexture( "txCookie", (DX11Texture2D*)(*it)->getCookie() );
-			}
-			else
-			{
-				rc->SetTexture( "txShadowmap2", (DX11Texture2D*)(*it)->getShadowmap() );
-				rc->SetTexture( "txCookie2", (DX11Texture2D*)(*it)->getCookie() );
-			}
-			i++;
-			spot++;
-			if (i>=2)
-			break;
-		}
-	}
-
-	Timer testTimer;
-	ShaderParams params;
-	params.initialize( m_pShader[0] );
-	params.assign( &paramBlock );
-	m_pRenderSystem->t_shaderparams += testTimer.GetMiliseconds();
-	
-	rc->SetShaderset( (DX11Shaderset*)m_pShader[0] );
-	rc->SetShaderParams( &params );
-
-	if(pass>1)
-	{
-		rc->SetBlendState(m_pAdditiveBlendState);
-		rc->SetRasterizerState(m_pAdditiveRasterizerState);
-		rc->SetDepthStencilState(m_pAdditiveDepthStencilState);
-	}
-
-	if (omni>=numOmni && spot>=numSpot)
-		break;
-	}
-	
-	return pass;
-}*/
-
-DX11Material_Deferred::DX11Material_Deferred( RenderSystem* pRenderSystem )	:	Material( pRenderSystem )/*, m_SpecIntensity(1.0), m_SpecPower(2048.0f)*/
-{
-	m_pDiffuse = NULL;
-	m_pNormal = NULL;
-	m_pSpecular = NULL;
-	m_SpecIntensity = 1.0f;
-	m_Glossiness = 2048.0f;
-
 	m_pShader[0] = m_pRenderSystem->LoadShaderset( L"Shaders/DeferredGBuffer.hlsl", "VS", "PS", SM_5_0 );
 }
 
@@ -478,7 +355,7 @@ UINT DX11Material_Deferred::Bind(Renderer* pRenderer, RenderCommand* pRenderComm
 	return 1;
 }
 
-DX11Material_DeferredIBL::DX11Material_DeferredIBL( RenderSystem* pRenderSystem )	:	DX11Material_Deferred( pRenderSystem )/*, m_SpecIntensity(1.0), m_SpecPower(2048.0f)*/
+DX11Material_DeferredIBL::DX11Material_DeferredIBL( RenderSystem* pRenderSystem )	:	Material_DeferredIBL( pRenderSystem )
 {
 	m_pShader[0] = m_pRenderSystem->LoadShaderset( L"Shaders/DeferredGBufferIBL.hlsl", "VS", "PS", SM_5_0, false );
 }
@@ -519,13 +396,8 @@ UINT DX11Material_DeferredIBL::Bind(Renderer* pRenderer, RenderCommand* pRenderC
 	return 1;
 }
 
-DX11Material_Spotlight::DX11Material_Spotlight( RenderSystem* pRenderSystem ) :	Material( pRenderSystem )
+DX11Material_Spotlight::DX11Material_Spotlight( RenderSystem* pRenderSystem ) :	Material_Spotlight( pRenderSystem )
 {
-	m_pShadowmap = NULL;
-	m_pGbuffer[0] = NULL;
-	m_pGbuffer[1] = NULL;
-	m_pGbuffer[2] = NULL;
-
 	m_pShader = pRenderSystem->LoadShaderset( L"Shaders/DeferredSpotlight.hlsl", "VS", "PS", SM_5_0 );
 }
 
@@ -595,13 +467,8 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 }
 
 
-DX11Material_Pointlight::DX11Material_Pointlight( RenderSystem* pRenderSystem ) :	Material( pRenderSystem )
+DX11Material_Pointlight::DX11Material_Pointlight( RenderSystem* pRenderSystem ) :	Material_Pointlight( pRenderSystem )
 {
-	m_pShadowmap = NULL;
-	m_pGbuffer[0] = NULL;
-	m_pGbuffer[1] = NULL;
-	m_pGbuffer[2] = NULL;
-
 	m_pShader = pRenderSystem->LoadShaderset( L"Shaders/DeferredPointlight.hlsl", "VS", "PS", SM_5_0 );
 }
 
@@ -662,7 +529,7 @@ UINT DX11Material_Pointlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCo
 //
 // DX11Material_Water
 //
-DX11Material_Water::DX11Material_Water( RenderSystem* pRenderSystem )	:	Material( pRenderSystem ), m_SpecIntensity(1.0), m_SpecPower(2048.0f)
+DX11Material_Water::DX11Material_Water( RenderSystem* pRenderSystem )	:	Material_Water( pRenderSystem )
 {
 	// Load the shader
 	m_pShader = m_pRenderSystem->LoadShaderset( L"Shaders/Water.hlsl", "VS", "PS", SM_5_0 );
@@ -708,7 +575,7 @@ UINT DX11Material_Water::Bind(Renderer* pRenderer, RenderCommand* pRenderCommand
 }
 
 
-DX11Material_Skybox::DX11Material_Skybox( RenderSystem* pRenderSystem )	:	Material( pRenderSystem )
+DX11Material_Skybox::DX11Material_Skybox( RenderSystem* pRenderSystem )	:	Material_Skybox( pRenderSystem )
 {
 	m_pCubemap = NULL;
 	m_pShader = m_pRenderSystem->LoadShaderset( L"Shaders/Skybox.hlsl", "VS", "PS", SM_5_0 );

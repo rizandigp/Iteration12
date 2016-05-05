@@ -1,13 +1,118 @@
 #pragma once
 
 #include "Material.h"
-#include "DX11/DX11RenderDispatcher.h"
+#include "DX11\DX11Material.h"
 
 Material::Material( RenderSystem* pRenderSystem ) : m_RenderState(), m_BlendState()
 {
 	m_pRenderSystem = pRenderSystem;
 	m_NumPasses = 0;
 }
+
+Material_DiffuseDetailbump* Material_DiffuseDetailbump::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_DiffuseDetailbump( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'DiffuseDetailbump' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_BlinnPhong* Material_BlinnPhong::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_BlinnPhong( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'BlinnPhong' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_Deferred* Material_Deferred::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_Deferred( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'Deferred' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_DeferredIBL* Material_DeferredIBL::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_DeferredIBL( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'DeferredIBL' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_Spotlight* Material_Spotlight::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_Spotlight( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'Spotlight' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_Pointlight* Material_Pointlight::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_Pointlight( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'Pointlight' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_Water* Material_Water::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_Water( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'Pointlight' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
+Material_Skybox* Material_Skybox::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_Skybox( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'Skybox' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
 /*
 Material_DiffuseBump::Material_DiffuseBump( RenderSystem* pRenderSystem )	:	Material( pRenderSystem ), m_SpecIntensity(0.12f), m_SpecPower(13.0f)
 {

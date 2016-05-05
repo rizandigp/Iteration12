@@ -155,16 +155,13 @@ void DX11Renderer::RenderRSM( Transform* pTransform, Camera3D* pShadowCamera, Sp
 				command->SetShaderParams( &params );
 				command->SetShaderset( (DX11Shaderset*)m_pRSMShader );
 				command->SetTexture( "txCookie", pLightSource->GetCookie() );
-				if (dynamic_cast<DX11Material_DeferredIBL*>(m_Mesh->GetSubmesh(i)->GetMaterial()))
+
+				if (dynamic_cast<Material_Deferred*>(m_Mesh->GetSubmesh(i)->GetMaterial()))
 				{
-					command->SetTexture( "txDiffuse", dynamic_cast<DX11Material_DeferredIBL*>(m_Mesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
-					command->SetTexture( "txNormal", dynamic_cast<DX11Material_DeferredIBL*>(m_Mesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
+					command->SetTexture( "txDiffuse", dynamic_cast<Material_Deferred*>(m_Mesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
+					command->SetTexture( "txNormal", dynamic_cast<Material_Deferred*>(m_Mesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
 				}
-				else if (dynamic_cast<DX11Material_Deferred*>(m_Mesh->GetSubmesh(i)->GetMaterial()))
-				{
-					command->SetTexture( "txDiffuse", dynamic_cast<DX11Material_Deferred*>(m_Mesh->GetSubmesh(i)->GetMaterial())->GetDiffusemap() );
-					command->SetTexture( "txNormal", dynamic_cast<DX11Material_Deferred*>(m_Mesh->GetSubmesh(i)->GetMaterial())->GetNormalmap() );
-				}
+
 				m_RenderSystem->Submit( command ); 
 				m_RenderSystem->drawcalls++;
 			}

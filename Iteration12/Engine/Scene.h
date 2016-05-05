@@ -13,7 +13,7 @@
 #include "xnaCollision.h"
 #include "Utilities.h"
 #include "Entity_Prop.h"
-#include "DX11/DX11Material.h"
+#include "Material.h"
 #include "PhysicsSystem.h"
 #include "FullscreenQuad.h"
 

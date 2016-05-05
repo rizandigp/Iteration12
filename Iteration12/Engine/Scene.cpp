@@ -40,7 +40,7 @@ void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 				);
 			value.normalise();
 
-			noise(i, j) = value;//Vector2(0.0f, 1.0f);
+			noise(i, j) = value;
 		}
 	}
 	Texture2D *noiseTexture = m_pRenderSystem->CreateTexture2D( &noise, R32G32_FLOAT );
@@ -127,7 +127,7 @@ void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 	//AddEntity(m_pWater);
 
 	// Skybox
-	DX11Material_Skybox* material = new DX11Material_Skybox( m_pRenderSystem );
+	Material_Skybox* material = Material_Skybox::Create( m_pRenderSystem );
 	material->SetCubemap( m_pRenderSystem->LoadTextureCube( L"Media/cubemap0.dds" ) );
 	Mesh* mesh = m_pRenderSystem->LoadMesh( "Media/Meshes/unit_cube_inverted.obj" );
 	mesh->SetMaterial( material );
@@ -775,7 +775,7 @@ void Scene::LoadFromFile( std::wstring filename )
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
 				//DX11Material_BlinnPhong* mat = new DX11Material_BlinnPhong( m_pRenderSystem );
-				DX11Material_Deferred* mat = new DX11Material_Deferred( m_pRenderSystem );
+				Material_Deferred* mat = Material_Deferred::Create( m_pRenderSystem );
 				mat->SetDiffusemap( m_pRenderSystem->LoadTexture2D( L"Media/tile34_revol_floor2.1024c.bmp" ) );
 				mat->SetNormalmap( m_pRenderSystem->LoadTexture2D( L"Media/tile34_revol_floor_normal.1024c.bmp" ) );
 				mat->SetSpecularMap( m_pRenderSystem->LoadTexture2D( L"Media/tile34_revol_floor_gloss.1024c.bmp" ) );/*
@@ -809,7 +809,7 @@ void Scene::LoadFromFile( std::wstring filename )
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
 				//DX11Material_BlinnPhong* mat = new DX11Material_BlinnPhong( m_pRenderSystem );
-				DX11Material_Deferred* mat = new DX11Material_Deferred( m_pRenderSystem );
+				Material_Deferred* mat = Material_Deferred::Create( m_pRenderSystem );
 				mat->SetDiffusemap( m_pRenderSystem->LoadTexture2D( L"Media/concrete_opalubka_3.1024.bmp" ) );
 				mat->SetNormalmap( m_pRenderSystem->LoadTexture2D( L"Media/concrete_opalubka_3_normal.1024.bmp" ) );
 				mat->SetSpecularMap( m_pRenderSystem->LoadTexture2D( L"Media/concrete_opalubka_3_bump.1024.bmp" ) );
@@ -825,7 +825,7 @@ void Scene::LoadFromFile( std::wstring filename )
 				currentSpotLight = NULL;
 				currentPointLight = NULL;
 				//DX11Material_BlinnPhong* mat = new DX11Material_BlinnPhong( m_pRenderSystem );
-				DX11Material_Deferred* mat = new DX11Material_Deferred( m_pRenderSystem );
+				Material_Deferred* mat = Material_Deferred::Create( m_pRenderSystem );
 				mat->SetDiffusemap( m_pRenderSystem->LoadTexture2D( L"Media/wall_stucaturka_stena1.1024c.bmp" ) );
 				mat->SetNormalmap( m_pRenderSystem->LoadTexture2D( L"Media/wall_stucaturka_stena1_normal.2048.bmp" ) );
 				mat->SetSpecularMap( m_pRenderSystem->LoadTexture2D( L"Media/wall_stucaturka_stena1_bump.2048.bmp" ) );
@@ -986,7 +986,7 @@ void Scene::LoadMeshes()
 	//props_bibl_stul
 	//D:/Metro Last Light/content/textures/props/props_bibl_stul.512
 
-	DX11Material_DiffuseDetailbump* mat0 = new DX11Material_DiffuseDetailbump(ptr);
+	Material_DiffuseDetailbump* mat0 = Material_DiffuseDetailbump::Create(ptr);
 	mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_bibl_stul.512.bmp" ) );
 	mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_bibl_stul_normal.1024.bmp" ) );
 	mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1004,7 +1004,7 @@ void Scene::LoadMeshes()
 	//D:/Metro Last Light/content/textures/props/props_chair_01.512
 	//D:/Metro Last Light/content/textures/props/props_chair_01.512
 
-	mat0 = new DX11Material_DiffuseDetailbump(ptr);
+	mat0 = Material_DiffuseDetailbump::Create(ptr);
 	mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_chair_01.512.bmp" ) );
 	mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_chair_01_normal.512.bmp" ) );
 	mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1020,7 +1020,7 @@ void Scene::LoadMeshes()
 	//props_chair_school_a
 	//D:/Metro Last Light/content/textures/props/props_chair_school.512
 
-	mat0 = new DX11Material_DiffuseDetailbump(ptr);
+	mat0 = Material_DiffuseDetailbump::Create(ptr);
 	mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_chair_school.512.bmp" ) );
 	mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_chair_school_normal.1024.bmp" ) );
 	mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1036,7 +1036,7 @@ void Scene::LoadMeshes()
 
 	//props_chair_school_b
 	//D:/Metro Last Light/content/textures/props/props_chair_school.512
-	mat0 = new DX11Material_DiffuseDetailbump(ptr);
+	mat0 = Material_DiffuseDetailbump::Create(ptr);
 	mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_chair_school.512.bmp" ) );
 	mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_chair_school_normal.1024.bmp" ) );
 	mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1052,7 +1052,7 @@ void Scene::LoadMeshes()
 	//--metro_lockers
 	//metro_locker_a ~ metro_locker_e
 	//D:/Metro Last Light/content/textures/metal/metal_locker.512
-	DX11Material_Deferred *mat0b = new DX11Material_Deferred(ptr);
+	Material_Deferred *mat0b = Material_Deferred::Create(ptr);
 	//DX11Material_BlinnPhong *mat0b = new DX11Material_BlinnPhong(ptr);
 	mat0b->SetDiffusemap( ptr->LoadTexture2D( L"Media/metal_locker.2048.bmp" ) );
 	mat0b->SetNormalmap( ptr->LoadTexture2D( L"Media/metal_locker_normal.2048.bmp" ) );
@@ -1095,7 +1095,7 @@ void Scene::LoadMeshes()
 	//Clutter_paper_cardboard_a ~ Clutter_paper_cardboard_e
 	//Tex_0013_1.dds
 	{
-		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat0 = Material_Deferred::Create(ptr);
 		mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/Prop_Pack_V1/Clutter_paper_cardboard/Tex_0013_1.dds" ) );
 		mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/Prop_Pack_V1/Clutter_paper_cardboard/normal.bmp" ) );
 		//mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1129,7 +1129,7 @@ void Scene::LoadMeshes()
 	//Pallet_Single
 	//Tex_0030_1.dds
 	{
-		DX11Material_Deferred *mat = new DX11Material_Deferred(ptr);
+		Material_Deferred *mat = Material_Deferred::Create(ptr);
 		mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/Prop_Pack_V1/Pallet_Single/Tex_0030_1.dds" ) );
 		mat->SetNormalmap( ptr->LoadTexture2D( L"Media/flat.bmp" ) );
 		//mat->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1151,7 +1151,7 @@ void Scene::LoadMeshes()
 		//D:/Metro Last Light/content/textures/props/props_m_scaf01.512
 		//D:/Metro Last Light/content/textures/props/props_m_scaf02.512
 	{
-		DX11Material_Deferred *mat_b0 = new DX11Material_Deferred(ptr);
+		Material_Deferred *mat_b0 = Material_Deferred::Create(ptr);
 		//mat0 = new Material_DiffuseDetailbump(ptr);
 		mat_b0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_m_scaf01.512.bmp" ) );
 		mat_b0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_m_scaf01_normal.512.bmp" ) );
@@ -1162,7 +1162,7 @@ void Scene::LoadMeshes()
 		mat_b0->SetSpecularIntensity( 0.7f );
 		//mat_b0->SetSpecularPower( 512.0f );
 
-		DX11Material_Deferred* mat_b1 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat_b1 = Material_Deferred::Create(ptr);
 		mat_b1->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_m_scaf02.512.bmp" ) );
 		mat_b1->SetNormalmap( ptr->LoadTexture2D( L"Media/props_m_scaf02_normal.1024.bmp" ) );
 		mat_b1->SetSpecularMap( ptr->LoadTexture2D( L"Media/props_m_scaf02_bump.1024.bmp" ) );
@@ -1199,7 +1199,7 @@ void Scene::LoadMeshes()
 	//D:/Metro Last Light/content/textures/props/props_books_01.512
 	//D:/Metro Last Light/content/textures/wood/wood_box.512
 	{
-		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat0 = Material_Deferred::Create(ptr);
 		mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_books_01.512.bmp" ) );
 		mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_books_01_normal.512.bmp" ) );
 		//mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1210,7 +1210,7 @@ void Scene::LoadMeshes()
 		//mat0->SetSpecularPower( 32.0f );
 
 		//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat1 = Material_Deferred::Create(ptr);
 		mat1->SetDiffusemap( ptr->LoadTexture2D( L"Media/wood_box_2.1024.bmp" ) );
 		mat1->SetNormalmap( ptr->LoadTexture2D( L"Media/wood_box_2_normal.1024.bmp" ) );
 		//mat1->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1250,7 +1250,7 @@ void Scene::LoadMeshes()
 	//props_met_skaff_a~props_met_skaff_b
 	//D:/Metro Last Light/content/textures/props/props_met_skaff.512
 	{
-		DX11Material_Deferred *matb0 = new DX11Material_Deferred(ptr);
+		Material_Deferred *matb0 = Material_Deferred::Create(ptr);
 		matb0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_met_skaff.1024.bmp" ) );
 		matb0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_met_skaff_normal.1024.bmp" ) );
 		matb0->SetSpecularMap( ptr->LoadTexture2D( L"Media/props_met_skaff_bump.1024.bmp" ) );
@@ -1281,7 +1281,7 @@ void Scene::LoadMeshes()
 	// kardus_a ~ kardus_j
 	{
 		//DX11Material_DiffuseDetailbump* mat = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat = Material_Deferred::Create(ptr);
 		mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_korobka.1024.bmp" ) );
 		mat->SetNormalmap( ptr->LoadTexture2D( L"Media/props_korobka_normal.1024.bmp" ) );
 		mat->SetSpecularMap( ptr->LoadTexture2D( L"Media/grey.bmp" ) );
@@ -1325,7 +1325,7 @@ void Scene::LoadMeshes()
 		m_pMeshes[L"kardus_h"] = mesh;
 
 		//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat1 = Material_Deferred::Create(ptr);
 		mat1->SetDiffusemap( ptr->LoadTexture2D( L"Media/wood_box_2.1024.bmp" ) );
 		mat1->SetNormalmap( ptr->LoadTexture2D( L"Media/wood_box_2_normal.1024.bmp" ) );
 		//mat1->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1347,7 +1347,7 @@ void Scene::LoadMeshes()
 	// prefab: "prop_metro_kasur"
 	{
 		//DX11Material_DiffuseDetailbump* mat0 = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat0 = Material_Deferred::Create(ptr);
 		mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/metal34_props_01.1024.dds" ) );
 		mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/metal34_props_01_normal.2048.bmp" ) );
 		//mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1358,7 +1358,7 @@ void Scene::LoadMeshes()
 		//mat0->SetSpecularPower( 32.0f );
 
 		//DX11Material_DiffuseDetailbump* mat1 = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat1 = Material_Deferred::Create(ptr);
 		mat1->SetDiffusemap( ptr->LoadTexture2D( L"Media/props34_san_kol.2048.crn.bmp" ) );
 		mat1->SetNormalmap( ptr->LoadTexture2D( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
 		//mat1->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1369,7 +1369,7 @@ void Scene::LoadMeshes()
 		//mat1->SetSpecularPower( 32.0f );
 
 		//DX11Material_DiffuseDetailbump* mat2 = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat2 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat2 = Material_Deferred::Create(ptr);
 		mat2->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_mattress.512.dds" ) );
 		mat2->SetNormalmap( ptr->LoadTexture2D( L"Media/props_mattress_normal.512.bmp" ) );
 		//mat2->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1380,7 +1380,7 @@ void Scene::LoadMeshes()
 		//mat2->SetSpecularPower( 16.0f );
 
 		//DX11Material_DiffuseDetailbump* mat3 = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat3 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat3 = Material_Deferred::Create(ptr);
 		mat3->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_fabric.2048.dds" ) );
 		mat3->SetNormalmap( ptr->LoadTexture2D( L"Media/props_fabric_normal.2048.bmp" ) );
 		//mat3->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1401,7 +1401,7 @@ void Scene::LoadMeshes()
 	// Mesh : metro_kursiroda
 	{
 		//DX11Material_DiffuseDetailbump* pMaterial = new DX11Material_DiffuseDetailbump(ptr);
-		DX11Material_Deferred* mat = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat = Material_Deferred::Create(ptr);
 		mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/props34_san_kol.2048.crn.bmp" ) );
 		mat->SetNormalmap( ptr->LoadTexture2D( L"Media/props34_san_kol_normal.2048.crn.bmp" ) );
 		//mat->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1420,7 +1420,7 @@ void Scene::LoadMeshes()
 	// Prefab : prop_metro_tumba01
 	// Mesh : mesh_metro_tumba01
 	{
-		DX11Material_Deferred* mat0 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat0 = Material_Deferred::Create(ptr);
 		mat0->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_shkaf_01.1024.bmp" ) );
 		mat0->SetNormalmap( ptr->LoadTexture2D( L"Media/props_shkaf_01_normal.1024.bmp" ) );
 		//mat0->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1429,7 +1429,7 @@ void Scene::LoadMeshes()
 		//mat0->SetSpecularIntensity( 0.34f );
 		//mat0->SetSpecularPower( 32.0f );
 
-		DX11Material_Deferred* mat1 = new DX11Material_Deferred(ptr);
+		Material_Deferred* mat1 = Material_Deferred::Create(ptr);
 		mat1->SetDiffusemap( ptr->LoadTexture2D( L"Media/props_shkaf_01.1024.bmp" ) );
 		mat1->SetNormalmap( ptr->LoadTexture2D( L"Media/props_shkaf_01_normal.1024.bmp" ) );
 		//mat1->SetDetailNormalmap( ptr->LoadTexture2D( L"Media/Tex_0010_5.dds" ) );
@@ -1451,7 +1451,7 @@ void Scene::LoadMeshes()
 	// Prefab : prop_ddo_helmet
 	// Mesh : mesh_ddo_helmet
 	{
-		DX11Material_DeferredIBL* mat = new DX11Material_DeferredIBL(ptr);
+		Material_DeferredIBL* mat = Material_DeferredIBL::Create(ptr);
 		mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/DDO_SDK_Helmet/albedo.jpg" ) );
 		//mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/grey.bmp" ) );
 		mat->SetNormalmap( ptr->LoadTexture2D( L"Media/DDO_SDK_Helmet/normal.jpg" ) );
@@ -1533,7 +1533,7 @@ void Scene::LoadMeshes()
 	// Prefab : prop_ddo_aks
 	// Mesh : mesh_ddo_ks
 	{
-		DX11Material_DeferredIBL* mat = new DX11Material_DeferredIBL(ptr);
+		Material_DeferredIBL* mat = Material_DeferredIBL::Create(ptr);
 		mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/DDO_SDK_AKS/_polySurface42_d.jpg" ) );
 		//mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/grey.bmp" ) );
 		mat->SetNormalmap( ptr->LoadTexture2D( L"Media/DDO_SDK_AKS/_polySurface42_n.jpg" ) );
@@ -1558,7 +1558,7 @@ void Scene::LoadMeshes()
 	// Prefab : prop_sphere
 	// Mesh : mesh_sphere
 	{
-		DX11Material_DeferredIBL* mat = new DX11Material_DeferredIBL(ptr);
+		Material_DeferredIBL* mat = Material_DeferredIBL::Create(ptr);
 		//mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/DDO_SDK_Helmet/albedo.jpg" ) );
 		mat->SetDiffusemap( ptr->LoadTexture2D( L"Media/redplastic.bmp" ) );
 		mat->SetNormalmap( ptr->LoadTexture2D( L"Media/flat.bmp" ) );

@@ -4,11 +4,8 @@
 
 #include <vector>
 #include "Transform.h"
-//#include "Renderer.h"
-#include "DX11/DX11Renderer.h"
+#include "Renderer.h"
 #include "RenderSystem.h"
-#include "DX11/DX11Material.h"
-//#include "PhysicsSystem.h"
 
 
 // Base class for all objects in a scene

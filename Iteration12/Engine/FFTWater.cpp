@@ -2,8 +2,8 @@
 
 #include "FFTWater.h"
 #include "RenderSystem.h"
-#include "DX11\DX11Material.h"
-#include "DX11\DX11GeometryChunk.h"
+#include "Material.h"
+#include "GeometryChunk.h"
 #include <tbb\parallel_for.h>
 #include "Plane.h"
 #include "Camera3D.h"
@@ -81,7 +81,7 @@ FFTWater::FFTWater(RenderSystem* ptr, const int N, const float A, const Vector2 
 	vertexLayout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
 
 	m_pMesh = m_pRenderSystem->CreateMesh( (float*)&vertices[0], Ndisplay*Ndisplay, &indices[0], indices_count, vertexLayout, true );
-	DX11Material_Water* mat = new DX11Material_Water( m_pRenderSystem );
+	Material_Water* mat = Material_Water::Create( m_pRenderSystem );
 	mat->SetDiffusemap( m_pRenderSystem->LoadTexture2D(L"Media/perlin.bmp") );
 	mat->SetNormalmap( m_pRenderSystem->LoadTexture2D(L"Media/water_normal1.png") );
 	mat->SetFoamTexture( m_pRenderSystem->LoadTexture2D(L"Media/SimpleFoam.png") );
@@ -441,7 +441,7 @@ void FFTWater::GenerateWaterSurface()
 		layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
 		layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
 		layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
-		((DX11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
+		m_pMesh->GetSubmesh(0)->GetGeometryChunk()->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 
 	}
 	/*
@@ -620,7 +620,7 @@ void FFTWater::GenerateWaterSurface()
 		layout.addElement( "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		layout.addElement( "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT );
 		layout.addElement( "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT );
-		((DX11GeometryChunk*)m_pMesh->getSubmesh(0)->GetGeometryChunk())->updateVertexBuffer( (float*)&vertices[0], Nplus1*Nplus1, layout.getByteSize()*Nplus1*Nplus1, layout.getByteSize() ); 
+		m_pMesh->getSubmesh(0)->GetGeometryChunk()->updateVertexBuffer( (float*)&vertices[0], Nplus1*Nplus1, layout.getByteSize()*Nplus1*Nplus1, layout.getByteSize() ); 
 
 	}*/
 }
@@ -700,7 +700,7 @@ void FFTWater::GenerateWaterSurfaceLod( int lod )
 		layout.AddElement( "POSITION", 0, R32G32B32_FLOAT );
 		layout.AddElement( "NORMAL", 0, R32G32B32_FLOAT );
 		layout.AddElement( "TEXCOORD", 0, R32G32_FLOAT );
-		((DX11GeometryChunk*)m_pMesh->GetSubmesh(0)->GetGeometryChunk())->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
+		m_pMesh->GetSubmesh(0)->GetGeometryChunk()->UpdateVertexBuffer( (float*)&vertices[0], Ndisplay*Ndisplay, layout.GetByteSize()*Ndisplay*Ndisplay, layout.GetByteSize() ); 
 	}
 }
 
