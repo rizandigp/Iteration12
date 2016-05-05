@@ -15,6 +15,7 @@ public:
 
 	HRESULT Initialize( RenderDispatcherConfig creationConfig );
 
+	Renderer* CreateRenderer();
 	void BindShaderParams( ShaderParamBlock *pParamBlock );
 	void BindShaderParams( ShaderParams *pParams );
 	void BindConstantBufferVS( UINT i, ConstantBufferData* pData );
@@ -81,10 +82,10 @@ protected:
 	std::unordered_map<RenderState, std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*>, RenderStateHasher> m_RenderStates;
 
 	// Default sampler states
-	ID3D11SamplerState*			m_pPointSampler, 
-								*m_pLinearSampler, 
-								*m_pComparisonSampler, 
-								*m_pLinearClampSampler;
+	ID3D11SamplerState*			m_pPointSampler;
+	ID3D11SamplerState*			m_pLinearSampler;
+	ID3D11SamplerState*			m_pComparisonSampler;
+	ID3D11SamplerState*			m_pLinearClampSampler;
 
 	// Temporary buffers holding Constant Buffer data
 	PBYTE						m_pVSCBDataBuffer[32];
@@ -95,8 +96,11 @@ protected:
 	// Constant buffer for internal use
 	struct InternalCB
 	{
+		// The D3D11 constant buffer
 		ID3D11Buffer*	pBuffer;
+		// Size in bytes
 		UINT	ByteSize;
+		// Indicates that it's currently unavailable (already bound to the pipeline)
 		bool	InUse;
 	};
 
@@ -111,14 +115,16 @@ protected:
 	InternalCB* GetAvailableConstantBuffer( UINT ByteSize );
 
 private:
+	// Doesn't check if a matching RenderState has already been created
+	std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> CreateRenderState( const RenderState& renderState );
+	// Doesn't check if a matching BlendState has already been created
+	// TODO : MRT blend states
+	ID3D11BlendState* CreateBlendState( const BlendState& blendState );
+
 	// Helpers
 	DXGI_FORMAT ToDXGIFormat( TEXTURE_FORMAT format );
 	TEXTURE_FORMAT ToNGTextureFormat( DXGI_FORMAT format );
 	HRESULT CompileShaderFromFile( WCHAR* szFileName, DWORD flags, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut );
-	// Doesn't check if a matching RenderState has already been created
-	std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> CreateRenderState( const RenderState& renderState );
-	// TODO : MRT blend states
-	ID3D11BlendState* CreateBlendState( const BlendState& blendState );
 };
 
 D3D_PRIMITIVE_TOPOLOGY ToD3DPrimitiveTopology( PRIMITIVE_TOPOLOGY topology );

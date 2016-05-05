@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Prerequisites.h"
-#include "DX11/DX11Renderer.h"
+#include "Renderer.h"
 #include "Light.h"
-#include "DX11/DX11Material.h"
+
 
 class LightVolume
 {
@@ -19,6 +19,6 @@ protected:
 	SpotLight* m_pSpotlight;
 	PointLight* m_pPointlight;
 	Mesh* m_pMesh;
-	DX11Renderer m_Renderer;
+	Renderer* m_Renderer;
 	Texture2D* m_pGBuffers[3];
 };

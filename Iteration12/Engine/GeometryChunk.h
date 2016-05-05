@@ -51,6 +51,7 @@ enum PRIMITIVE_TOPOLOGY
 	PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST	= 64,
 };
 
+// GeometryChunk contains geometry used for rendering (i.e. vertex and index buffer(s))
 class GeometryChunk : public GPUResource
 {
 public:

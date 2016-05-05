@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LightVolume.h"
+#include "DX11/DX11Material.h"
 
 LightVolume::LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight )
 {
@@ -9,8 +10,10 @@ LightVolume::LightVolume( RenderSystem* pRenderSystem, SpotLight* pSpotlight )
 	m_pMesh = pRenderSystem->LoadMesh( "Media/Meshes/unit_cube_2.obj" );
 	//m_pMesh = pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) );
 	m_pMesh->SetMaterial( new DX11Material_Spotlight( pRenderSystem ) );
-	m_Renderer.SetRenderSystem( pRenderSystem );
-	m_Renderer.SetMesh( m_pMesh );
+
+	m_Renderer = pRenderSystem->CreateRenderer();
+	m_Renderer->SetRenderSystem( pRenderSystem );
+	m_Renderer->SetMesh( m_pMesh );
 }
 
 LightVolume::LightVolume( RenderSystem* pRenderSystem, PointLight* pPointlight )
@@ -20,8 +23,10 @@ LightVolume::LightVolume( RenderSystem* pRenderSystem, PointLight* pPointlight )
 	m_pMesh = pRenderSystem->LoadMesh( "Media/Meshes/geosphere.obj" );
 	//m_pMesh = pRenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) );
 	m_pMesh->SetMaterial( new DX11Material_Pointlight( pRenderSystem ) );
-	m_Renderer.SetRenderSystem( pRenderSystem );
-	m_Renderer.SetMesh( m_pMesh );
+
+	m_Renderer = pRenderSystem->CreateRenderer();
+	m_Renderer->SetRenderSystem( pRenderSystem );
+	m_Renderer->SetMesh( m_pMesh );
 }
 
 void LightVolume::SetGBuffer(Texture2D* buffers[3])
@@ -50,7 +55,7 @@ void LightVolume::Render()
 		else
 			mat->setCookie( m_pSpotlight->GetCookie() );
 
-		m_Renderer.Render( m_pSpotlight->Transformation() );
+		m_Renderer->Render( m_pSpotlight->Transformation() );
 	}
 	else if (m_pPointlight)
 	{
@@ -61,6 +66,6 @@ void LightVolume::Render()
 		mat->setIntensity( m_pPointlight->GetIntensity() );
 		mat->setRadius( m_pPointlight->GetRadius() );
 
-		m_Renderer.Render( m_pPointlight->Transformation() );
+		m_Renderer->Render( m_pPointlight->Transformation() );
 	}
 }

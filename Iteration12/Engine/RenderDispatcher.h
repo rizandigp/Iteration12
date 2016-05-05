@@ -56,7 +56,7 @@ struct RenderDispatcherConfig
 
 /*
 	The subclasses of RenderDispatcher are the ones responsible for dispatching 
-	graphics API calls, and (will soon be) the only classes that can directly access API's.
+	graphics API calls.
 	Not thread-safe except resouce creation functions.
 */
 class RenderDispatcher
@@ -73,6 +73,8 @@ public:
 	// Executes a RenderCommand. Called by RenderSystem.
 	//void ExecuteRenderCommand( RenderCommand *pRenderCommand );
 
+	// Creates an object renderer
+	virtual Renderer* CreateRenderer()=0;
 	// Bind shader parameters for drawing via the old ShaderParamBlock.
 	virtual void BindShaderParams( ShaderParamBlock *pParamBlock )=0;
 	// Bind shader parameters for drawing via the new ShaderParams class. Faster and more memory-efficient.

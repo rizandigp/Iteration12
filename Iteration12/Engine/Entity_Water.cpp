@@ -23,7 +23,7 @@ Camera3D* Entity_Water::GetGridProjectorCamera()
 void Entity_Water::Update( float deltaTime )
 {
 	m_Time += deltaTime;
-	m_Renderer.SetTime( m_Time );
+	m_Renderer->SetTime( m_Time );
 	m_pFFTWater->EvaluateWavesFFT( m_Time );
 	m_pFFTWater->GenerateWaterSurfaceLod(4);
 	Entity_StaticProp::Update( deltaTime );

@@ -1,23 +1,18 @@
 #pragma once
 
 #include "DX11RenderDispatcher.h"
-#include "..\RenderDispatcher.h"
-#include "..\GeometryChunk.h"
-#include "..\Shaderset.h"
 #include "..\ShaderParamBlock.h"
 #include "..\ConstantBufferData.h"
-#include "..\Texture2D.h"
 #include "..\Buffer.h"
 #include "..\ShaderParams.h"
 #include "..\RenderCommand.h"
-#include "..\TextureCube.h"
-#include "..\Texture3D.h"
 #include "..\Image.h"
 #include "DX11Texture2D.h"
 #include "DX11Texture3D.h"
 #include "DX11TextureCube.h"
 #include "DX11Shaderset.h"
 #include "DX11GeometryChunk.h"
+#include "DX11Renderer.h"
 
 
 DX11RenderDispatcher::DX11RenderDispatcher() : RenderDispatcher()
@@ -279,6 +274,11 @@ HRESULT DX11RenderDispatcher::Initialize( RenderDispatcherConfig creationConfig 
 
 	// All good
 	return S_OK;
+}
+
+Renderer* DX11RenderDispatcher::CreateRenderer()
+{
+	return new DX11Renderer();
 }
 
 void DX11RenderDispatcher::SetOutputWindow( HWND hWnd, UINT width, UINT height )

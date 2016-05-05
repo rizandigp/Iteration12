@@ -127,13 +127,14 @@ MyEntity::MyEntity( const MyEntity& other ) : Entity( other )
 void Entity_StaticProp::SetRenderSystem( RenderSystem* ptr )
 {
 	Entity::SetRenderSystem( ptr );
-	m_Renderer.SetRenderSystem( ptr );
+	m_Renderer = ptr->CreateRenderer();
+	m_Renderer->SetRenderSystem( ptr );
 }
 
 void Entity_StaticProp::SetMesh( Mesh* ptr )
 {
 	m_pMesh = ptr;
-	m_Renderer.SetMesh( ptr );
+	m_Renderer->SetMesh( ptr );
 };
 
 void Entity_StaticProp::Update(float deltaTime)
@@ -143,42 +144,42 @@ void Entity_StaticProp::Update(float deltaTime)
 
 void Entity_StaticProp::ClearLights()
 {
-	m_Renderer.ClearLights();
+	m_Renderer->ClearLights();
 }
 
 void Entity_StaticProp::Render()
 {
-	m_Renderer.Render( &m_Transform );
+	m_Renderer->Render( &m_Transform );
 }
 
 void Entity_StaticProp::RenderShadowmap( Camera3D* pShadowCamera )
 {
-	m_Renderer.RenderShadowmap( &m_Transform, pShadowCamera );
+	m_Renderer->RenderShadowmap( &m_Transform, pShadowCamera );
 }
 
 void Entity_StaticProp::RenderRSM( Camera3D* pShadowCamera, SpotLight* pLightSource )
 {
-	m_Renderer.RenderRSM( &m_Transform, pShadowCamera, pLightSource );
+	m_Renderer->RenderRSM( &m_Transform, pShadowCamera, pLightSource );
 }
 
 void Entity_StaticProp::RenderBoundingBox()
 {
-	m_Renderer.RenderOBB( &m_Transform );
+	m_Renderer->RenderOBB( &m_Transform );
 }
 
 void Entity_StaticProp::Cull( XNA::Frustum* frustum )
 {
-	m_Renderer.Cull( frustum, &m_Transform );
+	m_Renderer->Cull( frustum, &m_Transform );
 }
 
 void Entity_StaticProp::CullLight( PointLight* light )
 {
-	m_Renderer.CullLight( light, &m_Transform );
+	m_Renderer->CullLight( light, &m_Transform );
 }
 
 void Entity_StaticProp::CullLight( SpotLight* light )
 {
-	m_Renderer.CullLight( light, &m_Transform );
+	m_Renderer->CullLight( light, &m_Transform );
 }
 
 

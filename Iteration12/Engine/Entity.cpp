@@ -16,13 +16,14 @@ MyEntity::MyEntity( const MyEntity& other ) : Entity( other )
 void MyEntity::SetRenderSystem( RenderSystem* ptr )
 {
 	Entity::SetRenderSystem( ptr );
-	m_Renderer.SetRenderSystem( ptr );
+	m_Renderer = ptr->CreateRenderer();
+	m_Renderer->SetRenderSystem( ptr );
 }
 
 void MyEntity::SetMesh( Mesh* ptr )
 {
 	m_pMesh = ptr;
-	m_Renderer.SetMesh( ptr );
+	m_Renderer->SetMesh( ptr );
 };
 
 void MyEntity::Update(float deltaTime)
@@ -32,42 +33,42 @@ void MyEntity::Update(float deltaTime)
 
 void MyEntity::ClearLights()
 {
-	m_Renderer.ClearLights();
+	m_Renderer->ClearLights();
 }
 
 void MyEntity::Render()
 {
-	m_Renderer.Render( &m_Transform );
+	m_Renderer->Render( &m_Transform );
 }
 
 void MyEntity::RenderShadowmap( Camera3D* pShadowCamera )
 {
-	m_Renderer.RenderShadowmap( &m_Transform, pShadowCamera );
+	m_Renderer->RenderShadowmap( &m_Transform, pShadowCamera );
 }
 
 void MyEntity::RenderBoundingBox()
 {
-	m_Renderer.RenderOBB( &m_Transform );
+	m_Renderer->RenderOBB( &m_Transform );
 }
 
 void MyEntity::Cull( XNA::Frustum* frustum )
 {
-	m_Renderer.Cull( frustum, &m_Transform );
+	m_Renderer->Cull( frustum, &m_Transform );
 }
 
 void MyEntity::CullLight( PointLight* light )
 {
-	m_Renderer.CullLight( light, &m_Transform );
+	m_Renderer->CullLight( light, &m_Transform );
 }
 
 void MyEntity::CullLight( SpotLight* light )
 {
-	m_Renderer.CullLight( light, &m_Transform );
+	m_Renderer->CullLight( light, &m_Transform );
 }
 
 void MyEntity::SetCulled( bool Culled )
 {
-	m_Renderer.SetCulled( Culled );
+	m_Renderer->SetCulled( Culled );
 }
 
 PlayerEntity::PlayerEntity(RenderSystem* ptr)

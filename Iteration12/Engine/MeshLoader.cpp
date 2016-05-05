@@ -6,6 +6,7 @@
 #include "DX11/DX11RenderDispatcher.h"
 #include "DX11/DX11GeometryChunk.h"
 
+/*
 GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const char* pFile, UINT meshNumber )
 {
 	// Create an instance of the Importer class   
@@ -178,7 +179,7 @@ GeometryChunk* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher , const c
 	}
 	
 }
-
+*/
 
 Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filename )
 {
@@ -229,18 +230,18 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 		unsigned int i = 0, j = 0;
 
 		mesh = scene->mMeshes[ii];
-		/*
+		
 		if(!mesh)
 		{		
 			DEBUG_OUTPUT( __FUNCTION__ );
 			DEBUG_OUTPUT( " : " );
-			DEBUG_OUTPUT( pFile );
+			DEBUG_OUTPUT( filename );
 			DEBUG_OUTPUT( " : No mesh found in file : " );
 			DEBUG_OUTPUT( importer.GetErrorString() );
 			DEBUG_OUTPUT( "\n" );
 			return NULL;
 		}
-		*/
+		
 
 		// Set up vertex buffer data layout
 		if( mesh->HasPositions() )
@@ -366,7 +367,6 @@ Mesh* MeshLoader::FromFile( DX11RenderDispatcher* pDispatcher, const char* filen
 			DEBUG_OUTPUT( " : " );
 			DEBUG_OUTPUT( filename );
 			DEBUG_OUTPUT( " : Memory allocation failed. RAM full?\n" );
-			//DX11GeometryChunk* ret = new DX11GeometryChunk();
 			return NULL;
 		}
 	}

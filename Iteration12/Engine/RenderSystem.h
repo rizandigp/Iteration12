@@ -158,7 +158,7 @@ public:
 	virtual Mesh* CreateBoxWireframeMesh(XMFLOAT3 dimensions);
 	virtual Mesh* CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, PRIMITIVE_TOPOLOGY topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-	// Object renderer
+	// Creates an Object Renderer
 	virtual Renderer*	CreateRenderer();
 
 	// Timings

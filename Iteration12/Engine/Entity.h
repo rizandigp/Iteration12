@@ -72,7 +72,7 @@ public:
 
 protected:
 	Mesh* m_pMesh;
-	Renderer m_Renderer;
+	Renderer* m_Renderer;
 };
 
 // Old controllable player class

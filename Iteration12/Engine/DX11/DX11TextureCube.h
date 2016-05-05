@@ -14,7 +14,7 @@ public:
 	void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil );
 
 	void ReleaseResources();
-
+	// TODO : Other BRDFs
 	void Prefilter();
 
 	// Set DX11 objects

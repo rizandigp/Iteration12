@@ -7,6 +7,7 @@
 #include <d3dcompiler.h>
 
 
+// DX11 implementation of GeometryChunk
 class DX11GeometryChunk : public GeometryChunk
 {
 public:

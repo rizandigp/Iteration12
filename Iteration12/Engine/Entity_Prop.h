@@ -30,7 +30,7 @@ public:
 
 protected:
 	Mesh* m_pMesh;
-	DX11Renderer m_Renderer;
+	Renderer* m_Renderer;
 };
 
 class Entity_KursiRoda : public Entity_StaticProp

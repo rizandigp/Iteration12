@@ -717,8 +717,8 @@ Renderer* RenderSystem::CreateRenderer()
 	}
 	else
 	{*/
-		Renderer* ptr = new Renderer();
-		ptr->SetRenderSystem(this);
-		return ptr;
+		Renderer* renderer = m_pDispatcher->CreateRenderer();
+		renderer->SetRenderSystem(this);
+		return renderer;
 	//}
 }
