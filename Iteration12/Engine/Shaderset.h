@@ -78,6 +78,7 @@ struct ShadersetDescription
 class Shaderset : public GPUResource
 {
 public:
+	virtual ~Shaderset();
 
 	virtual void Bind( RenderDispatcher* pDispatcher )=0;
 	virtual void Unbind( RenderDispatcher* pDispatcher )=0;		// Not needed?

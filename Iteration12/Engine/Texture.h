@@ -110,6 +110,8 @@ enum TEXTURE_FORMAT
 class Texture : public GPUResource
 {
 public:
+	virtual ~Texture() {};
+
 	// Bind as shader input to the pipeline
 	virtual void Bind( const std::string& name, RenderDispatcher* pDispatcher )=0;
 	// Unbind from pipeline

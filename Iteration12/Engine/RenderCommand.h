@@ -31,13 +31,13 @@ protected:
 class RenderCommand
 {
 public:
+	virtual ~RenderCommand();
+
 	// Executes rendering
 	virtual void Execute( RenderDispatcher* pDispatcher ) = 0;
 
 	// Clone into pre-allocated ptr
 	virtual void Clone( RenderCommand* ptr ) = 0;
-
-	virtual ~RenderCommand()	{};
 	/*
 	void* operator new(size_t);
 	void* operator new(size_t, void*);

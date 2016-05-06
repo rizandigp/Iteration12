@@ -55,6 +55,8 @@ enum PRIMITIVE_TOPOLOGY
 class GeometryChunk : public GPUResource
 {
 public:
+	virtual ~GeometryChunk();
+
 	virtual void Bind( RenderDispatcher* pDispatcher )=0;
 	virtual void Unbind( RenderDispatcher* pDispatcher )=0;
 

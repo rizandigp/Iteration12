@@ -14,6 +14,11 @@
 #include "ConstantBufferData.h"
 #include "DX11/DX11RenderDispatcher.h"
 
+
+RenderCommand::~RenderCommand() 
+{
+}
+
 /*
 void* RenderCommand::operator new(size_t size)
 {
