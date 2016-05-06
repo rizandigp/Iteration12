@@ -6,6 +6,13 @@
 #include "FullscreenQuad.h"
 #include "DX11\DX11RenderDispatcher.h"
 
+
+RenderSystem::RenderSystem() :	m_pBoundingBoxWireframeMesh(NULL), 
+								frameFinishedSemaphore(0), 
+								m_Multithreaded(false)
+{
+}
+
 // TODO : Don't use HRESULT
 HRESULT RenderSystem::Initialize( RenderSystemConfig creationConfig )
 {
@@ -341,12 +348,12 @@ void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
 
 	// Fullscreen pass
 	FullscreenQuad quad( this );
-	quad.SetShaderset( this->LoadShaderset( L"Shaders/Downsample.hlsl", "VS", "PS", SM_AUTO ) );
-	quad.SetTexture( "texSource", source );
-	ShaderParamBlock params;
-	params.assign( "TargetDimensions", 0,  &Vector4( target->GetWidth(), target->GetHeight(), 0.0f, 0.0f ) );
-	quad.SetShaderParams( params );
-	quad.Render(false);
+	//quad.SetShaderset( this->LoadShaderset( L"Shaders/Downsample.hlsl", "VS", "PS", SM_AUTO ) );
+	//quad.SetTexture( "texSource", source );
+	//ShaderParamBlock params;
+	//params.assign( "TargetDimensions", 0,  &Vector4( target->GetWidth(), target->GetHeight(), 0.0f, 0.0f ) );
+	//quad.SetShaderParams( params );
+	//quad.Render(false);
 
 	// Revert back to original render target
 	this->SetRenderTarget( renderTarget );
@@ -546,10 +553,10 @@ Shaderset* RenderSystem::LoadShaderset( std::wstring filename, std::string verte
 }
 
 
-Mesh* RenderSystem::CreateBoxWireframeMesh(XMFLOAT3 dimensions)
+Mesh* RenderSystem::CreateBoxWireframeMesh(Vector3 dimensions)
 {
 	// Find box mesh with matching dimensions
-	std::vector< std::pair<XMFLOAT3, Mesh*> >::iterator it = std::find_if( m_pBoxWireframeMeshes.begin(),  m_pBoxWireframeMeshes.end(), FindFirst<XMFLOAT3, Mesh*>( dimensions ) );
+	std::vector< std::pair<Vector3, Mesh*> >::iterator it = std::find_if( m_pBoxWireframeMeshes.begin(),  m_pBoxWireframeMeshes.end(), FindFirst<Vector3, Mesh*>( dimensions ) );
 	
 	// If we have it already, return it
 	if (it!= m_pBoxWireframeMeshes.end())
@@ -629,10 +636,10 @@ Mesh* RenderSystem::CreateBoxWireframeMesh(XMFLOAT3 dimensions)
 	}
 }
 
-Mesh* RenderSystem::CreatePlaneMesh(XMFLOAT2 dimensions, XMFLOAT2 uvscale)
+Mesh* RenderSystem::CreatePlaneMesh(Vector2 dimensions, Vector2 uvscale)
 {
 	// Find box mesh with matching dimensions
-	std::vector< std::pair< std::pair<XMFLOAT2,XMFLOAT2> , Mesh* > >::iterator it = std::find_if(  m_pPlaneMeshes.begin(),  m_pPlaneMeshes.end(), FindFirst<std::pair<XMFLOAT2,XMFLOAT2>, Mesh*>( std::make_pair(dimensions,uvscale) ) );
+	std::vector< std::pair< std::pair<Vector2,Vector2> , Mesh* > >::iterator it = std::find_if(  m_pPlaneMeshes.begin(),  m_pPlaneMeshes.end(), FindFirst<std::pair<Vector2,Vector2>, Mesh*>( std::make_pair(dimensions,uvscale) ) );
 	
 	// If we have it already, return it
 	if (it!= m_pPlaneMeshes.end())

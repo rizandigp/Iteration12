@@ -13,6 +13,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <utility>
 #include <math.h>
 #include "Debug.h"
 #include <boost\functional\hash.hpp>

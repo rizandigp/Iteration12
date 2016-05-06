@@ -102,7 +102,7 @@ Entity_Tumba01::Entity_Tumba01(RenderSystem* ptr) : Entity_StaticProp( ptr, NULL
 	SetMesh( pMesh );
 }
 
-Entity_Plane::Entity_Plane(RenderSystem* ptr, Material* mat, XMFLOAT2 dimensions, XMFLOAT2 uvscale ) : Entity_StaticProp( ptr, NULL )
+Entity_Plane::Entity_Plane(RenderSystem* ptr, Material* mat, Vector2 dimensions, Vector2 uvscale ) : Entity_StaticProp( ptr, NULL )
 {
 	Mesh* pMesh = ptr->CreatePlaneMesh( dimensions, uvscale );
 	pMesh->SetMaterial(mat);

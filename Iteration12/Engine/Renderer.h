@@ -20,6 +20,8 @@ struct SubmeshRenderData
 class Renderer
 {
 public:
+	virtual ~Renderer();
+
 	virtual void SetRenderSystem( RenderSystem*	renderSystem );
 	virtual void SetMesh( Mesh* mesh );
 

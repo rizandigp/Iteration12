@@ -179,3 +179,7 @@ float Renderer::GetTime()
 { 
 	return m_Time;
 }
+
+Renderer::~Renderer()
+{
+}

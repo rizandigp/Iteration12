@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Prerequisites.h"
-
-
 #include "Camera3D.h"
 #include "Math.h"
 #include "Utilities.h"
@@ -11,14 +9,9 @@
 #include "Mesh.h"
 #include "MeshLoader.h"
 #include "RenderCommand.h"
-//#include "DX11RenderCommand.h"
 #include "RenderDispatcher.h"
 #include "Array3D.h"
 #include "Array2D.h"
-
-#include <vector>
-#include <queue>
-#include <utility>
 
 #include <boost/lockfree/queue.hpp>
 #include <boost/lockfree/spsc_queue.hpp>
@@ -72,7 +65,7 @@ struct RenderSystemConfig
 class RenderSystem
 {
 public:
-	RenderSystem() :m_pBoundingBoxWireframeMesh(NULL), frameFinishedSemaphore(0), m_Multithreaded(false)	{};
+	RenderSystem();
 
 	HRESULT Initialize( RenderSystemConfig creationConfig );
 
@@ -153,9 +146,9 @@ public:
 	virtual TextureCube*	CreateCubemap( const Image* faces[6] );
 
 	// Simple meshes
-	//virtual Mesh* createBoxMesh( XMFLOAT3 dimensions, XMFLOAT3 uvscale );
-	virtual Mesh* CreatePlaneMesh( XMFLOAT2 dimensions, XMFLOAT2 uvscale );
-	virtual Mesh* CreateBoxWireframeMesh(XMFLOAT3 dimensions);
+	//virtual Mesh* createBoxMesh( Vector3 dimensions, Vector3 uvscale );
+	virtual Mesh* CreatePlaneMesh( Vector2 dimensions, Vector2 uvscale );
+	virtual Mesh* CreateBoxWireframeMesh( Vector3 dimensions );
 	virtual Mesh* CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, PRIMITIVE_TOPOLOGY topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// Creates an Object Renderer
@@ -191,8 +184,8 @@ protected:
 	std::map< std::string, Mesh* > m_pMeshes;
 
 	// Simple meshes
-	std::vector< std::pair< std::pair<XMFLOAT2,XMFLOAT2> , Mesh* > > m_pPlaneMeshes;
-	std::vector< std::pair< XMFLOAT3, Mesh* > > m_pBoxWireframeMeshes;
+	std::vector< std::pair< std::pair<Vector2,Vector2> , Mesh* > > m_pPlaneMeshes;
+	std::vector< std::pair< Vector3, Mesh* > > m_pBoxWireframeMeshes;
 
 	Mesh* m_pBoundingBoxWireframeMesh;
 

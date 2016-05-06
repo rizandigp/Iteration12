@@ -7,20 +7,19 @@
 class FullscreenQuad
 {
 public:
-	FullscreenQuad( RenderSystem *ptr );
+	FullscreenQuad( RenderSystem* renderSystem );
 
-	void SetShaderset( Shaderset* ptr );
-	void SetTexture( std::string const &name, Texture* pTexture );
+	void SetShaderset( Shaderset* shaderset );
+	void SetTexture( const std::string& name, Texture* texture );
 	void SetShaderParams( ShaderParamBlock params );
 	void ClearTextures();
 	void Render( bool renderAdditive = false );
 
 protected:
-	RenderSystem* m_pRenderSystem;
-	GeometryChunk* m_pQuadGeom;
-	Shaderset* m_pShaderset;
+	RenderSystem* m_RenderSystem;
+	Mesh* m_QuadMesh;
+	Shaderset* m_Shaderset;
 	ShaderParamBlock m_ShaderParams;
-	ID3D11BlendState* m_pAdditiveBlendState;
 	DX11RenderCommand_Draw m_DrawCommand;
-	std::vector< std::pair< std::string, Texture* >, tbb::scalable_allocator<std::pair< std::string, Texture* >> > m_pTextures;
+	std::vector< std::pair< std::string, Texture* >, tbb::scalable_allocator<std::pair< std::string, Texture* >> > m_Textures;
 };

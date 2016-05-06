@@ -58,7 +58,7 @@ void DX11Renderer::SetMesh( Mesh* mesh )
 
 			// Render commands for debug OBB drawing
 			DX11RenderCommand_Draw* rcDebug = new DX11RenderCommand_Draw();
-			rcDebug->SetGeometryChunk( (DX11GeometryChunk*)m_RenderSystem->CreateBoxWireframeMesh( XMFLOAT3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
+			rcDebug->SetGeometryChunk( (DX11GeometryChunk*)m_RenderSystem->CreateBoxWireframeMesh( Vector3(2.0f, 2.0f, 2.0f) )->GetSubmesh(0)->GetGeometryChunk() );
 			rcDebug->SetShaderset( (DX11Shaderset*)m_RenderSystem->LoadShaderset( L"Shaders/OneColor.hlsl", "VS", "PS", SM_5_0 ) );
 			m_pDebugRenderCommands.push_back( rcDebug );
 		}
@@ -217,6 +217,7 @@ DX11Renderer::~DX11Renderer()
 		{
 			delete container->back();  container->pop_back();
 		}
+		m_pSubmeshRenderCommands.pop_back();
 	}
 	while (!m_pDebugRenderCommands.empty())
 	{

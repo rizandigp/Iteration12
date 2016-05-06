@@ -54,7 +54,7 @@ public:
 class Entity_Plane : public Entity_StaticProp
 {
 public:
-	Entity_Plane(RenderSystem* ptr, Material* mat, XMFLOAT2 dimensions, XMFLOAT2 uvscale );
+	Entity_Plane(RenderSystem* ptr, Material* mat, Vector2 dimensions, Vector2 uvscale );
 };
 
 class Entity_PolyMesh : public Entity_StaticProp

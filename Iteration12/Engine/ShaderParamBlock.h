@@ -9,9 +9,15 @@
 #include <unordered_map>
 #include <string>
 
-
+// Container for shader parameters
 class ShaderParamBlock
 {
+public:
+	// ((paramName,index),value)
+	typedef std::map< std::pair< std::string, UINT > , XMFLOAT4X4, std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> > MatrixShaderParamList;
+	typedef std::map< std::pair< std::string, UINT > , XMFLOAT4 , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> > VectorShaderParamList;
+	typedef std::map< std::pair< std::string, UINT > , float , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> > ScalarShaderParamList;
+
 public:
 	void assign( std::string paramName, const XMMATRIX* pMatrixParam );	
 	void assign( std::string paramName, const XMFLOAT4X4* pMatrixParam );
@@ -29,18 +35,17 @@ public:
 
 	void assign( ShaderParamBlock paramBlock );
 	
-	inline std::map< std::pair< std::string, UINT > , XMFLOAT4X4 , std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> >*	GetMatrixParams()	{ return &m_MatrixParams; };
-	inline std::map< std::pair< std::string, UINT > , XMFLOAT4 , std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> >*	getVectorParams()	{ return &m_VectorParams; };
-	inline std::map< std::pair< std::string, UINT > , float , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> >*		getScalarParams()	{ return &m_ScalarParams; };
+	inline MatrixShaderParamList*	GetMatrixParams()	{ return &m_MatrixParams; };
+	inline VectorShaderParamList*	getVectorParams()	{ return &m_VectorParams; };
+	inline ScalarShaderParamList*	getScalarParams()	{ return &m_ScalarParams; };
 
 	void clear();
 	void clearMatrices();
 	void clearVectors();
 	void clearScalars();
 
-private:
-	// ((paramName,index),value)
-	std::map< std::pair< std::string, UINT > , XMFLOAT4X4, std::less<std::pair< std::string, UINT >> , tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4X4>> > m_MatrixParams;
-	std::map< std::pair< std::string, UINT > , XMFLOAT4 , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,XMFLOAT4>> > m_VectorParams;
-	std::map< std::pair< std::string, UINT > , float , std::less<std::pair< std::string, UINT >>, tbb::scalable_allocator<std::pair<std::pair< std::string, UINT >,float>> > m_ScalarParams;
+private:	
+	MatrixShaderParamList m_MatrixParams;
+	VectorShaderParamList m_VectorParams;
+	ScalarShaderParamList m_ScalarParams;
 };

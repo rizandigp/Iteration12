@@ -433,7 +433,7 @@ void Scene::RenderDeferred()
 	//
 	// Render lights
 	//
-	/*if (!m_pSpotLights.empty())
+	if (!m_pSpotLights.empty())
 	{
 		// It is crucial to clear shadowmaps to the max possible float value. 
 		float clear0[] = { D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX };
@@ -504,7 +504,7 @@ void Scene::RenderDeferred()
 					//m_pGI->render(true);
 			}
 		}
-	}*/
+	}
 	
 	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	
@@ -793,7 +793,7 @@ void Scene::LoadFromFile( std::wstring filename )
 				mat->SetNormalmap( m_pRenderSystem->CreateTexture2DFromFile( L"Media/Concrete/Metro_0039n.bmp" ) );
 				mat->SetSpecularMap( m_pRenderSystem->CreateTexture2DFromFile( L"Media/Concrete/Metro_0039s.bmp" ) );*/
 
-				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( XMFLOAT2(10.0f,10.0f), XMFLOAT2(4.0f,4.0f) );
+				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( Vector2(10.0f,10.0f), Vector2(4.0f,4.0f) );
 				mesh->SetMaterial(mat);
 				hkpRigidBody* rb = CreateBoxRigidBody( Vector3(5.0f,5.0f,0.5f), 0 );
 				Transform rigidBodyRelative;
@@ -814,7 +814,7 @@ void Scene::LoadFromFile( std::wstring filename )
 				mat->SetNormalmap( m_pRenderSystem->LoadTexture2D( L"Media/concrete_opalubka_3_normal.1024.bmp" ) );
 				mat->SetSpecularMap( m_pRenderSystem->LoadTexture2D( L"Media/concrete_opalubka_3_bump.1024.bmp" ) );
 				
-				entity = new Entity_Plane(m_pRenderSystem,mat,XMFLOAT2(10.0f,10.0f),XMFLOAT2(3.33f,3.33f));
+				entity = new Entity_Plane(m_pRenderSystem,mat,Vector2(10.0f,10.0f),Vector2(3.33f,3.33f));
 				entity->SetName(str);
 				AddEntity(entity);
 				transform = entity->Transformation();
@@ -831,7 +831,7 @@ void Scene::LoadFromFile( std::wstring filename )
 				mat->SetSpecularMap( m_pRenderSystem->LoadTexture2D( L"Media/wall_stucaturka_stena1_bump.2048.bmp" ) );
 
 				//ent = new Entity_Plane( m_pRenderSystem, mat, XMFLOAT2(10.0f,3.0f),XMFLOAT2(-3.33f,-1.0f) );
-				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( XMFLOAT2(10.0f,3.0f),XMFLOAT2(-3.33f,-1.0f) );
+				Mesh* mesh = m_pRenderSystem->CreatePlaneMesh( Vector2(10.0f,3.0f),Vector2(-3.33f,-1.0f) );
 				mesh->SetMaterial(mat);
 				hkpRigidBody* rb = CreateBoxRigidBody( Vector3(5.0f,1.5f,0.1f), 0 );
 				entity = new Entity_Prop(m_pRenderSystem, m_pPhysicsSystem, mesh, rb);
