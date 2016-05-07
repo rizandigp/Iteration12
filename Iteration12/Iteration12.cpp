@@ -81,6 +81,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_ITERATION12));
 
+	// Start render thread
+	RenderThreadWork worker(pRenderSystem);
+	boost::thread renderThread(worker);
+
 	// Main message loop
 	MSG msg = {0};
     while( WM_QUIT != msg.message )
@@ -312,7 +316,7 @@ HRESULT InitDevice()
 	config.Windowed = true;
 	config.OutputWindow = hWnd;
 	config.DebugDevice = false;
-	config.Multithreaded = false;
+	config.Multithreaded = true;
 
 	pRenderSystem = new RenderSystem();
 	pRenderSystem->Initialize( config );
@@ -370,7 +374,7 @@ void DoFrame()
 	scene.Update( dt );
 	double t_update = updateTimer.GetMiliseconds();
 
-	scene.RenderDeferred();
+	scene.ParallelRenderDeferred();
 	pRenderSystem->EndFrame();
 
 	double t_main = mainTimer.GetMiliseconds();

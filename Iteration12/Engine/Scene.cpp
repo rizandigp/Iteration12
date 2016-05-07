@@ -517,7 +517,7 @@ void Scene::RenderDeferred()
 	m_pSunlight->render( true );
 	*/
 	
-	m_pRenderSystem->DownsampleTexture( m_pHalfRes, m_pGBuffer[1] );
+	/*m_pRenderSystem->DownsampleTexture( m_pHalfRes, m_pGBuffer[1] );
 	m_pRenderSystem->ClearTexture( m_pSSAOBuffer, clearColor );
 	m_pRenderSystem->SetRenderTarget( m_pSSAOBuffer );
 
@@ -538,7 +538,7 @@ void Scene::RenderDeferred()
 	//ShaderParamBlock shaderParams2;
 	//shaderParams2.assign( "ScreenDimensions", 0, &Vector4( config.Width/4.0f, config.Height/4.0f, 0.0f, 0.0f ) );
 	//m_pSSAOCombinePass->SetShaderParams(shaderParams2);
-	m_pSSAOCombinePass->Render( true );
+	m_pSSAOCombinePass->Render( true );*/
 	
 	// Fullscreen pass to backbuffer
 	m_pRenderSystem->SetBackbufferAsRenderTarget();
@@ -568,7 +568,7 @@ void Scene::ParallelRenderDeferred()
 	//m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	//m_pRenderSystem->SetBackbufferAsRenderTarget();
 
-
+	
 	// Render all entities
 	tbb::parallel_for_each( m_pEntities.begin(), m_pEntities.end(), [&](Entity* ptr)
 	{
@@ -576,6 +576,7 @@ void Scene::ParallelRenderDeferred()
 
 		//t_Cull += sceneTimer.GetMiliseconds();
 		ptr->Cull( &frustum );
+		//ptr->SetCulled( false );
 		ptr->Render();
 		//ptr->renderBoundingBox();
 	});
@@ -664,16 +665,38 @@ void Scene::ParallelRenderDeferred()
 	shaderParams.assign( "vLightVector", 0, &Vector4( Vector3(-0.8f, 0.0f, 1.0f).normalisedCopy() ) );
 	shaderParams.assign( "vColor", 0, &Vector4( 1.0f, 1.0f, 0.75f, 1.0f ) );
 	shaderParams.assign( "vEyePos", 0, &XMFLOAT4(m_pActiveCamera->GetPosition().x, m_pActiveCamera->GetPosition().y, m_pActiveCamera->GetPosition().z, 1.0f) );
-	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->GetCamera()->getViewProjectionMatrix().inverse().transpose().intoXMFLOAT4X4() );
+	shaderParams.assign( "InvViewProjection", 0, &m_pRenderSystem->GetCamera()->getViewProjectionMatrix().inverse().transpose() );
 	m_pSunlight->SetShaderParams( shaderParams );
-	m_pSunlight->render( true );*/
+	m_pSunlight->render( true );
+	*/
+	
+	/*m_pRenderSystem->DownsampleTexture( m_pHalfRes, m_pGBuffer[1] );
+	m_pRenderSystem->ClearTexture( m_pSSAOBuffer, clearColor );
+	m_pRenderSystem->SetRenderTarget( m_pSSAOBuffer );
 
-	//m_pSSAOPass->render( true );
+	// TODO : make it easier to get basic stuff like resolution
+	RenderSystemConfig config = m_pRenderSystem->GetConfig();
+	ShaderParamBlock shaderParams;
+	shaderParams.assign( "NoiseScale", 0, &Vector4( config.Width/2.0, config.Height/2.0, 0.0f, 0.0f ) );
+	//shaderParams.assign( "ScreenDimensions", 0, &Vector4( config.Width/10.0f, config.Height/10.0f, 0.0f, 0.0f ) );
+	shaderParams.assign( "View", 0, &m_pActiveCamera->GetViewMatrix() );
+	shaderParams.assign( "Projection", 0, &m_pActiveCamera->GetProjectionMatrix() );
+	shaderParams.assign( "InvProjection", 0, &m_pActiveCamera->GetProjectionMatrix().inverse() );
+	shaderParams.assign( "fFarPlane", 0, m_pActiveCamera->GetFarPlane() );
+	shaderParams.assign( "FovAndAspect", 0, &Vector4( m_pActiveCamera->GetFov(), m_pActiveCamera->GetAspect(), 0.0f, 0.0f ) );
+	m_pSSAOPass->SetShaderParams(shaderParams);
+	m_pSSAOPass->Render( false );
 
+	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
+	//ShaderParamBlock shaderParams2;
+	//shaderParams2.assign( "ScreenDimensions", 0, &Vector4( config.Width/4.0f, config.Height/4.0f, 0.0f, 0.0f ) );
+	//m_pSSAOCombinePass->SetShaderParams(shaderParams2);
+	m_pSSAOCombinePass->Render( true );*/
+	
 	// Fullscreen pass to backbuffer
 	m_pRenderSystem->SetBackbufferAsRenderTarget();
-	m_pTonemappingPass->Render(false);
-
+	m_pTonemappingPass->Render( false );
+	
 	t_scenerender = t.GetMiliseconds();
 }
 
