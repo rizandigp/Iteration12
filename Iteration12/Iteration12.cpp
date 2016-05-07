@@ -380,8 +380,8 @@ void DoFrame()
 	double t_main = mainTimer.GetMiliseconds();
 
 
-	// Wait for render thread to finish
-	// pRenderSystem->WaitForFrameToFinish();
+	// Wait for render thread to finish. Only necessary if we run multithreaded
+	pRenderSystem->WaitForFrameToFinish();
 
 	double t_waitrender = mainTimer.GetMiliseconds() - t_main;
 	
