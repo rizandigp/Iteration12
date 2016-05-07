@@ -89,11 +89,15 @@ void DX11TextureCube::Prefilter()
 
 	m_pRenderSystem->SetRenderTarget( previousRenderTarget );
 
-	for (int i=1; i<m_MipLevels; i++)
+	// We can't delete the textures yet because render commands from RenderSystem::SetRenderTarget()
+	// might not have finished executing yet. If we delete now while the render commands are still
+	// on the queue, we invalidate the pointer thus crashing the program.
+	// TODO : Figure out a way to resolve this. Reference counting?
+	/*for (int i=1; i<m_MipLevels; i++)
 	{
 		delete mips[i];
 	}
-	delete[] mips;
+	delete[] mips;*/
 }
 
 void DX11TextureCube::Bind( const std::string& name, RenderDispatcher* pDispatcher )
