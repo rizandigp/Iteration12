@@ -22,7 +22,7 @@ struct RenderViewport
 struct RenderCommandBlock
 {
 protected:
-	uint32_t m[32];
+	uint32_t m[40];
 };
 
 /*
