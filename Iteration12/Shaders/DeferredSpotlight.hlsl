@@ -133,7 +133,7 @@ float4 PS( PS_INPUT input) : SV_Target
 		
 		// Sample shadowmap
 		float Shadowing = 0;
-		[unroll] for (int i=0; i<8; i++)
+		[unroll] for (int i=0; i<16; i++)
 		{
 			float2 SamplingOffset = mul(rotation, PoissonDisk[i]) * vShadowBlurFactor;
 			Shadowing += texShadowmap.SampleCmp( samComp, SpotlightUV + SamplingOffset, SpotlightCSPos.w-SHADOWMAP_BIAS/fSpotLightRadius );
