@@ -168,6 +168,9 @@ float4 PS( PS_INPUT input) : SV_Target
 		float VdotH = saturate(dot(ViewVec, normalize(normalize( LightVec )+ViewVec)));
 		float NdotV = saturate(dot(ViewVec, Normal));
 		
+		// Greatly reduces shadow mapping artifacts
+		Shadowing *= saturate(NdotL * 6.0 - 0.2);
+		
 		// Lighting
 		float3 Specular = D_GGX( 1.0f-Specmap.w, NdotH ) * F_Schlick(vSpotLightColor.xyzw*Specmap.xyz, NdotV ) * Vis_Implicit();//Vis_Smith( 1.0f-Specmap.w, NdotV, NdotL );
 		
