@@ -5,6 +5,7 @@
 #include "Vector3.h"
 #include "Texture.h"
 
+
 typedef TEXTURE_FORMAT VERTEX_ELEMENT_FORMAT;
 //enum VERTEX_ELEMENT_FORMAT;
 

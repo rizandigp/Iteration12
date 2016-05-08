@@ -1,6 +1,8 @@
 #pragma once
 
 #include "..\Texture2D.h"
+#include <d3d11.h>
+
 
 // The DX11 implementation of the Texture2D class
 class DX11Texture2D : public Texture2D

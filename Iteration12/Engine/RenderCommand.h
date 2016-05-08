@@ -7,6 +7,7 @@
 #include <tbb\scalable_allocator.h>
 #include "ShaderParamBlock.h"
 
+
 typedef unsigned long resourceHandle;
 
 struct RenderViewport

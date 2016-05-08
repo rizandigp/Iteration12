@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DX11TextureCube.h"
+#include "..\RenderSystem.h"
 #include "..\FullscreenQuad.h"
 #include "DX11Texture2D.h"
 #include "DX11RenderDispatcher.h"

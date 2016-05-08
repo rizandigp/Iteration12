@@ -3,6 +3,7 @@
 
 #include "Math.h"
 
+
 // 8-bit RGBA color class
 class Color
 {

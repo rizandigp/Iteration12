@@ -1,13 +1,7 @@
 #pragma once
 
 #include "Prerequisites.h"
-
-#include <d3d11.h>
-#include <d3dx11.h>
 #include <xnamath.h>
-#include <map>
-#include <unordered_map>
-#include <string>
 
 // Container for shader parameters
 class ShaderParamBlock

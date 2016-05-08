@@ -4,6 +4,8 @@
 #include "..\ShaderParams.h"
 #include "..\RenderState.h"
 #include "..\BlendState.h"
+#include <d3d11.h>
+#include <d3dx11.h>
 
 
 // Generic drawing

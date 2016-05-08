@@ -1,6 +1,8 @@
 #pragma once
 
 #include "FPPlayerEntity.h"
+#include "Scene.h"
+
 
 FPPlayerEntity::FPPlayerEntity(RenderSystem* pRenderSystem)
 {

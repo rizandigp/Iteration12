@@ -398,7 +398,9 @@ UINT DX11Material_DeferredIBL::Bind(Renderer* pRenderer, RenderCommand* pRenderC
 
 DX11Material_Spotlight::DX11Material_Spotlight( RenderSystem* pRenderSystem ) :	Material_Spotlight( pRenderSystem )
 {
-	m_pShader = pRenderSystem->LoadShaderset( L"Shaders/DeferredSpotlight.hlsl", "VS", "PS", SM_5_0 );
+	std::vector<ShaderMacro> ShaderMacros;
+	ShaderMacros.push_back(ShaderMacro("ROTATED_POISSON_SAMPLING", "1"));
+	m_pShader = pRenderSystem->LoadShaderset( L"Shaders/DeferredSpotlight.hlsl", "VS", "PS", SM_5_0, &ShaderMacros );
 }
 
 UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform )
@@ -431,11 +433,12 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	command->SetDepthStencilState(m_pDefaultDepthStencilState);
 	command->SetRasterizerState(m_pDefaultRasterizerState);*/
 
-	command->SetTexture( "texGBuffer0", m_pGbuffer[0] );
-	command->SetTexture( "texGBuffer1", m_pGbuffer[1] );
-	command->SetTexture( "texGBuffer2", m_pGbuffer[2] );
-	command->SetTexture( "texShadowmap", m_pShadowmap );
-	command->SetTexture( "texCookie", m_pCookie );
+	command->SetTexture( "texGBuffer0", m_Gbuffer[0] );
+	command->SetTexture( "texGBuffer1", m_Gbuffer[1] );
+	command->SetTexture( "texGBuffer2", m_Gbuffer[2] );
+	command->SetTexture( "texShadowmap", m_Shadowmap );
+	command->SetTexture( "texCookie", m_Cookie );
+	command->SetTexture( "texNoise", m_Noise );
 
 	Timer paraminit;
 	// Set common shader parameters
@@ -454,9 +457,15 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	params.setParam( "SpotlightView", 0, &m_View.transpose() );
 	params.setParam( "vSpotLightColor", &Vector4(pow(m_Color.x,2.2f)*m_Intensity,pow(m_Color.y,2.2f)*m_Intensity,pow(m_Color.z,2.2f)*m_Intensity,m_Intensity) );
 	params.setParam( "vEyePos", &Vector4(m_pRenderSystem->GetCamera()->GetPosition(),1.0f) );
-	params.setParam( "ScreenDimensions", &Vector4(config.Width,config.Height,0.0f,0.0f) );
-	params.setParam( "SpotLightRadius", m_Radius );
+	params.setParam( "vScreenDimensions", &Vector4(config.Width,config.Height,0.0f,0.0f) );
+	params.setParam( "fSpotLightRadius", m_Radius );
 	params.setParam( "fFarPlane", m_pRenderSystem->GetCamera()->GetFarPlane() );
+
+	if (m_Noise)
+	{
+		params.setParam( "vNoiseScale", 0, &Vector4(Vector2(config.Width,config.Height)/m_Noise->GetDimensions(), 0.0f, 0.0f) );
+		params.setParam( "vShadowBlurFactor", 0, &Vector4(m_ShadowBlurRadius/m_Shadowmap->GetDimensions(), 0.0f, 0.0f) );
+	}
 
 	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
 

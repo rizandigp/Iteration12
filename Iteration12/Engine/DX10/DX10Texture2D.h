@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\Texture2D.h"
+#include <d3d10.h>
 
 //
 // I don't think DX10 will ever be implemented

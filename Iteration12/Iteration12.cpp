@@ -374,7 +374,7 @@ void DoFrame()
 	scene.Update( dt );
 	double t_update = updateTimer.GetMiliseconds();
 
-	scene.ParallelRenderDeferred();
+	scene.RenderDeferred();
 	pRenderSystem->EndFrame();
 
 	double t_main = mainTimer.GetMiliseconds();
@@ -503,7 +503,7 @@ void DoFrame()
 		DEBUG_OUTPUT( "command dealloc: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "ms\t  " );
-		/*
+		*/
 		_gcvt( pRenderSystem->t_queuepush, 7, str );
 		DEBUG_OUTPUT( "render queue push: " );
 		DEBUG_OUTPUT( str );
@@ -518,7 +518,7 @@ void DoFrame()
 		DEBUG_OUTPUT( "render thread starve: " );
 		DEBUG_OUTPUT( str );
 		DEBUG_OUTPUT( "mus\t  " );
-		*/
+		
 		itoa( pRenderSystem->GetRenderDispatcher()->drawcalls, str, 10 );
 		DEBUG_OUTPUT( "draw calls: " );
 		DEBUG_OUTPUT( str );

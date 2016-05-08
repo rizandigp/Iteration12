@@ -1,6 +1,8 @@
 #pragma once
 
 #include "..\TextureCube.h"
+#include <d3d11.h>
+
 
 // The DX11 implementation of the TextureCube class
 class DX11TextureCube : public TextureCube

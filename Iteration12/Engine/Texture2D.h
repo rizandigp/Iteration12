@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Prerequisites.h"
-#include "RenderSystem.h"
 #include "Texture.h"
+#include "Vector2.h"
 
 class Texture2D : public Texture
 {

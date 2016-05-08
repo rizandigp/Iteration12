@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DX11Texture2D.h"
+#include "..\RenderSystem.h"
 #include "DX11RenderDispatcher.h"
 #include "DX11Shaderset.h"
 

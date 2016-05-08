@@ -5,10 +5,10 @@
 #include "Transform.h"
 #include "xnaCollision.h"
 #include "Math.h"
-#include "Texture2D.h"
 #include "Matrix4x4.h"
-#include "Vector3.h"
 #include "Vector2.h"
+#include "Vector3.h"
+#include "Camera3D.h"
 
 
 class PointLight

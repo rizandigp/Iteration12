@@ -12,6 +12,7 @@
 #include "RenderState.h"
 #include "BlendState.h"
 
+
 enum SHADERMODEL;
 enum TEXTURE_FORMAT;
 
