@@ -726,10 +726,10 @@ Texture2D* RenderSystem::CreateNoiseTexture( int Width, int Height )
 
 	else
 	{
-		Array2D<Vector2> noise( 2, 2, Vector2(1.0f, 0.0f));
-		for (int i = 0; i < 2; ++i) 
+		Array2D<Vector2> noise( Width, Height, Vector2(1.0f, 0.0f));
+		for (int i = 0; i < Width; ++i) 
 		{
-			for (int j = 0; j < 2; ++j) 
+			for (int j = 0; j < Height; ++j) 
 			{
 			   Vector2 value = Vector2(
 					random(0.0f, 1.0f),
