@@ -715,6 +715,38 @@ Mesh* RenderSystem::CreateMesh( float* vertices, UINT numVertices, UINT* indices
 	return mesh;
 }
 
+Texture2D* RenderSystem::CreateNoiseTexture( int Width, int Height )
+{
+	// Find texture with matching dimensions
+	std::vector< std::pair< Vector2 , Texture2D* > >::iterator it = std::find_if(  m_NoiseTextures.begin(),  m_NoiseTextures.end(), FindFirst<Vector2, Texture2D*>( Vector2(Width, Height) ) );
+
+	// If we have it already, return it
+	if (it!= m_NoiseTextures.end())
+		return it->second;
+
+	else
+	{
+		Array2D<Vector2> noise( 2, 2, Vector2(1.0f, 0.0f));
+		for (int i = 0; i < 2; ++i) 
+		{
+			for (int j = 0; j < 2; ++j) 
+			{
+			   Vector2 value = Vector2(
+					random(0.0f, 1.0f),
+					random(0.0f, 1.0f)
+					);
+				value.normalise();
+
+				noise(i, j) = value;
+			}
+		}
+		Texture2D* noiseTexture = this->CreateTexture2D( &noise, R32G32_FLOAT );
+		m_NoiseTextures.push_back( std::make_pair( Vector2(Width, Height), noiseTexture ) );
+
+		return noiseTexture;
+	}
+}
+
 Renderer* RenderSystem::CreateRenderer()
 {
 	/*if (m_CreationInfo.api==GRAPHICS_API_DX11)

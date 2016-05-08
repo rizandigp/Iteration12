@@ -52,6 +52,7 @@ void LightVolume::Render()
 		mat->setColor( m_Spotlight->GetColor() );
 		mat->setIntensity( m_Spotlight->GetIntensity() );
 		mat->setRadius( m_Spotlight->GetRadius() );
+		mat->setNoiseTexture( m_Renderer->GetRenderSystem()->CreateNoiseTexture( 4, 4 ) );
 		if (m_Spotlight->IsRSMEnabled()&&m_Spotlight->IsCastingShadow())
 			mat->setCookie( m_Spotlight->GetRSMNormal() );
 		else

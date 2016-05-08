@@ -151,6 +151,9 @@ public:
 	virtual Mesh* CreateBoxWireframeMesh( Vector3 dimensions );
 	virtual Mesh* CreateMesh( float* vertices, UINT numVertices, UINT* indices, UINT numIndices, BufferLayout vertexLayout, bool dynamic = false, PRIMITIVE_TOPOLOGY topology = PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
+	// Commonly used things
+	Texture2D* CreateNoiseTexture( int Width, int Height );
+
 	// Creates an Object Renderer
 	virtual Renderer*	CreateRenderer();
 
@@ -183,11 +186,14 @@ protected:
 	std::map< std::wstring, Texture* > m_pTextures;
 	std::map< std::string, Mesh* > m_pMeshes;
 
+	// TODO : Organize neatly
+
 	// Simple meshes
 	std::vector< std::pair< std::pair<Vector2,Vector2> , Mesh* > > m_pPlaneMeshes;
 	std::vector< std::pair< Vector3, Mesh* > > m_pBoxWireframeMeshes;
 
 	Mesh* m_pBoundingBoxWireframeMesh;
+	std::vector< std::pair< Vector2, Texture2D* > > m_NoiseTextures;
 
 	//boost::lockfree::spsc_queue<RenderCommand*, boost::lockfree::capacity<2048> > m_RenderQueue;
 	boost::lockfree::queue<RenderCommand*, boost::lockfree::capacity<2048>> m_RenderQueue;

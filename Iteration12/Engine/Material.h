@@ -212,16 +212,16 @@ class Material_Spotlight : public Material
 public:
 	static Material_Spotlight* Create( RenderSystem* pRenderSystem );
 
-	Material_Spotlight( RenderSystem* renderSystem ) :	m_pShadowmap(NULL), Material(renderSystem)
+	Material_Spotlight( RenderSystem* renderSystem ) :	m_Shadowmap(NULL), m_Cookie(NULL), m_Noise(NULL), m_ShadowBlurRadius(4.0f), Material(renderSystem)
 	{
-		m_pGbuffer[0] = NULL;
-		m_pGbuffer[1] = NULL;
-		m_pGbuffer[2] = NULL;
+		m_Gbuffer[0] = NULL;
+		m_Gbuffer[1] = NULL;
+		m_Gbuffer[2] = NULL;
 	};
 
-	void setGBuffer( Texture2D* ptr[3] )				{ m_pGbuffer[0] = ptr[0]; m_pGbuffer[1] = ptr[1]; m_pGbuffer[2] = ptr[2]; };
-	void setShadowmap( Texture2D* ptr )					{ m_pShadowmap = ptr; };
-	void setCookie( Texture2D* ptr )					{ m_pCookie = ptr; };
+	void setGBuffer( Texture2D* ptr[3] )				{ m_Gbuffer[0] = ptr[0]; m_Gbuffer[1] = ptr[1]; m_Gbuffer[2] = ptr[2]; };
+	void setShadowmap( Texture2D* texture )				{ m_Shadowmap = texture; };
+	void setCookie( Texture2D* texture )				{ m_Cookie = texture; };
 	void SetPosition( const Vector3 &spotlightPosition)	{ m_Position = spotlightPosition; };
 	void setColor( const Vector3 &spotlightColor )		{ m_Color = spotlightColor; };
 	void setIntensity( float spotlightIntensity )		{ m_Intensity = spotlightIntensity; };
@@ -229,16 +229,19 @@ public:
 	void setInverseProjectionMatrix( Matrix4x4 &mat )	{ m_InvProjection = mat; };
 	void setViewProjectionMatrix( Matrix4x4 &mat )		{ m_ViewProjection = mat; };
 	void setViewMatrix( Matrix4x4 &mat )				{ m_View = mat; };
+	void setNoiseTexture( Texture2D* texture )			{ m_Noise = texture; }
+	void setShadowBlurRadius( float texels )			{ m_ShadowBlurRadius = texels; };
 	
-	Texture2D** getGBuffer()					{ return m_pGbuffer; };
-	Texture2D* getShadowmap()					{ return m_pShadowmap; };
+	Texture2D** getGBuffer()					{ return m_Gbuffer; };
+	Texture2D* getShadowmap()					{ return m_Shadowmap; };
 	
 	//UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 
 protected:
-	Texture2D* m_pGbuffer[3];
-	Texture2D* m_pShadowmap;
-	Texture2D* m_pCookie;
+	Texture2D* m_Gbuffer[3];
+	Texture2D* m_Shadowmap;
+	Texture2D* m_Cookie;
+	Texture2D* m_Noise;
 	Matrix4x4 m_InvProjection;
 	Matrix4x4 m_ViewProjection;
 	Matrix4x4 m_View;
@@ -247,6 +250,7 @@ protected:
 	Vector3 m_Color;
 	float m_Intensity;
 	float m_Radius;
+	float m_ShadowBlurRadius;
 };
 
 // Deferred pointlight material
