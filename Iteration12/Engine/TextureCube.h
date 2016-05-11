@@ -18,7 +18,7 @@ public:
 	inline RenderSystem* GetRenderSystem()					{ return m_pRenderSystem; };
 	inline UINT GetHeight()									{ return m_Height; };
 	inline UINT GetWidth()									{ return m_Width; };
-	inline Vector2 GetDimensions()							{ return Vector2( m_Width, m_Height ); };
+	inline Vector2 GetDimensions()							{ return Vector2( (float)m_Width, (float)m_Height ); };
 	inline TEXTURE_FORMAT GetFormat()						{ return m_Format; };
 	inline UINT GetMipLevels()								{ return m_MipLevels; };
 
