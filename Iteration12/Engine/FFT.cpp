@@ -1,12 +1,13 @@
 #pragma once
 #pragma warning( disable : 4018 ) // "'<' : signed/unsigned mismatch"
+#pragma warning( disable : 4244 ) // 'argument' : conversion from 'X' to 'Y', possible loss of data
 
 #include "fft.h"
 #include <stdint.h>
 
 FFT::FFT(unsigned int N) : N(N), reversed(0), W(0), pi2(2.0f * PI) 
 {
-	log_2_N = (unsigned int)(logf(N)/logf(2));
+	log_2_N = logf(N)/logf(2);
 	parity = 0;
 
 	// Prepare bit-reserved indices
@@ -149,7 +150,7 @@ Complex FFT::TwiddleFactor(UINT x, UINT N)
 
 void FFT::IterativeFFT( Complex* primal, Complex* dual, UINT stride, UINT zeroOffset )
 {
-	const int absP = (int)logf(N)/logf(2.0f);
+	const int absP = logf(N)/logf(2);
 
 	// Bottom level of iteration tree
 	for (int i = 0; i < N; i++)
@@ -192,7 +193,7 @@ void FFT::IterativeFFT( Complex* primal, Complex* dual, UINT stride, UINT zeroOf
 
 void FFT::ParallelFFT( UINT index, Complex* primal, Complex* dual, UINT stride, UINT zeroOffset )
 {
-	const int absP = (int)logf(N)/logf(2.0f);
+	const int absP = logf(N)/logf(2);
 
 	// Bottom level of iteration tree
 	for (int i = 0; i < N; i++)
