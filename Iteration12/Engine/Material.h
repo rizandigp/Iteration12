@@ -350,3 +350,22 @@ protected:
 	TextureCube* m_pCubemap;
 	Shaderset* m_pShader;
 };
+
+// Used for stencil masking: light volumes, shadow volumes, light clips, etc.
+class Material_StencilMask : public Material
+{
+public:
+	static Material_StencilMask* Create( RenderSystem* renderSystem );
+
+	Material_StencilMask( RenderSystem* renderSystem ) :	Material(renderSystem)
+	{
+	};
+
+public:
+	RenderState _RenderState;
+	BlendState _BlendState;
+	UINT _StencilRef;
+
+protected:
+	Shaderset* m_Shader;
+};

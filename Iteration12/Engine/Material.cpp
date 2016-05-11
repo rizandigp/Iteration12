@@ -113,6 +113,19 @@ Material_Skybox* Material_Skybox::Create( RenderSystem* pRenderSystem )
 	}
 }
 
+Material_StencilMask* Material_StencilMask::Create( RenderSystem* pRenderSystem )
+{
+	RenderSystemConfig config = pRenderSystem->GetConfig();
+
+	if (config.api = GRAPHICS_API_DX11)
+		return new DX11Material_StencilMask( pRenderSystem );
+	else
+	{
+		NGERROR("Material 'StencilMask' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		return NULL;
+	}
+}
+
 /*
 Material_DiffuseBump::Material_DiffuseBump( RenderSystem* pRenderSystem )	:	Material( pRenderSystem ), m_SpecIntensity(0.12f), m_SpecPower(13.0f)
 {

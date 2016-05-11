@@ -616,3 +616,34 @@ UINT DX11Material_Skybox::Bind(Renderer* pRenderer, RenderCommand* pRenderComman
 
 	return 1;
 }
+
+DX11Material_StencilMask::DX11Material_StencilMask( RenderSystem* pRenderSystem )	:	Material_StencilMask( pRenderSystem )
+{
+	m_Shader = m_pRenderSystem->LoadShaderset( L"Shaders/Black.hlsl", "VS", "PS", SM_5_0 );
+}
+
+// TODO: Optimize. Stencil masking doesn't usually need a pixel shader
+UINT DX11Material_StencilMask::Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform )
+{
+	DX11RenderCommand_Draw* command = dynamic_cast<DX11RenderCommand_Draw*>(pRenderCommands[0]);
+
+	// Set render states & textures
+	command->SetBlendState(_BlendState);
+	command->SetRenderState(_RenderState);
+
+	Timer paraminit;
+	// Set common shader parameters
+	ShaderParams params;
+	params.initialize( m_Shader );
+	//m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
+
+	params.setParam( "ViewProjection", 0, &m_pRenderSystem->GetCamera()->GetViewProjectionMatrix().transpose() );
+	params.setParam( "World", 0, &pTransform->GetMatrix().transpose() );
+
+	m_pRenderSystem->t_shaderparams += paraminit.GetMiliseconds();
+
+	command->SetShaderset( (DX11Shaderset*)m_Shader );
+	command->SetShaderParams( &params );
+
+	return 1;
+}
