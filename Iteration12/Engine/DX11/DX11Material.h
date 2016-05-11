@@ -79,11 +79,11 @@ public:
 	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 };
 
-// Used for stencil masking: light volumes, shadow volumes, light clips, etc.
-class DX11Material_StencilMask : public Material_StencilMask
+// Used for stencil masking light volumes
+class DX11Material_LightStencilMask : public Material_LightStencilMask
 {
 public:
-	DX11Material_StencilMask( RenderSystem* pRenderSystem );
+	DX11Material_LightStencilMask( RenderSystem* pRenderSystem );
 
 	UINT Bind(Renderer* pRenderer, RenderCommand* pRenderCommands[], SubmeshRenderData* pRenderData, Transform* pTransform );
 };

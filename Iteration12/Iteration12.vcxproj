@@ -105,6 +105,7 @@
     <None Include="Shaders\FXAA3_11.hlsl" />
     <None Include="Shaders\GI.hlsl" />
     <None Include="Shaders\LightingCommon.hlsl" />
+    <None Include="Shaders\LightStencilMask.hlsl" />
     <None Include="Shaders\OneColor.hlsl" />
     <None Include="Shaders\PrefilterCubemap.hlsl" />
     <None Include="Shaders\RSM.hlsl" />

@@ -113,15 +113,15 @@ Material_Skybox* Material_Skybox::Create( RenderSystem* pRenderSystem )
 	}
 }
 
-Material_StencilMask* Material_StencilMask::Create( RenderSystem* pRenderSystem )
+Material_LightStencilMask* Material_LightStencilMask::Create( RenderSystem* pRenderSystem )
 {
 	RenderSystemConfig config = pRenderSystem->GetConfig();
 
 	if (config.api = GRAPHICS_API_DX11)
-		return new DX11Material_StencilMask( pRenderSystem );
+		return new DX11Material_LightStencilMask( pRenderSystem );
 	else
 	{
-		NGERROR("Material 'StencilMask' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
+		NGERROR("Material 'LightStencilMask' not yet implemented in GL/MANTLE/VULKAN. Returning NULL.");
 		return NULL;
 	}
 }

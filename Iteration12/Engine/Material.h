@@ -351,15 +351,17 @@ protected:
 	Shaderset* m_pShader;
 };
 
-// Used for stencil masking: light volumes, shadow volumes, light clips, etc.
-class Material_StencilMask : public Material
+// Used for stencil masking light volumes.
+class Material_LightStencilMask : public Material
 {
 public:
-	static Material_StencilMask* Create( RenderSystem* renderSystem );
+	static Material_LightStencilMask* Create( RenderSystem* renderSystem );
 
-	Material_StencilMask( RenderSystem* renderSystem ) :	Material(renderSystem)
+	Material_LightStencilMask( RenderSystem* renderSystem ) :	Material(renderSystem)
 	{
 	};
+
+	void SetLight( SpotLight* light )	{ m_Spotlight = light; };
 
 public:
 	RenderState _RenderState;
@@ -368,4 +370,5 @@ public:
 
 protected:
 	Shaderset* m_Shader;
+	SpotLight* m_Spotlight;
 };
