@@ -13,7 +13,7 @@
 class DX11RenderCommand_Draw : public RenderCommand
 {
 public:
-	DX11RenderCommand_Draw()	/*: m_pRasterizerState( NULL ), m_pDepthStencilState(NULL), m_pBlendState( NULL )		*/{};
+	DX11RenderCommand_Draw()	: m_RenderState(), m_BlendState(), m_StencilRef(0)		{};
 
 	// MUTATORS
 	inline void SetGeometryChunk( DX11GeometryChunk *pGeometryChunk )					{ m_pGeometryChunk = pGeometryChunk; };
@@ -28,6 +28,7 @@ public:
 
 	void SetBlendState( const BlendState& blendState )		{ m_BlendState = blendState; };
 	void SetRenderState( const RenderState& renderState )	{ m_RenderState = renderState; };
+	void SetStencilRef( UINT StencilRef )					{ m_StencilRef = StencilRef; };
 
 	// ACCESSORS
 	inline DX11GeometryChunk *GetGeometryChunk()									{ return m_pGeometryChunk; };
@@ -50,6 +51,7 @@ protected:
 	//ID3D11RasterizerState*	m_pRasterizerState;
 	RenderState		m_RenderState;
 	BlendState		m_BlendState;
+	UINT			m_StencilRef;
 };
 
 // Render command for mapping data to GPU

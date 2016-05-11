@@ -25,6 +25,8 @@ DX11RenderDispatcher::DX11RenderDispatcher() : RenderDispatcher()
 		m_pVSCBDataBufferSize[i] = 0;
 		m_pPSCBDataBufferSize[i] = 0;
 	}
+
+	m_StencilRef = 0;
 }
 
 HRESULT DX11RenderDispatcher::Initialize( RenderDispatcherConfig creationConfig )
@@ -1764,7 +1766,7 @@ void DX11RenderDispatcher::Present( UINT SyncInterval )
 	m_pSwapChain->Present( SyncInterval, 0 ); 
 };
 
-void DX11RenderDispatcher::SetRenderState( const RenderState& renderState )
+void DX11RenderDispatcher::SetRenderState( const RenderState& renderState, UINT StencilRef )
 {
 	if (!(m_CurrentRenderState == renderState))
 	{
@@ -1772,14 +1774,21 @@ void DX11RenderDispatcher::SetRenderState( const RenderState& renderState )
 		if (it != m_RenderStates.end())
 		{
 			GetImmediateContext()->RSSetState( it->second.first );
-			GetImmediateContext()->OMSetDepthStencilState( it->second.second, 0 );
+			GetImmediateContext()->OMSetDepthStencilState( it->second.second, StencilRef );
 		}
 		else
 		{
 			std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> states = CreateRenderState( renderState );
 			GetImmediateContext()->RSSetState( states.first );
-			GetImmediateContext()->OMSetDepthStencilState( states.second, 0 );
+			GetImmediateContext()->OMSetDepthStencilState( states.second, StencilRef );
 		}
+
+		m_CurrentRasterizerState = it->second.first;
+		m_CurrentDepthStencilState = it->second.second;
+	}
+	else if( m_StencilRef!=StencilRef )
+	{
+		GetImmediateContext()->OMSetDepthStencilState( m_CurrentDepthStencilState, StencilRef );
 	}
 }
 

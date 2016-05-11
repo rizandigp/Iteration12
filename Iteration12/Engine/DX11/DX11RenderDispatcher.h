@@ -27,7 +27,7 @@ public:
 	void SetBackbufferAsRenderTarget();
 	void ResolveMSAA( Texture2D* pDestination, Texture2D* pSource );
 	void Present( UINT SyncInterval );
-	void SetRenderState( const RenderState& renderState );
+	void SetRenderState( const RenderState& renderState, UINT StencilRef );
 	void SetBlendState( const BlendState& blendState );
 
 	void SetDevice( ID3D11Device* pDevice )								{ m_pDevice = pDevice; };
@@ -75,10 +75,13 @@ protected:
 
 	DX11Shaderset*				m_pActiveShaderset;
 
+	UINT						m_StencilRef;
 	RenderState					m_CurrentRenderState;
 	BlendState					m_CurrentBlendState;
 	std::unordered_map<BlendState, ID3D11BlendState*, BlendStateHasher> m_BlendStates;
 	std::unordered_map<RenderState, std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*>, RenderStateHasher> m_RenderStates;
+	ID3D11RasterizerState*		m_CurrentRasterizerState;
+	ID3D11DepthStencilState*	m_CurrentDepthStencilState;
 
 	// Default sampler states
 	ID3D11SamplerState*			m_pPointSampler;

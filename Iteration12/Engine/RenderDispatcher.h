@@ -101,7 +101,7 @@ public:
 	// Present back buffer. SyncInterval not yet in use.
 	virtual void Present( UINT SyncInterval )=0;
 	//
-	virtual void SetRenderState( const RenderState& renderState )=0;
+	virtual void SetRenderState( const RenderState& renderState, UINT StencilRef = 0 )=0;
 	//
 	virtual void SetBlendState( const BlendState& blendState )=0;
 
