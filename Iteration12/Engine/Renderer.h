@@ -29,17 +29,18 @@ public:
 	virtual void AddLight( SpotLight* light );
 	virtual void ClearLights();
 
-	virtual void Cull( XNA::Frustum* frustum, Transform* pTransform );
-	virtual void Cull( XNA::Sphere* sphere, Transform* pTransform );
-	//virtual void Cull( XNA::OrientedBox* box, Transform* pTransform );
-	virtual void CullLight( PointLight* light, Transform* pTransform );
-	virtual void CullLight( SpotLight* light, Transform* pTransform );
+	virtual void Cull( XNA::Frustum* frustum, Transform* transform );
+	virtual void Cull( XNA::Sphere* sphere, Transform* transform );
+	//virtual void Cull( XNA::OrientedBox* box, Transform* transform );
+	virtual void CullLight( PointLight* light, Transform* transform );
+	virtual void CullLight( SpotLight* light, Transform* transform );
 	virtual void SetCulled( bool IsCulled );
 
-	virtual void Render( Transform* pTransform ) = 0;
-	virtual void RenderShadowmap( Transform* pTransform, Camera3D* pShadowCamera ) = 0;
-	virtual void RenderRSM( Transform* pTransform, Camera3D* pShadowCamera, SpotLight* pLightSource ) = 0;
-	virtual void RenderOBB( Transform* pTransform ) = 0;
+	virtual void Render( Transform* transform ) = 0;
+	virtual void Render( Transform* transform, Material* material ) = 0;
+	virtual void RenderShadowmap( Transform* transform, Camera3D* shadowCamera ) = 0;
+	virtual void RenderRSM( Transform* transform, Camera3D* shadowCamera, SpotLight* lightSource ) = 0;
+	virtual void RenderOBB( Transform* transform ) = 0;
 
 	RenderSystem* GetRenderSystem();
 
