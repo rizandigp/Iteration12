@@ -1542,7 +1542,7 @@ Texture2D* DX11RenderDispatcher::CreateTexture2D( UINT height, UINT width, TEXTU
 	texDesc.ArraySize = 1;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	texDesc.CPUAccessFlags = NULL;
-	texDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	texDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	texDesc.Height = height;
 	texDesc.Width = width;
 	texDesc.MipLevels = 0;
@@ -1775,16 +1775,17 @@ void DX11RenderDispatcher::SetRenderState( const RenderState& renderState, UINT 
 		{
 			GetImmediateContext()->RSSetState( it->second.first );
 			GetImmediateContext()->OMSetDepthStencilState( it->second.second, StencilRef );
+			m_CurrentRasterizerState = it->second.first;
+			m_CurrentDepthStencilState = it->second.second;
 		}
 		else
 		{
 			std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> states = CreateRenderState( renderState );
 			GetImmediateContext()->RSSetState( states.first );
 			GetImmediateContext()->OMSetDepthStencilState( states.second, StencilRef );
+			m_CurrentRasterizerState = states.first;
+			m_CurrentDepthStencilState = states.second;
 		}
-
-		m_CurrentRasterizerState = it->second.first;
-		m_CurrentDepthStencilState = it->second.second;
 	}
 	else if( m_StencilRef!=StencilRef )
 	{
@@ -1864,7 +1865,7 @@ ID3D11BlendState* DX11RenderDispatcher::CreateBlendState( const BlendState& blen
 	desc.RenderTarget[0].BlendOp = (D3D11_BLEND_OP)blendState.BlendOp;
 	desc.RenderTarget[0].SrcBlendAlpha = (D3D11_BLEND)blendState.SrcBlendAlpha;
 	desc.RenderTarget[0].DestBlendAlpha = (D3D11_BLEND)blendState.DestBlendAlpha;
-	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	desc.RenderTarget[0].RenderTargetWriteMask = (D3D11_COLOR_WRITE_ENABLE)blendState.ColorWriteMask;
 	desc.RenderTarget[0].BlendOpAlpha = (D3D11_BLEND_OP)blendState.BlendOpAlpha;
 	GetDevice()->CreateBlendState( &desc, &_BlendState );
 
