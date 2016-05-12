@@ -35,6 +35,17 @@ enum BLEND_OP
 	BLEND_OP_MAX	= 5
 };
 
+// Color write mask specifies which color channels to write to
+enum COLOR_WRITE_ENABLE
+{	
+	COLOR_WRITE_ENABLE_NONE = 0,
+	COLOR_WRITE_ENABLE_RED	= 1,
+	COLOR_WRITE_ENABLE_GREEN	= 2,
+	COLOR_WRITE_ENABLE_BLUE	= 4,
+	COLOR_WRITE_ENABLE_ALPHA	= 8,
+	COLOR_WRITE_ENABLE_ALL	= ( ( ( COLOR_WRITE_ENABLE_RED | COLOR_WRITE_ENABLE_GREEN )  | COLOR_WRITE_ENABLE_BLUE )  | COLOR_WRITE_ENABLE_ALPHA ) 
+};
+
 // Describes the blend state for a render target
 struct BlendState
 {
@@ -50,8 +61,10 @@ struct BlendState
     BLEND SrcBlendAlpha;
 	// This blend option specifies the operation to perform on the current alpha value in the render target. Blend options that end in _COLOR are not allowed. Defaults to BLEND_ZERO
     BLEND DestBlendAlpha;
-	//This blend operation defines how to combine the SrcBlendAlpha and DestBlendAlpha operations. Defaults to BLEND_OP_ADD
+	// This blend operation defines how to combine the SrcBlendAlpha and DestBlendAlpha operations. Defaults to BLEND_OP_ADD
     BLEND_OP BlendOpAlpha;
+	// Color write mask specifies which color channels to write to. To disable color write, set to 0 or COLOR_WRITE_ENABLE_NONE. Defaults to COLOR_WRITE_ENABLE_ALL
+	COLOR_WRITE_ENABLE ColorWriteMask;
 
 	// Default values
 	BlendState() :
@@ -61,7 +74,8 @@ struct BlendState
 		BlendOp(BLEND_OP_ADD),
 		SrcBlendAlpha(BLEND_ONE),
 		DestBlendAlpha(BLEND_ZERO),
-		BlendOpAlpha(BLEND_OP_ADD)	{};
+		BlendOpAlpha(BLEND_OP_ADD),
+		ColorWriteMask(COLOR_WRITE_ENABLE_ALL)	{};
 
 	inline bool operator==(const BlendState& other) const
 	{
@@ -81,6 +95,7 @@ struct BlendStateHasher
 		boost::hash_combine(seed, boost::hash_value(state.SrcBlendAlpha));
 		boost::hash_combine(seed, boost::hash_value(state.DestBlendAlpha));
 		boost::hash_combine(seed, boost::hash_value(state.BlendOpAlpha));
+		boost::hash_combine(seed, boost::hash_value(state.ColorWriteMask));
 
 		return seed;
 	}

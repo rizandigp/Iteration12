@@ -416,7 +416,6 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	AdditiveBlendState.SrcBlendAlpha = BLEND_ONE;
 	AdditiveBlendState.DestBlendAlpha = BLEND_ONE;
 	AdditiveBlendState.BlendOpAlpha = BLEND_OP_ADD;
-	AdditiveBlendState.ColorWriteMask = COLOR_WRITE_ENABLE_BLUE;
 	command->SetBlendState(AdditiveBlendState);
 
 	RenderState BackfaceRenderState;
@@ -428,6 +427,7 @@ UINT DX11Material_Spotlight::Bind(Renderer* pRenderer, RenderCommand* pRenderCom
 	BackfaceRenderState.DepthComparison = COMPARISON_GREATER;
 	BackfaceRenderState.EnableStencil = true;
 	BackfaceRenderState.BackFace.StencilFunc = COMPARISON_EQUAL;
+	BackfaceRenderState.FrontFace.StencilFunc = COMPARISON_EQUAL;
 	command->SetRenderState(BackfaceRenderState);
 
 	command->SetStencilRef( 1 );
@@ -634,6 +634,7 @@ UINT DX11Material_LightStencilMask::Bind(Renderer* pRenderer, RenderCommand* pRe
 	// Set render states & textures
 	command->SetBlendState(_BlendState);
 	command->SetRenderState(_RenderState);
+	command->SetStencilRef(_StencilRef);
 
 	Timer paraminit;
 	// Set common shader parameters
