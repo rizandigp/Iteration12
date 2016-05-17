@@ -273,6 +273,8 @@ HRESULT DX11RenderDispatcher::Initialize( RenderDispatcherConfig creationConfig 
 	// Create default render & blend state
 	CreateRenderState( m_CurrentRenderState );
 	CreateBlendState( m_CurrentBlendState );
+	SetRenderState( m_CurrentRenderState, 0 );
+	SetBlendState( m_CurrentBlendState );
 
 	// All good
 	return S_OK;
@@ -1775,6 +1777,7 @@ void DX11RenderDispatcher::SetRenderState( const RenderState& renderState, UINT 
 		{
 			GetImmediateContext()->RSSetState( it->second.first );
 			GetImmediateContext()->OMSetDepthStencilState( it->second.second, StencilRef );
+			m_CurrentRenderState = renderState;
 			m_CurrentRasterizerState = it->second.first;
 			m_CurrentDepthStencilState = it->second.second;
 		}
@@ -1783,6 +1786,7 @@ void DX11RenderDispatcher::SetRenderState( const RenderState& renderState, UINT 
 			std::pair<ID3D11RasterizerState*, ID3D11DepthStencilState*> states = CreateRenderState( renderState );
 			GetImmediateContext()->RSSetState( states.first );
 			GetImmediateContext()->OMSetDepthStencilState( states.second, StencilRef );
+			m_CurrentRenderState = renderState;
 			m_CurrentRasterizerState = states.first;
 			m_CurrentDepthStencilState = states.second;
 		}
@@ -1801,11 +1805,13 @@ void DX11RenderDispatcher::SetBlendState( const BlendState& blendState )
 		if (it != m_BlendStates.end())
 		{
 			GetImmediateContext()->OMSetBlendState( it->second, NULL, 0xffffffff );
+			m_CurrentBlendState = blendState;
 		}
 		else
 		{
 			ID3D11BlendState* state = CreateBlendState( blendState );
 			GetImmediateContext()->OMSetBlendState( state, NULL, 0xffffffff );
+			m_CurrentBlendState = blendState;
 		}
 	}
 }
