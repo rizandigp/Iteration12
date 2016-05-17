@@ -1517,7 +1517,7 @@ Texture2D* DX11RenderDispatcher::CreateTexture2D( UINT height, UINT width, TEXTU
 	texDesc.ArraySize = 1;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	texDesc.CPUAccessFlags = NULL;
-	texDesc.Format = (DXGI_FORMAT)format;
+	texDesc.Format = ToDXGIFormat(format);
 	texDesc.Height = height;
 	texDesc.Width = width;
 	texDesc.MipLevels = 1;
@@ -1556,7 +1556,7 @@ Texture2D* DX11RenderDispatcher::CreateTexture2D( UINT height, UINT width, TEXTU
 	D3D11_DEPTH_STENCIL_VIEW_DESC DSVDesc;
 	ZeroMemory( &DSVDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC) );
 	DSVDesc.Flags = 0;
-	DSVDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	DSVDesc.Format = texDesc.Format;
 	DSVDesc.Texture2D.MipSlice = 0;
 	DSVDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	hr = this->GetDevice()->CreateDepthStencilView( pDepthStencil , &DSVDesc , &pDSV );
