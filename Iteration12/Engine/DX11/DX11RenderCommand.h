@@ -4,6 +4,7 @@
 #include "..\ShaderParams.h"
 #include "..\RenderState.h"
 #include "..\BlendState.h"
+#include "..\Texture.h"
 #include <d3d11.h>
 #include <d3dx11.h>
 
@@ -200,6 +201,7 @@ public:
 
 	void SetTexture( Texture *pTexture )				{ m_pTexture = pTexture; };
 	void SetClearColor( float* clearColorRGBA )			{ m_ClearColor[0] = clearColorRGBA[0]; m_ClearColor[1] = clearColorRGBA[1]; m_ClearColor[2] = clearColorRGBA[2]; m_ClearColor[3] = clearColorRGBA[3]; };
+	void SetClearFlags( UINT clearFlags )				{ m_ClearFlags = clearFlags; };
 
 	Texture* GetTexture()							{ return m_pTexture; };
 
@@ -210,6 +212,7 @@ public:
 protected:
 	Texture *m_pTexture;
 	float m_ClearColor[4];
+	UINT m_ClearFlags;
 };
 
 class D3D11RenderCommand_EndFrame : public RenderCommand
