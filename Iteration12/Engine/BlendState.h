@@ -79,7 +79,17 @@ struct BlendState
 
 	inline bool operator==(const BlendState& other) const
 	{
-		return (memcmp(this, &other, sizeof(BlendState))==0);
+		//return (memcmp(this, &other, sizeof(BlendState))==0);
+		if (BlendEnable==other.BlendEnable)
+			if (SrcBlend==other.SrcBlend)
+				if (DestBlend==other.DestBlend)
+					if (BlendOp==other.BlendOp)
+						if (SrcBlendAlpha==other.SrcBlendAlpha)
+							if (DestBlendAlpha==other.DestBlendAlpha)
+								if (BlendOpAlpha==other.BlendOpAlpha)
+									if (ColorWriteMask==other.ColorWriteMask)
+										return true;
+		return false;
 	}
 };
 

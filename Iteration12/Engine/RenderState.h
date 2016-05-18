@@ -96,7 +96,28 @@ struct RenderState
 
 	inline bool operator==(const RenderState& other) const
 	{
-		return (memcmp(this, &other, sizeof(RenderState))==0);
+		if (FillSolid==other.FillSolid)
+			if (CullingMode==other.CullingMode)
+				if (DepthBias==other.DepthBias)
+					if (EnableDepthTest==other.EnableDepthTest)
+						if (DepthComparison==other.DepthComparison)
+							if (EnableDepthWrite==other.EnableDepthWrite)
+								if (EnableStencil==other.EnableStencil)
+									if (StencilReadMask==other.StencilReadMask)
+										if (StencilWriteMask==other.StencilWriteMask)
+											if (FrontFace.StencilFailOp==other.FrontFace.StencilFailOp)
+												if (FrontFace.StencilDepthFailOp==other.FrontFace.StencilDepthFailOp)
+													if (FrontFace.StencilPassOp==other.FrontFace.StencilPassOp)
+														if (FrontFace.StencilFunc==other.FrontFace.StencilFunc)
+															if (BackFace.StencilFailOp==other.BackFace.StencilFailOp)
+																if (BackFace.StencilDepthFailOp==other.BackFace.StencilDepthFailOp)
+																	if (BackFace.StencilPassOp==other.BackFace.StencilPassOp)
+																		if (BackFace.StencilFunc==other.BackFace.StencilFunc)
+																			return true;
+
+		return false;
+
+		//return (memcmp(this, &other, sizeof(RenderState))==0);
 	}
 };
 
