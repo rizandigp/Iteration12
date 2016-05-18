@@ -422,7 +422,7 @@ Mesh* RenderSystem::LoadMesh( std::string filename, bool cache )
 		// Find mesh in the cache
 		std::map< std::string, Mesh* >::iterator it = m_pMeshes.find(filename);
 		if (it != m_pMeshes.end())
-			return new Mesh(*(*it).second);
+			return (*it).second;
 		else
 		{
 			DEBUG_OUTPUT( "Loading " );
