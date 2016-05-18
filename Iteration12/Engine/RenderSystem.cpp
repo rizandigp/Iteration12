@@ -319,11 +319,14 @@ void RenderSystem::ResolveMSAA( Texture2D* pDestination, Texture2D* pSource )
 	Submit( &rc );
 }
 
-void RenderSystem::ClearTexture( Texture* texture, float* clearColorRGBA )
+void RenderSystem::ClearTexture( Texture* texture, Vector4 clearColorRGBA, UINT clearFlags )
 {
+	float color[4] = { clearColorRGBA.x, clearColorRGBA.y, clearColorRGBA.z, clearColorRGBA.w };
+
 	D3D11RenderCommand_ClearTexture rc;
-	rc.SetClearColor( clearColorRGBA );
+	rc.SetClearColor( color );
 	rc.SetTexture( texture );
+	rc.SetClearFlags( clearFlags );
 	
 	Submit( &rc );
 }

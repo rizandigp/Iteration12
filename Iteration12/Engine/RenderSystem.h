@@ -98,8 +98,8 @@ public:
 	void ClearBackbuffer( float* clearColorRGBA );
 	void ClearDepthStencil( float depth, UINT8 stencil );
 	// Texture clears
-	void ClearTexture( Texture* texture, float* clearColorRGBA );
-	void ClearTexture( Texture* texture, Vector4 clearColorRGBA );
+	void ClearTexture( Texture* texture, Vector4 clearColorRGBA, UINT clearFlags = TEXTURE_CLEAR_ALL );
+	// 2x2 kernel downsampling. Dimensions of the target texture must be half that of the source
 	void DownsampleTexture( Texture2D* target, Texture2D* source );
 	// Returns current bound render target
 	Texture2D*	GetRenderTarget()	{ return m_pRenderTarget; };
