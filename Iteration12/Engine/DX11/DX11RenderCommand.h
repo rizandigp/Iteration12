@@ -200,7 +200,7 @@ public:
 	D3D11RenderCommand_ClearTexture()	: m_pTexture(NULL)	{};
 
 	void SetTexture( Texture *pTexture )				{ m_pTexture = pTexture; };
-	void SetClearColor( float* clearColorRGBA )			{ m_ClearColor[0] = clearColorRGBA[0]; m_ClearColor[1] = clearColorRGBA[1]; m_ClearColor[2] = clearColorRGBA[2]; m_ClearColor[3] = clearColorRGBA[3]; };
+	void SetClearColor( Vector4 clearColorRGBA )		{ m_ClearColor = clearColorRGBA; };
 	void SetClearFlags( UINT clearFlags )				{ m_ClearFlags = clearFlags; };
 
 	Texture* GetTexture()							{ return m_pTexture; };
@@ -211,7 +211,7 @@ public:
 
 protected:
 	Texture *m_pTexture;
-	float m_ClearColor[4];
+	Vector4 m_ClearColor;
 	UINT m_ClearFlags;
 };
 
