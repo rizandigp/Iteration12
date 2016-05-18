@@ -128,7 +128,7 @@ void DX11TextureCube::Unbind( const std::string& name, RenderDispatcher* pDispat
 		pd3d11Dispatcher->GetImmediateContext()->PSSetShaderResources( index, 1, nullSRV );
 }
 
-void DX11TextureCube::ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )
+void DX11TextureCube::ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil )
 {
 	m_pRenderSystem->ClearTexture(this, clearColorRGBA);
 }

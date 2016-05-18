@@ -331,12 +331,6 @@ void RenderSystem::ClearTexture( Texture* texture, Vector4 clearColorRGBA, UINT 
 	Submit( &rc );
 }
 
-void RenderSystem::ClearTexture( Texture* texture, Vector4 clearColorRGBA )
-{
-	float color[4] = { clearColorRGBA.x, clearColorRGBA.y, clearColorRGBA.z, clearColorRGBA.w };
-	ClearTexture( texture, color );
-}
-
 void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
 {
 	// TODO : put up a warning if the target resolution isn't right
@@ -346,7 +340,7 @@ void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
 
 	// Set target texture as render target
 	this->SetRenderTarget( target );
-	float clearColor[4] = { 0.5f, 0.125f, 0.3f, 1.0f };
+	Vector4 clearColor(0.0f, 0.0f, 0.0f, 0.0f );
 	this->ClearTexture( target, clearColor );
 
 	// Fullscreen pass

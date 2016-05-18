@@ -16,7 +16,7 @@ public:
 	void UnbindRenderTarget( RenderDispatcher* pDispatcher );
 	void ReleaseResources();
 
-	void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil );
+	void ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil );
 
 	// Set DX11 objects
 	inline void SetResource( ID3D11Texture2D* pResource )				{ m_pResource = pResource; };

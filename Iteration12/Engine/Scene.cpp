@@ -113,7 +113,7 @@ void Scene::Init( RenderSystem* pRendering, PhysicsSystem* pPhysics )
 
 	m_pSMEmpty = m_pRenderSystem->CreateTexture2D( 1, 1, R32_FLOAT ); 
 	
-	float ClearColor[4] = { D3D11_FLOAT32_MAX, 1.0f, 1.0f, 1.0f };
+	Vector4 ClearColor( D3D11_FLOAT32_MAX, 1.0f, 1.0f, 1.0f );
 	m_pRenderSystem->ClearTexture( m_pShadowmap[0], ClearColor );
 	m_pRenderSystem->ClearTexture( m_pSMEmpty, ClearColor );
 
@@ -211,7 +211,7 @@ void Scene::Render()
 	//
 	if (!m_pSpotLights.empty())
 	{
-		float clear[] = { 10000.0f, 1.0f, 1.0f, 1.0f };
+		Vector4 clearColor(10000.0f, 1.0f, 1.0f, 1.0f );
 		int i = 0;
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
@@ -220,7 +220,7 @@ void Scene::Render()
 			{
 				if ((*it2)->IsCastingShadow() && i < 8)
 				{
-					m_pRenderSystem->ClearTexture( m_pShadowmap[i], clear );
+					m_pRenderSystem->ClearTexture( m_pShadowmap[i], clearColor );
 					m_pRenderSystem->SetRenderTarget( m_pShadowmap[i] );
 
 					Camera3D shadowCamera;
@@ -292,7 +292,7 @@ void Scene::ParallelRender()
 	//
 	if (!m_pSpotLights.empty())
 	{
-		float clear[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		Vector4 clearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		int i = 0;
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
@@ -301,7 +301,7 @@ void Scene::ParallelRender()
 			{
 				if ((*it2)->IsCastingShadow() && 8)
 				{
-					m_pRenderSystem->ClearTexture( m_pShadowmap[i], clear );
+					m_pRenderSystem->ClearTexture( m_pShadowmap[i], clearColor );
 					m_pRenderSystem->SetRenderTarget( m_pShadowmap[i] );
 
 					Camera3D shadowCamera;
@@ -330,7 +330,7 @@ void Scene::ParallelRender()
 	//
 	// Render main scene
 	//
-	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
+	Vector4 clearColor( 0.0f, 0.125f, 0.3f, 1.0f ); //red,green,blue,alpha
 	m_pRenderSystem->ClearTexture( m_pHDRRenderTarget, clearColor );
 	m_pRenderSystem->ClearTexture( m_pGBuffer[0], clearColor );
 	m_pRenderSystem->ClearTexture( m_pGBuffer[1], clearColor );
@@ -402,7 +402,7 @@ void Scene::RenderDeferred()
 	//
 	// Render main scene into gbuffer
 	//
-	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
+	Vector4 clearColor( 0.0f, 0.125f, 0.3f, 1.0f ); //red,green,blue,alpha
 	m_pRenderSystem->ClearTexture( m_pHDRRenderTarget, clearColor );
 	m_pRenderSystem->ClearTexture( m_pGBuffer[0], clearColor );
 	m_pRenderSystem->ClearTexture( m_pGBuffer[1], clearColor );
@@ -436,8 +436,8 @@ void Scene::RenderDeferred()
 	if (!m_pSpotLights.empty())
 	{
 		// It is crucial to clear shadowmaps to the max possible float value. 
-		float clear0[] = { D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX };
-		float clear1[]	= { 0.0f, 0.0f, 0.0f, 1.0f, };
+		Vector4 clearColor0( D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX );
+		Vector4 clearColor1( 0.0f, 0.0f, 0.0f, 1.0f );
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
@@ -449,16 +449,16 @@ void Scene::RenderDeferred()
 					if ((*it2)->IsRSMEnabled())
 					{
 						// Render Reflective Shadow Maps
-						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
-						m_pRenderSystem->ClearTexture( m_pRSMNormal[0], clear1 );
-						m_pRenderSystem->ClearTexture( m_pRSMColor[0], clear1 );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clearColor0 );
+						m_pRenderSystem->ClearTexture( m_pRSMNormal[0], clearColor1 );
+						m_pRenderSystem->ClearTexture( m_pRSMColor[0], clearColor1 );
 						Texture2D* MRT[] = { m_pShadowmap[0], m_pRSMNormal[0], m_pRSMColor[0], };
 						m_pRenderSystem->SetMultipleRenderTargets( 3, MRT );
 					}
 					else
 					{
 						// Render just the shadowmap
-						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clearColor0 );
 						m_pRenderSystem->SetRenderTarget( m_pShadowmap[0] );
 					}
 
@@ -506,7 +506,7 @@ void Scene::RenderDeferred()
 		}
 	}
 	
-	m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
+	//m_pRenderSystem->SetRenderTarget( m_pHDRRenderTarget );
 	
 	/*ShaderParamBlock shaderParams;
 	shaderParams.assign( "vLightVector", 0, &Vector4( Vector3(-0.8f, 0.0f, 1.0f).normalisedCopy() ) );
@@ -517,7 +517,7 @@ void Scene::RenderDeferred()
 	m_pSunlight->render( true );
 	*/
 	
-	/*m_pRenderSystem->DownsampleTexture( m_pHalfRes, m_pGBuffer[1] );
+	m_pRenderSystem->DownsampleTexture( m_pHalfRes, m_pGBuffer[1] );
 	m_pRenderSystem->ClearTexture( m_pSSAOBuffer, clearColor );
 	m_pRenderSystem->SetRenderTarget( m_pSSAOBuffer );
 
@@ -538,7 +538,7 @@ void Scene::RenderDeferred()
 	//ShaderParamBlock shaderParams2;
 	//shaderParams2.assign( "ScreenDimensions", 0, &Vector4( config.Width/4.0f, config.Height/4.0f, 0.0f, 0.0f ) );
 	//m_pSSAOCombinePass->SetShaderParams(shaderParams2);
-	m_pSSAOCombinePass->Render( true );*/
+	m_pSSAOCombinePass->Render( true );
 	
 	// Fullscreen pass to backbuffer
 	m_pRenderSystem->SetBackbufferAsRenderTarget();
@@ -555,7 +555,7 @@ void Scene::ParallelRenderDeferred()
 	//
 	// Render main scene into gbuffer
 	//
-	float clearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
+	Vector4 clearColor( 0.0f, 0.125f, 0.3f, 1.0f ); //red,green,blue,alpha
 	m_pRenderSystem->ClearTexture( m_pHDRRenderTarget, clearColor );
 	m_pRenderSystem->ClearTexture( m_pGBuffer[0], clearColor );
 	m_pRenderSystem->ClearTexture( m_pGBuffer[1], clearColor );
@@ -589,8 +589,8 @@ void Scene::ParallelRenderDeferred()
 	if (!m_pSpotLights.empty())
 	{
 		// It is crucial to clear shadowmaps to the max possible float value. 
-		float clear0[] = { D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX };
-		float clear1[]	= { 0.0f, 0.0f, 0.0f, 1.0f, };
+		Vector4 clearColor0( D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX, D3DX_16F_MAX );
+		Vector4 clearColor1( 0.0f, 0.0f, 0.0f, 1.0f );
 
 		for ( std::vector<SpotLight*>::iterator it2 = m_pSpotLights.begin(); it2 != m_pSpotLights.end(); ++it2 )
 		{
@@ -602,16 +602,16 @@ void Scene::ParallelRenderDeferred()
 					if ((*it2)->IsRSMEnabled())
 					{
 						// Render Reflective Shadow Maps
-						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
-						m_pRenderSystem->ClearTexture( m_pRSMNormal[0], clear1 );
-						m_pRenderSystem->ClearTexture( m_pRSMColor[0], clear1 );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clearColor0 );
+						m_pRenderSystem->ClearTexture( m_pRSMNormal[0], clearColor1 );
+						m_pRenderSystem->ClearTexture( m_pRSMColor[0], clearColor1 );
 						Texture2D* MRT[] = { m_pShadowmap[0], m_pRSMNormal[0], m_pRSMColor[0], };
 						m_pRenderSystem->SetMultipleRenderTargets( 3, MRT );
 					}
 					else
 					{
 						// Render just the shadowmap
-						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clear0 );
+						m_pRenderSystem->ClearTexture( m_pShadowmap[0], clearColor0 );
 						m_pRenderSystem->SetRenderTarget( m_pShadowmap[0] );
 					}
 

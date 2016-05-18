@@ -31,7 +31,7 @@ public:
 	// Unbind render target from pipeline
 	virtual void UnbindRenderTarget( RenderDispatcher* pDispatcher)=0;
 
-	virtual void ClearBuffer( float* clearColorRGBA, float depth, UINT8 stencil )=0;
+	virtual void ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil )=0;
 	virtual void ReleaseResources() = 0;
 
 protected:
