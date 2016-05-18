@@ -351,12 +351,12 @@ void RenderSystem::DownsampleTexture( Texture2D* target, Texture2D* source )
 
 	// Fullscreen pass
 	FullscreenQuad quad( this );
-	//quad.SetShaderset( this->LoadShaderset( L"Shaders/Downsample.hlsl", "VS", "PS", SM_AUTO ) );
-	//quad.SetTexture( "texSource", source );
-	//ShaderParamBlock params;
-	//params.assign( "TargetDimensions", 0,  &Vector4( target->GetWidth(), target->GetHeight(), 0.0f, 0.0f ) );
-	//quad.SetShaderParams( params );
-	//quad.Render(false);
+	quad.SetShaderset( this->LoadShaderset( L"Shaders/Downsample.hlsl", "VS", "PS", SM_AUTO ) );
+	quad.SetTexture( "texSource", source );
+	ShaderParamBlock params;
+	params.assign( "TargetDimensions", 0,  &Vector4( target->GetWidth(), target->GetHeight(), 0.0f, 0.0f ) );
+	quad.SetShaderParams( params );
+	quad.Render(false);
 
 	// Revert back to original render target
 	this->SetRenderTarget( renderTarget );
