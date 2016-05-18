@@ -5,6 +5,7 @@
 #include "..\RenderState.h"
 #include "..\BlendState.h"
 #include "..\Texture.h"
+#include "..\Vector4.h"
 #include <d3d11.h>
 #include <d3dx11.h>
 
