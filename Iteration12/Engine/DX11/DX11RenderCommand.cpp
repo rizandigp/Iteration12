@@ -186,7 +186,7 @@ void D3D11RenderCommand_BeginFrame::Execute( RenderDispatcher *pDispatcher )
 void D3D11RenderCommand_ClearTexture::Execute( RenderDispatcher *pDispatcher )
 {
 	Texture* texture;
-	UINT D3DClearFlags;
+	UINT D3DClearFlags = 0;
 
 	if (m_ClearFlags & TEXTURE_CLEAR_DEPTH)
 		D3DClearFlags |= D3D11_CLEAR_DEPTH;
@@ -201,7 +201,8 @@ void D3D11RenderCommand_ClearTexture::Execute( RenderDispatcher *pDispatcher )
 		if (m_ClearFlags & TEXTURE_CLEAR_COLOR)
 			((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearRenderTargetView( ((DX11Texture2D*)m_pTexture)->GetRenderTargetView(), color );
 		
-		((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearDepthStencilView( ((DX11Texture2D*)m_pTexture)->GetDepthStencilView(), D3DClearFlags, 1.0f, 0 );
+		if (D3DClearFlags)
+			((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearDepthStencilView( ((DX11Texture2D*)m_pTexture)->GetDepthStencilView(), D3DClearFlags, m_ClearDepth, m_ClearStencil );
 	}
 
 	texture = dynamic_cast<DX11TextureCube*>(m_pTexture);
@@ -210,7 +211,8 @@ void D3D11RenderCommand_ClearTexture::Execute( RenderDispatcher *pDispatcher )
 		if (m_ClearFlags & TEXTURE_CLEAR_COLOR)
 			((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearRenderTargetView( ((DX11TextureCube*)m_pTexture)->GetRenderTargetView(), color );
 		
-		((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearDepthStencilView( ((DX11TextureCube*)m_pTexture)->GetDepthStencilView(), D3DClearFlags, 1.0f, 0 );
+		if (D3DClearFlags)
+			((DX11RenderDispatcher*)pDispatcher)->GetImmediateContext()->ClearDepthStencilView( ((DX11TextureCube*)m_pTexture)->GetDepthStencilView(), D3DClearFlags, m_ClearDepth, m_ClearStencil );
 	}
 
 	/*texture = dynamic_cast<DX11Texture3D*>(m_pTexture);

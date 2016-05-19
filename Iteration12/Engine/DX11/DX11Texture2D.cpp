@@ -51,9 +51,9 @@ void DX11Texture2D::UnbindRenderTarget( RenderDispatcher* pDispatcher )
 {
 }
 
-void DX11Texture2D::ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil )
+void DX11Texture2D::ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil, UINT clearFlags )
 {
-	m_pRenderSystem->ClearTexture(this, clearColorRGBA);
+	m_pRenderSystem->ClearTexture(this, clearColorRGBA, clearFlags);
 }
 
 void DX11Texture2D::ReleaseResources()

@@ -198,11 +198,13 @@ protected:
 class D3D11RenderCommand_ClearTexture : public RenderCommand
 {
 public:
-	D3D11RenderCommand_ClearTexture()	: m_pTexture(NULL)	{};
+	D3D11RenderCommand_ClearTexture()	: m_pTexture(NULL), m_ClearDepth(1.0f), m_ClearStencil(0)	{};
 
 	void SetTexture( Texture *pTexture )				{ m_pTexture = pTexture; };
-	void SetClearColor( Vector4 clearColorRGBA )		{ m_ClearColor = clearColorRGBA; };
 	void SetClearFlags( UINT clearFlags )				{ m_ClearFlags = clearFlags; };
+	void SetClearColor( Vector4 clearColorRGBA )		{ m_ClearColor = clearColorRGBA; };
+	void SetClearDepth( float depth )					{ m_ClearDepth = depth; };
+	void SetClearStencil( UINT8 stencil )				{ m_ClearStencil = stencil; };
 
 	Texture* GetTexture()							{ return m_pTexture; };
 
@@ -212,8 +214,10 @@ public:
 
 protected:
 	Texture *m_pTexture;
-	Vector4 m_ClearColor;
 	UINT m_ClearFlags;
+	Vector4 m_ClearColor;
+	float m_ClearDepth;
+	UINT8 m_ClearStencil;
 };
 
 class D3D11RenderCommand_EndFrame : public RenderCommand

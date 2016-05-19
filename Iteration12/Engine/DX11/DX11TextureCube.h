@@ -13,7 +13,7 @@ public:
 	void Bind( const std::string& name, RenderDispatcher* pDispatcher );
 	void Unbind( const std::string& name, RenderDispatcher* pDispatcher );
 
-	void ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil );
+	void ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil, UINT clearFlags );
 
 	void ReleaseResources();
 	// TODO : Other BRDFs

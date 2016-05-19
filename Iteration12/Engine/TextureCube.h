@@ -22,7 +22,7 @@ public:
 	inline TEXTURE_FORMAT GetFormat()						{ return m_Format; };
 	inline UINT GetMipLevels()								{ return m_MipLevels; };
 
-	virtual void ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil )=0;
+	virtual void ClearBuffer( Vector4 clearColorRGBA, float depth, UINT8 stencil, UINT clearFlags = TEXTURE_CLEAR_ALL )=0;
 	virtual void ReleaseResources() = 0;
 
 	// TODO : different brdfs
